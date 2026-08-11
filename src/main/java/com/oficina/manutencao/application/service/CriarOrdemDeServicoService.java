@@ -13,6 +13,10 @@ public class CriarOrdemDeServicoService implements CriarOrdemDeServicoUseCase {
 
     @Override
     public void criarOrdemDeServico(OrdemDeServico ordemDeServico) {
-        //TODO validacoes de negocio
+        if (ordemDeServico == null || ordemDeServico.getId() == null) {
+            throw new IllegalArgumentException("Ordem de serviço inválida");
+        }
+        ordemDeServicoRepositoryPort.salvar(ordemDeServico);
     }
+
 }

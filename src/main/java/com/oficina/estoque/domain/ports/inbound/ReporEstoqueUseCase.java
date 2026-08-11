@@ -4,6 +4,6 @@ import com.oficina.estoque.domain.model.Peca;
 
 import java.util.UUID;
 
-public interface ObterPecaUseCase {
-    Peca ObtemPeca(UUID id, int quantidadeBaixar);
+public interface ReporEstoqueUseCase {
+    Peca reporEstoque(UUID pecaID,  int quantidadeRepor);
 }

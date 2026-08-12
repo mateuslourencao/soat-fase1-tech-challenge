@@ -32,6 +32,22 @@ public class OrdemDeServico {
         this.dataAtualizacao = this.dataCriacao;
     }
 
+    public OrdemDeServico(UUID id, UUID idCliente, UUID idVeiculo, List<Servico> servicos, List<PecasNecessarias> pecas,
+                          double orcamento, StatusOS status, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao,
+                          String descricaoQueixas, String diagnosticos) {
+        this.id = id;
+        this.idCliente = idCliente;
+        this.idVeiculo = idVeiculo;
+        this.servicos = servicos;
+        this.pecasNecessarias = pecas;
+        this.orcamento = orcamento;
+        this.status = status;
+        this.dataCriacao = dataCriacao;
+        this.dataAtualizacao = dataAtualizacao;
+        this.descricaoQueixas = descricaoQueixas;
+        this.diagnosticos = diagnosticos;
+    }
+
     public UUID getId() { return id; }
     public UUID getIdCliente() { return idCliente; }
     public UUID getIdVeiculo() { return idVeiculo; }

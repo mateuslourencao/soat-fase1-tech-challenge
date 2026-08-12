@@ -17,4 +17,5 @@ public class PecasNecessarias {
     public Peca getPeca() { return peca; }
     public int getQuantidade() { return quantidade; }
     public double getValorTotal() { return peca.getValor() * quantidade; }
+    public double getValorUnitario() { return peca.getValor(); }
 }

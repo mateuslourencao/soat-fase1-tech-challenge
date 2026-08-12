@@ -1,22 +1,34 @@
 package com.oficina.manutencao.infrastructure.adapters.outbound.persistence.mapper;
 
+import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.model.Servico;
+import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.PecaEntity;
+import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.ServicoEntity;
+import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.PecaJpaRepository;
+import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.ServicoJpaRepository;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.PecasNecessarias;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.entity.OrdemDeServicoEntity;
-import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.entity.PecaNecessariaEntity;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.entity.OrdemDeServicoServicosEntity;
+import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.entity.PecaNecessariaEntity;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class OrdemDeServicoPersistenceMapper {
+    private final PecaJpaRepository pecaRepository;
+    private final ServicoJpaRepository servicoRepository;
+
+    public OrdemDeServicoPersistenceMapper(PecaJpaRepository pecaRepository, ServicoJpaRepository servicoRepository) {
+        this.pecaRepository = pecaRepository;
+        this.servicoRepository = servicoRepository;
+    }
 
     public OrdemDeServicoEntity toEntity(OrdemDeServico ordem) {
         OrdemDeServicoEntity entity = new OrdemDeServicoEntity();
-
         entity.setId(ordem.getId());
         entity.setIdCliente(ordem.getIdCliente());
         entity.setIdVeiculo(ordem.getIdVeiculo());
@@ -26,77 +38,41 @@ public class OrdemDeServicoPersistenceMapper {
         entity.setDataAtualizacao(ordem.getDataAtualizacao());
         entity.setDescricaoQueixas(ordem.getDescricaoQueixas());
         entity.setDiagnosticos(ordem.getDiagnosticos());
-
-        entity.setPecasNecessarias(
-                ordem.getPecasNecessarias().stream()
-                        .map(peca -> toPecaEntity(ordem.getId(), peca))
-                        .toList()
-        );
-
-        entity.setServicos(
-                ordem.getServicos().stream()
-                        .map(servico -> toServicoEntity(ordem.getId(), servico))
-                        .toList()
-        );
-
+        entity.setPecasNecessarias(ordem.getPecasNecessarias().stream()
+                .map(peca -> toPecaEntity(ordem.getId(), peca))
+                .toList());
+        entity.setServicos(ordem.getServicos().stream()
+                .map(servico -> toServicoEntity(ordem.getId(), servico))
+                .toList());
         return entity;
     }
 
     public OrdemDeServico toDomain(OrdemDeServicoEntity entity) {
-        List<PecasNecessarias> pecas = entity.getPecasNecessarias().stream()
-                .map(this::toPecaDomain)
-                .toList();
-
-        List<Servico> servicos = entity.getServicos().stream()
-                .map(this::toServicoDomain)
-                .toList();
-
-        return new OrdemDeServico(
-                entity.getId(),
-                entity.getIdCliente(),
-                entity.getIdVeiculo(),
-                servicos,
-                pecas,
-                entity.getOrcamento().doubleValue(),
-                entity.getStatus(),
-                entity.getDataCriacao(),
-                entity.getDataAtualizacao(),
-                entity.getDescricaoQueixas(),
-                entity.getDiagnosticos()
-        );
+        List<PecasNecessarias> pecas = entity.getPecasNecessarias().stream().map(this::toPecaDomain).toList();
+        List<Servico> servicos = entity.getServicos().stream().map(this::toServicoDomain).toList();
+        return new OrdemDeServico(entity.getId(), entity.getIdCliente(), entity.getIdVeiculo(), servicos, pecas,
+                entity.getOrcamento() == null ? 0D : entity.getOrcamento().doubleValue(), entity.getStatus(),
+                entity.getDataCriacao(), entity.getDataAtualizacao(), entity.getDescricaoQueixas(), entity.getDiagnosticos());
     }
 
-    private PecaNecessariaEntity toPecaEntity(
-            java.util.UUID ordemId,
-            PecasNecessarias peca
-    ) {
-        return new PecaNecessariaEntity(
-                ordemId,
-                peca.getPeca().getId(),
-                peca.getQuantidade(),
-                BigDecimal.valueOf(peca.getValorUnitario())
-        );
+    private PecaNecessariaEntity toPecaEntity(UUID ordemId, PecasNecessarias peca) {
+        return new PecaNecessariaEntity(ordemId, pecaRepository.getReferenceById(peca.getPeca().getId()),
+                peca.getQuantidade(), BigDecimal.valueOf(peca.getValorUnitario()));
     }
 
     private PecasNecessarias toPecaDomain(PecaNecessariaEntity entity) {
-        // A forma exata depende de como você modelar PecaEntity / PecaJpaRepository.
-        // A ideia é reconstruir a peça e criar PecasNecessarias com seus dados.
-        throw new UnsupportedOperationException("Implementar conforme PecaEntity");
+        PecaEntity peca = entity.getPeca();
+        Peca pecaDomain = new Peca(peca.getId(), peca.getDescricao(), entity.getValorUnitario().doubleValue(), peca.getQuantidade());
+        return new PecasNecessarias(pecaDomain, entity.getQuantidade());
     }
 
-    private OrdemDeServicoServicosEntity toServicoEntity(
-            java.util.UUID ordemId,
-            Servico servico
-    ) {
-        return new OrdemDeServicoServicosEntity(
-                ordemId,
-                servico.getId(),
-                BigDecimal.valueOf(servico.getValor())
-        );
+    private OrdemDeServicoServicosEntity toServicoEntity(UUID ordemId, Servico servico) {
+        return new OrdemDeServicoServicosEntity(ordemId, servicoRepository.getReferenceById(servico.getId()),
+                BigDecimal.valueOf(servico.getValor()));
     }
 
     private Servico toServicoDomain(OrdemDeServicoServicosEntity entity) {
-        // Precisa obter descrição do serviço ou mantê-la no mapeamento via relação com ServicoEntity.
-        throw new UnsupportedOperationException("Implementar conforme ServicoEntity");
+        ServicoEntity servico = entity.getServico();
+        return new Servico(servico.getId(), servico.getDescricao(), entity.getValorCobrado().doubleValue());
     }
 }

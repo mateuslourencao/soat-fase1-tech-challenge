@@ -5,10 +5,12 @@ import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.entity.OrdemDeServicoEntity;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.mapper.OrdemDeServicoPersistenceMapper;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.repository.OrdemDeServicoJpaRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Component
 public class OrdemDeServicoJpaAdapter
         implements OrdemDeServicoRepositoryPort {
 

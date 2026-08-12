@@ -6,7 +6,7 @@ USE oficina;
 
 -- Adicionando UNIQUE
 CREATE TABLE clientes (
-    id VARCHAR(36) NOT NULL,
+    id BINARY(36) NOT NULL,
     nome VARCHAR(255),
     email VARCHAR(255),
     documento VARCHAR(255) UNIQUE, -- Evita duplicidade
@@ -15,7 +15,7 @@ CREATE TABLE clientes (
 ) ENGINE=InnoDB;
 
 CREATE TABLE veiculos (
-    id VARCHAR(36) NOT NULL,
+    id BINARY(36) NOT NULL,
     placa VARCHAR(255) UNIQUE,       -- Evita duplicidade
     marca VARCHAR(255),
     modelo VARCHAR(255),
@@ -24,7 +24,7 @@ CREATE TABLE veiculos (
 ) ENGINE=InnoDB;
 
 CREATE TABLE pecas (
-    id VARCHAR(36) NOT NULL,
+    id BINARY(36) NOT NULL,
     descricao VARCHAR(255),
     valor DECIMAL(10,2),
     quantidade INT,
@@ -32,16 +32,16 @@ CREATE TABLE pecas (
 ) ENGINE=InnoDB;
 
 CREATE TABLE servicos (
-    id VARCHAR(36) NOT NULL,
+    id BINARY(36) NOT NULL,
     descricao VARCHAR(255),
     valor DECIMAL(10,2),
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE ordens_de_servico (
-    id VARCHAR(36) NOT NULL,
-    id_cliente VARCHAR(36) NOT NULL,
-    id_veiculo VARCHAR(36) NOT NULL,
+    id BINARY(36) NOT NULL,
+    id_cliente BINARY(36) NOT NULL,
+    id_veiculo BINARY(36) NOT NULL,
     orcamento DECIMAL(10,2),
     status VARCHAR(50),
     data_criacao DATETIME,
@@ -57,8 +57,8 @@ CREATE TABLE ordens_de_servico (
 
 -- Adicionando o Valor Histórico
 CREATE TABLE ordens_de_servico_servicos (
-    ordem_de_servico_id VARCHAR(36) NOT NULL,
-    servico_id VARCHAR(36) NOT NULL,
+    ordem_de_servico_id BINARY(36) NOT NULL,
+    servico_id BINARY(36) NOT NULL,
     valor_cobrado DECIMAL(10,2) NOT NULL, -- Salva o preço no dia da OS
     PRIMARY KEY (ordem_de_servico_id, servico_id),
     CONSTRAINT fk_os_servicos_ordens_de_servico FOREIGN KEY (ordem_de_servico_id) REFERENCES ordens_de_servico (id),
@@ -66,8 +66,8 @@ CREATE TABLE ordens_de_servico_servicos (
 ) ENGINE=InnoDB;
 
 CREATE TABLE pecas_necessarias (
-    ordem_de_servico_id VARCHAR(36) NOT NULL,
-    peca_id VARCHAR(36) NOT NULL,
+    ordem_de_servico_id BINARY(36) NOT NULL,
+    peca_id BINARY(36) NOT NULL,
     quantidade INT NOT NULL,
     valor_unitario DECIMAL(10,2) NOT NULL, -- Salva o preço no dia da OS
     PRIMARY KEY (ordem_de_servico_id, peca_id),

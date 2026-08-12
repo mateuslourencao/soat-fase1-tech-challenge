@@ -1,14 +1,13 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
-import com.oficina.manutencao.application.service.AprovarOrcamentoService;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.ports.inbound.CriarOrdemDeServicoUseCase;
+import com.oficina.manutencao.domain.ports.inbound.ListarOrdemDeServicoUseCase;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,8 +16,11 @@ import java.util.UUID;
 class OrdemDeServicoController {
 
     private final CriarOrdemDeServicoUseCase criarOrdemDeServico;
-    OrdemDeServicoController(CriarOrdemDeServicoUseCase criarOrdemDeServico) {
+    private final ListarOrdemDeServicoUseCase listarOrdemDeServico;
+
+    OrdemDeServicoController(CriarOrdemDeServicoUseCase criarOrdemDeServico, ListarOrdemDeServicoUseCase listarOrdemDeServico) {
         this.criarOrdemDeServico = criarOrdemDeServico;
+        this.listarOrdemDeServico = listarOrdemDeServico;
     }
 
     @PostMapping
@@ -29,10 +31,9 @@ class OrdemDeServicoController {
         return ResponseEntity.ok().build();
     }
 
-    //para teste
     @GetMapping
-    public ResponseEntity<List<OrdemDeServico>> listarOrdemDeServicos() {
-        var response = new ArrayList<OrdemDeServico>();
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<List<OrdemDeServico>> listarOrdensDeServico() {
+        List<OrdemDeServico> response = listarOrdemDeServico.listarOrdemDeServico();
+        return ResponseEntity.ok(response);
     }
 }

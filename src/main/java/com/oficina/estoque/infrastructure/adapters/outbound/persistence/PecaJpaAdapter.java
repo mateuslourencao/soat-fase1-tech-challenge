@@ -2,12 +2,15 @@ package com.oficina.estoque.infrastructure.adapters.outbound.persistence;
 
 import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
+import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.PecaEntity;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.mapper.PecaPersistenceMapper;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.PecaJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class PecaJpaAdapter implements PecaRepositoryPort {
@@ -27,5 +30,10 @@ public class PecaJpaAdapter implements PecaRepositoryPort {
     @Override
     public Optional<Peca> buscarPorId(UUID id) {
         return repository.findById(id).map(mapper::toDomain);
+    }
+
+    public List<Peca> listarPecas() {
+        List<Peca> pecas = repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+        return pecas;
     }
 }

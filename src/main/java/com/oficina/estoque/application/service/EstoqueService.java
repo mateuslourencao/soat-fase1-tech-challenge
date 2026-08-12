@@ -5,10 +5,12 @@ import com.oficina.estoque.domain.model.Servico;
 import com.oficina.estoque.domain.ports.inbound.*;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
 import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
+
+import java.util.List;
 import java.util.UUID;
 
 public class EstoqueService implements CadastrarPecaUseCase, CadastrarServicoUseCase,
-        ObterPecaUseCase, ReporEstoqueUseCase {
+        ObterPecaUseCase, ReporEstoqueUseCase, ListarPecaUseCase, ListarServicoUseCase {
     private final PecaRepositoryPort pecaRepository;
     private final ServicoRepositoryPort servicoRepository;
 
@@ -47,5 +49,17 @@ public class EstoqueService implements CadastrarPecaUseCase, CadastrarServicoUse
         Peca peca = buscaPeca(pecaID);
         peca.atualizarQuantidade(peca.getQuantidade() + quantidadeRepor);
         return pecaRepository.salvar(peca);
+    }
+
+    @Override
+    public List<Peca> listarPecas() {
+        List<Peca> pecas = pecaRepository.listarPecas();
+        return pecas;
+    }
+
+    @Override
+    public List<Servico> listarServico() {
+        List<Servico> servicos = servicoRepository.listarServicos();
+        return servicos;
     }
 }

@@ -1,13 +1,16 @@
 package com.oficina.estoque.infrastructure.adapters.outbound.persistence;
 
+import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.model.Servico;
 import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.mapper.ServicoPersistenceMapper;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.ServicoJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class ServicoJpaAdapter implements ServicoRepositoryPort {
@@ -27,5 +30,11 @@ public class ServicoJpaAdapter implements ServicoRepositoryPort {
     @Override
     public Optional<Servico> buscarPorId(UUID id) {
         return repository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Servico> listarServicos() {
+        List<Servico> servicos = repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+        return servicos;
     }
 }

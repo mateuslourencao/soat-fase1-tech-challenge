@@ -1,4 +1,4 @@
-package com.oficina.soat_tech_challenge;
+package com.oficina;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

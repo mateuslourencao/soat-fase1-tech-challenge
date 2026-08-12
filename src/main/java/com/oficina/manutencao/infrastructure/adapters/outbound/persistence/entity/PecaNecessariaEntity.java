@@ -1,5 +1,6 @@
 package com.oficina.manutencao.infrastructure.adapters.outbound.persistence.entity;
 
+import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.PecaEntity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -17,6 +18,11 @@ public class PecaNecessariaEntity {
     @JoinColumn(name = "ordem_de_servico_id")
     private OrdemDeServicoEntity ordemDeServico;
 
+    @MapsId("pecaId")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "peca_id")
+    private PecaEntity peca;
+
     @Column(nullable = false)
     private Integer quantidade;
 
@@ -27,11 +33,12 @@ public class PecaNecessariaEntity {
 
     public PecaNecessariaEntity(
             UUID ordemDeServicoId,
-            UUID pecaId,
+            PecaEntity peca,
             Integer quantidade,
             BigDecimal valorUnitario
     ) {
-        this.id = new PecaNecessariaId(ordemDeServicoId, pecaId);
+        this.id = new PecaNecessariaId(ordemDeServicoId, peca.getId());
+        this.peca = peca;
         this.quantidade = quantidade;
         this.valorUnitario = valorUnitario;
     }
@@ -39,4 +46,8 @@ public class PecaNecessariaEntity {
     public void setOrdemDeServico(OrdemDeServicoEntity ordemDeServico) {
         this.ordemDeServico = ordemDeServico;
     }
+
+    public PecaEntity getPeca() { return peca; }
+    public Integer getQuantidade() { return quantidade; }
+    public BigDecimal getValorUnitario() { return valorUnitario; }
 }

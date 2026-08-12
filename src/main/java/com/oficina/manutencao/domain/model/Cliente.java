@@ -9,4 +9,18 @@ public class Cliente {
     private String email;
     private String documento;
     private String telefone;
+
+    public Cliente(UUID id, String nome, String email, String documento, String telefone) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.documento = documento;
+        this.telefone = telefone;
+    }
+
+    public UUID getId() { return id; }
+    public String getNome() { return nome; }
+    public String getEmail() { return email; }
+    public String getDocumento() { return documento; }
+    public String getTelefone() { return telefone; }
 }

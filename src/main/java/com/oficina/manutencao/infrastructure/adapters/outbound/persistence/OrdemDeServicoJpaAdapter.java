@@ -7,8 +7,10 @@ import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.mappe
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.repository.OrdemDeServicoJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class OrdemDeServicoJpaAdapter
@@ -34,5 +36,11 @@ public class OrdemDeServicoJpaAdapter
     @Override
     public Optional<OrdemDeServico> buscarPorId(UUID id) {
         return repository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<OrdemDeServico> listarOrdensDeServico() {
+        List<OrdemDeServico> ordemDeServicos = repository.findAll().stream().map(mapper::toDomain).toList();
+        return ordemDeServicos;
     }
 }

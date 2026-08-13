@@ -6,8 +6,10 @@ import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.repos
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.mapper.ClientePersistenceMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class ClienteJpaAdapter implements ClienteRepositoryPort {
@@ -28,4 +30,11 @@ public class ClienteJpaAdapter implements ClienteRepositoryPort {
     public Optional<Cliente> buscarPorId(UUID id) {
         return repository.findById(id).map(mapper::toDomain);
     }
+
+    @Override
+    public List<Cliente> listarTodos() { return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList()); }
+
+    @Override
+    public void remover(UUID id) {repository.deleteById(id);}
+
 }

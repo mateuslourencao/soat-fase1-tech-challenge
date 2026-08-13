@@ -9,12 +9,12 @@ import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
 import java.util.List;
 import java.util.UUID;
 
-public class EstoqueService implements CadastrarPecaUseCase, CadastrarServicoUseCase,
-        ObterPecaUseCase, ReporEstoqueUseCase, ListarPecaUseCase, ListarServicoUseCase {
+public class PecaService implements CadastrarPecaUseCase, CadastrarServicoUseCase,
+        ObterPecaUseCase, ReporPecaUseCase, ListarPecaUseCase, ListarServicoUseCase {
     private final PecaRepositoryPort pecaRepository;
     private final ServicoRepositoryPort servicoRepository;
 
-    public EstoqueService(PecaRepositoryPort pecaRepository, ServicoRepositoryPort servicoRepository) {
+    public PecaService(PecaRepositoryPort pecaRepository, ServicoRepositoryPort servicoRepository) {
         this.pecaRepository = pecaRepository;
         this.servicoRepository = servicoRepository;
     }

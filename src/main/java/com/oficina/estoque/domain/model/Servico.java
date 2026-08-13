@@ -4,17 +4,22 @@ import java.util.UUID;
 
 public class Servico {
 
-    private UUID id;
+    private int id;
     private String descricao;
     private double valor;
 
-    public Servico(UUID id, String descricao, double valor) {
+    public Servico(String descricao, double valor) {
+        this.descricao = descricao;
+        this.valor = valor;
+    }
+
+    public Servico(int id, String descricao, double valor) {
         this.id = id;
         this.descricao = descricao;
         this.valor = valor;
     }
 
-    public UUID getId() { return id; }
+    public int getId() { return id; }
     public String getDescricao() { return descricao; }
     public double getValor() { return valor; }
 }

@@ -1,9 +1,6 @@
 package com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -12,7 +9,8 @@ import java.util.UUID;
 @Table(name = "servicos")
 public class ServicoEntity {
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @Column(nullable = false)
     private String descricao;
@@ -22,13 +20,13 @@ public class ServicoEntity {
 
     protected ServicoEntity() {}
 
-    public ServicoEntity(UUID id, String descricao, BigDecimal valor) {
+    public ServicoEntity(int id, String descricao, BigDecimal valor) {
         this.id = id;
         this.descricao = descricao;
         this.valor = valor;
     }
 
-    public UUID getId() { return id; }
+    public int getId() { return id; }
     public String getDescricao() { return descricao; }
     public BigDecimal getValor() { return valor; }
 }

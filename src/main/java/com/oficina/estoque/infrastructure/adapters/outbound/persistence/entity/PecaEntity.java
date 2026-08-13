@@ -12,7 +12,7 @@ import java.util.UUID;
 @Table(name = "pecas")
 public class PecaEntity {
     @Id
-    private UUID id;
+    private int id;
 
     @Column(nullable = false)
     private String descricao;
@@ -25,14 +25,14 @@ public class PecaEntity {
 
     protected PecaEntity() {}
 
-    public PecaEntity(UUID id, String descricao, BigDecimal valor, int quantidade) {
+    public PecaEntity(int id, String descricao, BigDecimal valor, int quantidade) {
         this.id = id;
         this.descricao = descricao;
         this.valor = valor;
         this.quantidade = quantidade;
     }
 
-    public UUID getId() { return id; }
+    public int getId() { return id; }
     public String getDescricao() { return descricao; }
     public BigDecimal getValor() { return valor; }
     public int getQuantidade() { return quantidade; }

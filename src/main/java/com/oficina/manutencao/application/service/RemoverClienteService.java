@@ -12,6 +12,7 @@ public class RemoverClienteService implements RemoverClienteUseCase {
         this.clienteRepositoryPort = clienteRepositoryPort;
     }
 
+    @Override
     public void removerCliente(UUID id){
         clienteRepositoryPort.buscarPorId(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
         clienteRepositoryPort.remover(id);

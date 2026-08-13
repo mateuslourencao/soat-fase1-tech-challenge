@@ -13,6 +13,7 @@ public class ListarClientesService implements ListarClientesUseCase {
         this.clienteRepositoryPort = clienteRepositoryPort;
     }
 
+    @Override
     public List<Cliente> listarClientes(){
         return clienteRepositoryPort.listarTodos();
     }

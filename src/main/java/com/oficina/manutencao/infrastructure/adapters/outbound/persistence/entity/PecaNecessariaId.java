@@ -11,12 +11,12 @@ public class PecaNecessariaId implements Serializable {
     private UUID ordemDeServicoId;
 
     @Column(name = "peca_id")
-    private UUID pecaId;
+    private int pecaId;
 
     protected PecaNecessariaId() {
     }
 
-    public PecaNecessariaId(UUID ordemDeServicoId, UUID pecaId) {
+    public PecaNecessariaId(UUID ordemDeServicoId, int pecaId) {
         this.ordemDeServicoId = ordemDeServicoId;
         this.pecaId = pecaId;
     }

@@ -4,19 +4,25 @@ import java.util.UUID;
 
 public class Peca {
 
-    private UUID id;
+    private int id;
     private String descricao;
     private double valor;
     private int quantidade;
 
-    public Peca(UUID id, String descricao, double valor, int quantidade) {
+    public Peca(String descricao, double valor, int quantidade) {
+        this.descricao = descricao;
+        this.valor = valor;
+        this.quantidade = quantidade;
+    }
+
+    public Peca(int id, String descricao, double valor, int quantidade) {
         this.id = id;
         this.descricao = descricao;
         this.valor = valor;
         this.quantidade = quantidade;
     }
 
-    public UUID getId() { return id; }
+    public int getId() { return id; }
     public String getDescricao() { return descricao; }
     public double getValor() { return valor; }
     public int getQuantidade() { return quantidade; }

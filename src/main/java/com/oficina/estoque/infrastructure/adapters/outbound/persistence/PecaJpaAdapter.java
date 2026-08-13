@@ -28,7 +28,7 @@ public class PecaJpaAdapter implements PecaRepositoryPort {
     }
 
     @Override
-    public Optional<Peca> buscarPorId(UUID id) {
+    public Optional<Peca> buscarPorId(int id) {
         return repository.findById(id).map(mapper::toDomain);
     }
 

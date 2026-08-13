@@ -9,27 +9,20 @@ import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
 import java.util.List;
 import java.util.UUID;
 
-public class PecaService implements CadastrarPecaUseCase, CadastrarServicoUseCase,
-        ObterPecaUseCase, ReporPecaUseCase, ListarPecaUseCase, ListarServicoUseCase {
+public class PecaService implements CadastrarPecaUseCase,
+        ObterPecaUseCase, ReporPecaUseCase, ListarPecaUseCase {
     private final PecaRepositoryPort pecaRepository;
-    private final ServicoRepositoryPort servicoRepository;
 
-    public PecaService(PecaRepositoryPort pecaRepository, ServicoRepositoryPort servicoRepository) {
+    public PecaService(PecaRepositoryPort pecaRepository) {
         this.pecaRepository = pecaRepository;
-        this.servicoRepository = servicoRepository;
     }
 
     public Peca CadastrarPeca(String descricao, Double valor, int quantidade) {
         validarCadastro(descricao, valor, quantidade);
-        return pecaRepository.salvar(new Peca(UUID.randomUUID(), descricao, valor, quantidade));
+        return pecaRepository.salvar(new Peca(descricao, valor, quantidade));
     }
 
-    public Servico CadastrarServico(String descricao, Double valor) {
-        if (descricao == null || descricao.isBlank() || valor == null || valor < 0) throw new IllegalArgumentException("Dados do serviço inválidos");
-        return servicoRepository.salvar(new Servico(UUID.randomUUID(), descricao, valor));
-    }
-
-    public Peca ObtemPeca(UUID id, int quantidadeBaixar) {
+    public Peca ObtemPeca(int id, int quantidadeBaixar) {
         if (quantidadeBaixar <= 0) throw new IllegalArgumentException("Quantidade para baixa deve ser positiva");
         Peca peca = buscaPeca(id);
         if (peca.getQuantidade() < quantidadeBaixar) throw new IllegalStateException("Estoque insuficiente");
@@ -37,14 +30,14 @@ public class PecaService implements CadastrarPecaUseCase, CadastrarServicoUseCas
         return pecaRepository.salvar(peca);
     }
 
-    private Peca buscaPeca(UUID id) {
+    private Peca buscaPeca(int id) {
         return pecaRepository.buscarPorId(id).orElseThrow(() -> new IllegalArgumentException("Peça não encontrada"));
     }
     private void validarCadastro(String descricao, Double valor, int quantidade) {
         if (descricao == null || descricao.isBlank() || valor == null || valor < 0 || quantidade < 0) throw new IllegalArgumentException("Dados da peça inválidos");
     }
 
-    public Peca reporEstoque(UUID pecaID, int quantidadeRepor) {
+    public Peca reporEstoque(int pecaID, int quantidadeRepor) {
         if (quantidadeRepor <= 0) throw new IllegalArgumentException("Quantidade para repor deve ser positiva");
         Peca peca = buscaPeca(pecaID);
         peca.atualizarQuantidade(peca.getQuantidade() + quantidadeRepor);
@@ -55,11 +48,5 @@ public class PecaService implements CadastrarPecaUseCase, CadastrarServicoUseCas
     public List<Peca> listarPecas() {
         List<Peca> pecas = pecaRepository.listarPecas();
         return pecas;
-    }
-
-    @Override
-    public List<Servico> listarServico() {
-        List<Servico> servicos = servicoRepository.listarServicos();
-        return servicos;
     }
 }

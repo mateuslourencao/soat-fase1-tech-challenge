@@ -5,7 +5,7 @@ import com.oficina.estoque.domain.model.Peca;
 import java.util.UUID;
 
 public record PecaResponseDTO(
-        UUID id,
+        int id,
         String descricao,
         double valor,
         int quantidade

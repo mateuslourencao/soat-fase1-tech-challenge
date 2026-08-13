@@ -5,9 +5,9 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.UUID;
 
-public record ReporPecaDTO(
+public record ObterPecaRequestDTO(
         @NotBlank(message = "O id da peca e obrigatorio")
-        UUID id,
+        int id,
         @PositiveOrZero(message = "A quantidade da peca nao pode ser negativa")
         int quantidade
 ) {

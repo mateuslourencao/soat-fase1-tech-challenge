@@ -30,7 +30,7 @@ public class ClienteConfig {
     }
 
     @Bean
-    public RemoverClienteUseCase deletarClienteUseCase(ClienteRepositoryPort repositorio) {
+    public RemoverClienteUseCase removerClienteUseCase(ClienteRepositoryPort repositorio) {
         return new RemoverClienteService(repositorio);
     }
 }

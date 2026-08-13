@@ -7,5 +7,5 @@ import com.oficina.manutencao.domain.model.PecasNecessarias;
 import java.util.List;
 
 public interface AtualizarItensOrdemDeServicoUseCase {
-    OrdemDeServico AtualizarOrdemDeServico(int ordemDeServicoID, List<PecasNecessarias> pecasNecessarias, List<Servico> servicos);
+    OrdemDeServico atualizarItensOrdemDeServico(int ordemDeServicoID, List<PecasNecessarias> pecasNecessarias, List<Servico> servicos);
 }

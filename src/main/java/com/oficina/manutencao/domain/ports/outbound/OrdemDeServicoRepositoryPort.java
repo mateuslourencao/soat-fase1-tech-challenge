@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface OrdemDeServicoRepositoryPort {
     OrdemDeServico salvar(OrdemDeServico ordemDeServico);
     Optional<OrdemDeServico> buscarPorId(int id);
-    List<OrdemDeServico> listarOrdensDeServico();
+    List<OrdemDeServico> listarTodos();
 }

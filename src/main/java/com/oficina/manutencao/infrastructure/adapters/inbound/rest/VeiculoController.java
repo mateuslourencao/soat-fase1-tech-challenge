@@ -40,11 +40,8 @@ public class VeiculoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VeiculoResponseDTO>> listar() {
-        List<VeiculoResponseDTO> veiculos = listarVeiculos.listarVeiculos().stream()
-                .map(this::converterParaDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(veiculos);
+    public ResponseEntity<List<Veiculo>> listar() {
+        return ResponseEntity.ok(listarVeiculos.listarVeiculos());
     }
 
     @GetMapping("/{placa}")

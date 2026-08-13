@@ -4,6 +4,6 @@ import com.oficina.manutencao.domain.model.OrdemDeServico;
 
 import java.util.List;
 
-public interface ListarOrdemDeServicoUseCase {
-    List<OrdemDeServico> listarOrdemDeServico();
+public interface ListarOrdensDeServicoUseCase {
+    List<OrdemDeServico> listarOrdensDeServico();
 }

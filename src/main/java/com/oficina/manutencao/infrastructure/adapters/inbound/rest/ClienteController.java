@@ -39,11 +39,8 @@ public class ClienteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClienteResponseDTO>> listar() {
-        List<ClienteResponseDTO> clientes = listarClientes.listarClientes().stream()
-                .map(this::converterParaDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(clientes);
+    public ResponseEntity<List<Cliente>> listar() {
+        return ResponseEntity.ok(listarClientes.listarClientes());
     }
 
     @GetMapping("/{documento}")

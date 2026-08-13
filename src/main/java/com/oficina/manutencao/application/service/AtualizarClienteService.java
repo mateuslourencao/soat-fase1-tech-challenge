@@ -4,8 +4,6 @@ import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.ports.inbound.AtualizarClienteUseCase;
 import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
 
-import java.util.UUID;
-
 public class AtualizarClienteService implements AtualizarClienteUseCase {
     private final ClienteRepositoryPort clienteRepositoryPort;
 
@@ -14,15 +12,14 @@ public class AtualizarClienteService implements AtualizarClienteUseCase {
     }
 
     @Override
-    public Cliente atualizarCliente(UUID id, Cliente cliente) {
-        Cliente existente = clienteRepositoryPort.buscarPorId(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado.")); // Ideal usar sua exceção de negócio
+    public Cliente atualizarCliente(String documento, Cliente cliente) {
+        Cliente existente = clienteRepositoryPort.buscarPorId(documento)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
 
         Cliente clienteParaSalvar = new Cliente(
-                existente.getId(),
+                existente.getDocumento(),
                 cliente.getNome(),
                 cliente.getEmail(),
-                cliente.getDocumento(),
                 cliente.getTelefone()
         );
 

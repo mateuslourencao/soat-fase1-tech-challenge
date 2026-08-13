@@ -4,7 +4,6 @@ import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.S
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Entity
 @Table(name = "ordens_de_servico_servicos")
@@ -29,7 +28,7 @@ public class OrdemDeServicoServicosEntity {
     protected OrdemDeServicoServicosEntity() {}
 
     public OrdemDeServicoServicosEntity(
-            UUID ordemDeServicoId,
+            int ordemDeServicoId,
             ServicoEntity servico,
             BigDecimal valorCobrado
     ) {

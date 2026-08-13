@@ -3,8 +3,6 @@ package com.oficina.estoque.infrastructure.adapters.inbound.rest.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
-import java.util.UUID;
-
 public record ReporPecaRequestDTO(
         @NotBlank(message = "O id da peca e obrigatorio")
         int id,

@@ -1,12 +1,10 @@
 package com.oficina.estoque.domain.model;
 
-import java.util.UUID;
-
 public class Peca {
 
     private int id;
-    private String descricao;
-    private double valor;
+    private final String descricao;
+    private final double valor;
     private int quantidade;
 
     public Peca(String descricao, double valor, int quantidade) {

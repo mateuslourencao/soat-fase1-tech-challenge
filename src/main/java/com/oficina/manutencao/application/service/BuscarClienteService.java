@@ -4,8 +4,6 @@ import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.ports.inbound.BuscarClienteUseCase;
 import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
 
-import java.util.UUID;
-
 public class BuscarClienteService implements BuscarClienteUseCase {
     private final ClienteRepositoryPort clienteRepositoryPort;
 
@@ -14,7 +12,7 @@ public class BuscarClienteService implements BuscarClienteUseCase {
     }
 
     @Override
-    public Cliente buscarCliente(UUID id) {
-        return clienteRepositoryPort.buscarPorId(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+    public Cliente buscarCliente(String documento) {
+        return clienteRepositoryPort.buscarPorId(documento).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
     }
 }

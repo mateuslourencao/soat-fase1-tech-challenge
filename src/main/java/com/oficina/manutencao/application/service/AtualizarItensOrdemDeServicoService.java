@@ -6,14 +6,14 @@ import com.oficina.manutencao.domain.model.PecasNecessarias;
 import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
+
 import java.util.List;
-import java.util.UUID;
 
 public class AtualizarItensOrdemDeServicoService implements AtualizarItensOrdemDeServicoUseCase {
     private final OrdemDeServicoRepositoryPort repositorio;
     public AtualizarItensOrdemDeServicoService(OrdemDeServicoRepositoryPort repositorio) { this.repositorio = repositorio; }
 
-    public OrdemDeServico AtualizarOrdemDeServico(UUID id, List<PecasNecessarias> pecasNecessarias, List<Servico> servicos) {
+    public OrdemDeServico AtualizarOrdemDeServico(int id, List<PecasNecessarias> pecasNecessarias, List<Servico> servicos) {
         List<PecasNecessarias> pecas = pecasNecessarias == null ? List.of() : pecasNecessarias;
         List<Servico> servicosOrcados = servicos == null ? List.of() : servicos;
         if (pecas.isEmpty() && servicosOrcados.isEmpty()) {

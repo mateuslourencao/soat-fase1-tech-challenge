@@ -2,11 +2,11 @@ package com.oficina.manutencao.infrastructure.adapters.outbound.persistence.enti
 
 import com.oficina.manutencao.domain.model.StatusOS;
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "ordens_de_servico")
@@ -14,13 +14,13 @@ public class OrdemDeServicoEntity {
 
     @Id
     @Column(name = "id", length = 36)
-    private UUID id;
+    private int id;
 
-    @Column(name = "id_cliente", nullable = false, length = 36)
-    private UUID idCliente;
+    @Column(name = "documento_cliente", nullable = false, length = 255)
+    private String documentoCliente;
 
-    @Column(name = "id_veiculo", nullable = false, length = 36)
-    private UUID idVeiculo;
+    @Column(name = "placa_veiculo", nullable = false, length = 255)
+    private String placaVeiculo;
 
     @Column(name = "orcamento", precision = 10, scale = 2)
     private BigDecimal orcamento;
@@ -49,9 +49,9 @@ public class OrdemDeServicoEntity {
 
     public OrdemDeServicoEntity() {}
 
-    public UUID getId() { return id; }
-    public UUID getIdCliente() { return idCliente; }
-    public UUID getIdVeiculo() { return idVeiculo; }
+    public int getId() { return id; }
+    public String getDocumentoCliente() { return documentoCliente; }
+    public String getPlacaVeiculo() { return placaVeiculo; }
     public BigDecimal getOrcamento() { return orcamento; }
     public StatusOS getStatus() { return status; }
     public LocalDateTime getDataCriacao() { return dataCriacao; }
@@ -61,9 +61,9 @@ public class OrdemDeServicoEntity {
     public List<PecaNecessariaEntity> getPecasNecessarias() { return pecasNecessarias; }
     public List<OrdemDeServicoServicosEntity> getServicos() { return servicos; }
 
-    public void setId(UUID id) { this.id = id; }
-    public void setIdCliente(UUID idCliente) { this.idCliente = idCliente; }
-    public void setIdVeiculo(UUID idVeiculo) { this.idVeiculo = idVeiculo; }
+    public void setId(int id) { this.id = id; }
+    public void setDocumentoCliente(String documentoCliente) { this.documentoCliente = documentoCliente; }
+    public void setPlacaVeiculo(String placaVeiculo) { this.placaVeiculo = placaVeiculo; }
     public void setOrcamento(BigDecimal orcamento) { this.orcamento = orcamento; }
     public void setStatus(StatusOS status) { this.status = status; }
     public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }

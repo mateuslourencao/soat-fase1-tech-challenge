@@ -1,6 +1,5 @@
 package com.oficina.manutencao.infrastructure.adapters.outbound.persistence;
 
-import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.model.Veiculo;
 import com.oficina.manutencao.domain.ports.outbound.VeiculoRepositoryPort;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.mapper.VeiculoPersistenceMapper;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,13 +26,13 @@ public class VeiculoJpaAdapter implements VeiculoRepositoryPort {
     }
 
     @Override
-    public Optional<Veiculo> buscarPorId(UUID id) {
-        return repository.findById(id).map(mapper::toDomain);
+    public Optional<Veiculo> buscarPorId(String placa) {
+        return repository.findById(placa).map(mapper::toDomain);
     }
 
     @Override
     public List<Veiculo> listarTodos() { return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList()); }
 
     @Override
-    public void remover(UUID id) {repository.deleteById(id);}
+    public void remover(String placa) {repository.deleteById(placa);}
 }

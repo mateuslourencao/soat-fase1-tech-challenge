@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/ordemdeservico")
@@ -26,7 +25,7 @@ class OrdemDeServicoController {
     @PostMapping
     public ResponseEntity<Void> criarOrdemDeServico(@Valid @RequestBody @NonNull OrdemDeServico request) {
         criarOrdemDeServico.criarOrdemDeServico(
-                new OrdemDeServico(UUID.randomUUID(), request.getIdCliente(), request.getIdVeiculo(), request.getDescricaoQueixas())
+                new OrdemDeServico(request.getDocumentoCliente(), request.getPlacaVeiculo(), request.getDescricaoQueixas())
         );
         return ResponseEntity.ok().build();
     }

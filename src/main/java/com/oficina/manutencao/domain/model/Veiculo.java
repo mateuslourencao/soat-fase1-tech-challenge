@@ -1,24 +1,19 @@
 package com.oficina.manutencao.domain.model;
 
-import java.util.UUID;
-
 public class Veiculo {
 
-    private UUID id;
-    private String placa;
-    private String marca;
-    private String modelo;
-    private int ano;
+    private final String placa;
+    private final String marca;
+    private final String modelo;
+    private final int ano;
 
-    public Veiculo(UUID id, String placa, String marca, String modelo, int ano) {
-        this.id = id;
+    public Veiculo(String placa, String marca, String modelo, int ano) {
         this.placa = placa;
         this.marca = marca;
         this.modelo = modelo;
         this.ano = ano;
     }
 
-    public UUID getId() { return id; }
     public String getPlaca() { return placa; }
     public String getMarca() { return marca; }
     public String getModelo() { return modelo; }

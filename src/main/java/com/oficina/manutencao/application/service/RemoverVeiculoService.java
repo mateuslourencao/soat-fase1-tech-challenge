@@ -1,10 +1,7 @@
 package com.oficina.manutencao.application.service;
 
-import com.oficina.manutencao.domain.model.Veiculo;
 import com.oficina.manutencao.domain.ports.inbound.RemoverVeiculoUseCase;
 import com.oficina.manutencao.domain.ports.outbound.VeiculoRepositoryPort;
-
-import java.util.UUID;
 
 public class RemoverVeiculoService implements RemoverVeiculoUseCase {
     private final VeiculoRepositoryPort veiculoRepositoryPort;
@@ -14,8 +11,8 @@ public class RemoverVeiculoService implements RemoverVeiculoUseCase {
     }
 
     @Override
-    public void removerVeiculo(UUID id){
-        veiculoRepositoryPort.buscarPorId(id).orElseThrow(() -> new RuntimeException("Veiculo não encontrado."));
-        veiculoRepositoryPort.remover(id);
+    public void removerVeiculo(String placa){
+        veiculoRepositoryPort.buscarPorId(placa).orElseThrow(() -> new RuntimeException("Veiculo não encontrado."));
+        veiculoRepositoryPort.remover(placa);
     }
 }

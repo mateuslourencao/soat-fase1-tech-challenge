@@ -1,6 +1,5 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
-import com.oficina.manutencao.application.service.*;
 import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ClienteRequestDTO;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,7 +33,7 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<ClienteResponseDTO> criar(@RequestBody @Valid ClienteRequestDTO request) {
-        Cliente cliente = new Cliente(UUID.randomUUID(), request.nome(), request.email(), request.documento(), request.telefone());
+        Cliente cliente = new Cliente(request.documento(), request.nome(), request.email(), request.telefone());
         Cliente salvo = cadastrarCliente.cadastrarCliente(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(salvo));
     }
@@ -48,27 +46,26 @@ public class ClienteController {
         return ResponseEntity.ok(clientes);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable UUID id) {
-        Cliente cliente = buscarCliente.buscarCliente(id);
+    @GetMapping("/{documento}")
+    public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable String documento) {
+        Cliente cliente = buscarCliente.buscarCliente(documento);
         return ResponseEntity.ok(converterParaDTO(cliente));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable UUID id, @RequestBody @Valid ClienteRequestDTO request) {
-        Cliente clienteAtualizado = new Cliente(id, request.nome(), request.email(), request.documento(), request.telefone());
-        Cliente salvo = atualizarCliente.atualizarCliente(id, clienteAtualizado);
+    @PutMapping("/{documento}")
+    public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable String documento, @RequestBody @Valid ClienteRequestDTO request) {
+        Cliente clienteAtualizado = new Cliente(documento, request.nome(), request.email(), request.telefone());
+        Cliente salvo = atualizarCliente.atualizarCliente(documento, clienteAtualizado);
         return ResponseEntity.ok(converterParaDTO(salvo));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remover(@PathVariable UUID id) {
-        removerCliente.removerCliente(id);
+    @DeleteMapping("/{documento}")
+    public ResponseEntity<Void> remover(@PathVariable String documento) {
+        removerCliente.removerCliente(documento);
         return ResponseEntity.noContent().build();
     }
 
-    // Método auxiliar interno para conversão
     private ClienteResponseDTO converterParaDTO(Cliente cliente) {
-        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getEmail(), cliente.getDocumento(), cliente.getTelefone());
+        return new ClienteResponseDTO(cliente.getDocumento(), cliente.getNome(), cliente.getEmail(), cliente.getTelefone());
     }
 }

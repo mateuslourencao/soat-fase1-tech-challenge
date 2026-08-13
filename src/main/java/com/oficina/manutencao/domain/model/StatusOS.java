@@ -6,5 +6,5 @@ public enum StatusOS {
     AGUARDANDO_APROVACAO,
     EM_EXECUCAO,
     FINALIZADA,
-    ENTREGUE;
+    ENTREGUE
 }

@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class OrdemDeServicoJpaAdapter
-        implements OrdemDeServicoRepositoryPort {
+public class OrdemDeServicoJpaAdapter implements OrdemDeServicoRepositoryPort {
 
     private final OrdemDeServicoJpaRepository repository;
     private final OrdemDeServicoPersistenceMapper mapper;
@@ -37,7 +36,7 @@ public class OrdemDeServicoJpaAdapter
     }
 
     @Override
-    public List<OrdemDeServico> listarOrdensDeServico() {
+    public List<OrdemDeServico> listarTodos() {
         List<OrdemDeServico> ordemDeServicos = repository.findAll().stream().map(mapper::toDomain).toList();
         return ordemDeServicos;
     }

@@ -13,13 +13,13 @@ import java.util.List;
 public class OrdemDeServicoEntity {
 
     @Id
-    @Column(name = "id", length = 36)
+    @Column(name = "id")
     private int id;
 
-    @Column(name = "documento_cliente", nullable = false, length = 255)
+    @Column(name = "documento_cliente", nullable = false, length = 20)
     private String documentoCliente;
 
-    @Column(name = "placa_veiculo", nullable = false, length = 255)
+    @Column(name = "placa_veiculo", nullable = false, length = 10)
     private String placaVeiculo;
 
     @Column(name = "orcamento", precision = 10, scale = 2)

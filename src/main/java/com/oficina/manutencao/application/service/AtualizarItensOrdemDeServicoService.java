@@ -13,7 +13,7 @@ public class AtualizarItensOrdemDeServicoService implements AtualizarItensOrdemD
     private final OrdemDeServicoRepositoryPort repositorio;
     public AtualizarItensOrdemDeServicoService(OrdemDeServicoRepositoryPort repositorio) { this.repositorio = repositorio; }
 
-    public OrdemDeServico AtualizarOrdemDeServico(int id, List<PecasNecessarias> pecasNecessarias, List<Servico> servicos) {
+    public OrdemDeServico atualizarItensOrdemDeServico(int id, List<PecasNecessarias> pecasNecessarias, List<Servico> servicos) {
         List<PecasNecessarias> pecas = pecasNecessarias == null ? List.of() : pecasNecessarias;
         List<Servico> servicosOrcados = servicos == null ? List.of() : servicos;
         if (pecas.isEmpty() && servicosOrcados.isEmpty()) {

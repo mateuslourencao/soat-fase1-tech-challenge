@@ -27,14 +27,14 @@ public class ClienteJpaAdapter implements ClienteRepositoryPort {
     }
 
     @Override
-    public Optional<Cliente> buscarPorId(UUID id) {
-        return repository.findById(id).map(mapper::toDomain);
+    public Optional<Cliente> buscarPorId(String documento) {
+        return repository.findById(documento).map(mapper::toDomain);
     }
 
     @Override
     public List<Cliente> listarTodos() { return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList()); }
 
     @Override
-    public void remover(UUID id) {repository.deleteById(id);}
+    public void remover(String documento) {repository.deleteById(documento);}
 
 }

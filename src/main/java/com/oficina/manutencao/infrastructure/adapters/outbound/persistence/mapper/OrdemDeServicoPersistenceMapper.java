@@ -30,8 +30,8 @@ public class OrdemDeServicoPersistenceMapper {
     public OrdemDeServicoEntity toEntity(OrdemDeServico ordem) {
         OrdemDeServicoEntity entity = new OrdemDeServicoEntity();
         entity.setId(ordem.getId());
-        entity.setIdCliente(ordem.getIdCliente());
-        entity.setIdVeiculo(ordem.getIdVeiculo());
+        entity.setDocumentoCliente(ordem.getDocumentoCliente());
+        entity.setPlacaVeiculo(ordem.getPlacaVeiculo());
         entity.setOrcamento(BigDecimal.valueOf(ordem.getOrcamento()));
         entity.setStatus(ordem.getStatus());
         entity.setDataCriacao(ordem.getDataCriacao());
@@ -50,7 +50,7 @@ public class OrdemDeServicoPersistenceMapper {
     public OrdemDeServico toDomain(OrdemDeServicoEntity entity) {
         List<PecasNecessarias> pecas = entity.getPecasNecessarias().stream().map(this::toPecaDomain).toList();
         List<Servico> servicos = entity.getServicos().stream().map(this::toServicoDomain).toList();
-        return new OrdemDeServico(entity.getId(), entity.getIdCliente(), entity.getIdVeiculo(), servicos, pecas,
+        return new OrdemDeServico(entity.getId(), entity.getDocumentoCliente(), entity.getPlacaVeiculo(), servicos, pecas,
                 entity.getOrcamento() == null ? 0D : entity.getOrcamento().doubleValue(), entity.getStatus(),
                 entity.getDataCriacao(), entity.getDataAtualizacao(), entity.getDescricaoQueixas(), entity.getDiagnosticos());
     }

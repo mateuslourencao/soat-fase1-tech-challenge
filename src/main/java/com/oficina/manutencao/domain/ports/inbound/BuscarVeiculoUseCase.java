@@ -5,5 +5,5 @@ import com.oficina.manutencao.domain.model.Veiculo;
 import java.util.UUID;
 
 public interface BuscarVeiculoUseCase {
-    Veiculo buscarVeiculo(UUID id);
+    Veiculo buscarVeiculo(String placa);
 }

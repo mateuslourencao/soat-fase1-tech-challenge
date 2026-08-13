@@ -35,7 +35,7 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<ClienteResponseDTO> criar(@RequestBody @Valid ClienteRequestDTO request) {
-        Cliente cliente = new Cliente(UUID.randomUUID(), request.nome(), request.email(), request.documento(), request.telefone());
+        Cliente cliente = new Cliente(request.documento(), request.nome(), request.email(), request.telefone());
         Cliente salvo = cadastrarCliente.cadastrarCliente(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(salvo));
     }
@@ -49,26 +49,26 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable UUID id) {
-        Cliente cliente = buscarCliente.buscarCliente(id);
+    public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable String documento) {
+        Cliente cliente = buscarCliente.buscarCliente(documento);
         return ResponseEntity.ok(converterParaDTO(cliente));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable UUID id, @RequestBody @Valid ClienteRequestDTO request) {
-        Cliente clienteAtualizado = new Cliente(id, request.nome(), request.email(), request.documento(), request.telefone());
-        Cliente salvo = atualizarCliente.atualizarCliente(id, clienteAtualizado);
+    public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable String documento, @RequestBody @Valid ClienteRequestDTO request) {
+        Cliente clienteAtualizado = new Cliente(documento, request.nome(), request.email(), request.telefone());
+        Cliente salvo = atualizarCliente.atualizarCliente(documento, clienteAtualizado);
         return ResponseEntity.ok(converterParaDTO(salvo));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remover(@PathVariable UUID id) {
-        removerCliente.removerCliente(id);
+    public ResponseEntity<Void> remover(@PathVariable String documento) {
+        removerCliente.removerCliente(documento);
         return ResponseEntity.noContent().build();
     }
 
     // Método auxiliar interno para conversão
     private ClienteResponseDTO converterParaDTO(Cliente cliente) {
-        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getEmail(), cliente.getDocumento(), cliente.getTelefone());
+        return new ClienteResponseDTO(cliente.getDocumento(), cliente.getNome(), cliente.getEmail(), cliente.getTelefone());
     }
 }

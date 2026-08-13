@@ -5,5 +5,5 @@ import com.oficina.manutencao.domain.model.Cliente;
 import java.util.UUID;
 
 public interface AtualizarClienteUseCase {
-    Cliente atualizarCliente(UUID id, Cliente cliente);
+    Cliente atualizarCliente(String documento, Cliente cliente);
 }

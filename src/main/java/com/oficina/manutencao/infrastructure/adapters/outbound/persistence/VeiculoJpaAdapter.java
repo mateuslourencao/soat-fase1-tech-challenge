@@ -28,13 +28,13 @@ public class VeiculoJpaAdapter implements VeiculoRepositoryPort {
     }
 
     @Override
-    public Optional<Veiculo> buscarPorId(UUID id) {
-        return repository.findById(id).map(mapper::toDomain);
+    public Optional<Veiculo> buscarPorId(String placa) {
+        return repository.findById(placa).map(mapper::toDomain);
     }
 
     @Override
     public List<Veiculo> listarTodos() { return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList()); }
 
     @Override
-    public void remover(UUID id) {repository.deleteById(id);}
+    public void remover(String placa) {repository.deleteById(placa);}
 }

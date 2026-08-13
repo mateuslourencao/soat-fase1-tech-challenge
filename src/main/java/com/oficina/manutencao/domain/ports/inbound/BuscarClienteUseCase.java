@@ -5,5 +5,5 @@ import com.oficina.manutencao.domain.model.Cliente;
 import java.util.UUID;
 
 public interface BuscarClienteUseCase {
-    Cliente buscarCliente(UUID id);
+    Cliente buscarCliente(String documento);
 }

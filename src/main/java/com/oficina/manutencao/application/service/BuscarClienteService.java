@@ -14,7 +14,7 @@ public class BuscarClienteService implements BuscarClienteUseCase {
     }
 
     @Override
-    public Cliente buscarCliente(UUID id) {
-        return clienteRepositoryPort.buscarPorId(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+    public Cliente buscarCliente(String documento) {
+        return clienteRepositoryPort.buscarPorId(documento).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
     }
 }

@@ -1,9 +1,8 @@
 package com.oficina.manutencao.infrastructure.adapters.outbound.persistence.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
@@ -11,8 +10,6 @@ import java.util.UUID;
 @Table(name = "veiculos")
 public class VeiculoEntity {
     @Id
-    private UUID id;
-
     @Column(nullable = false, unique = true, length = 10)
     private String placa;
 
@@ -27,15 +24,13 @@ public class VeiculoEntity {
 
     protected VeiculoEntity() {}
 
-    public VeiculoEntity(UUID id, String placa, String marca, String modelo, int ano) {
-        this.id = id;
+    public VeiculoEntity(String placa, String marca, String modelo, int ano) {
         this.placa = placa;
         this.marca = marca;
         this.modelo = modelo;
         this.ano = ano;
     }
 
-    public UUID getId() { return id; }
     public String getPlaca() { return placa; }
     public String getMarca() { return marca; }
     public String getModelo() { return modelo; }

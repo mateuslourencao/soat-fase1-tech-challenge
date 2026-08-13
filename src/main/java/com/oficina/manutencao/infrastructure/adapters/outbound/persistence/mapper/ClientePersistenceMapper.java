@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClientePersistenceMapper {
     public ClienteEntity toEntity(Cliente cliente) {
-        return new ClienteEntity(cliente.getId(), cliente.getNome(), cliente.getEmail(), cliente.getDocumento(), cliente.getTelefone());
+        return new ClienteEntity(cliente.getDocumento(), cliente.getNome(), cliente.getEmail(), cliente.getTelefone());
     }
 
     public Cliente toDomain(ClienteEntity entity) {
-        return new Cliente(entity.getId(), entity.getNome(), entity.getEmail(), entity.getDocumento(), entity.getTelefone());
+        return new Cliente(entity.getDocumento(), entity.getNome(), entity.getEmail(), entity.getTelefone());
     }
 }

@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class VeiculoPersistenceMapper {
     public VeiculoEntity toEntity(Veiculo veiculo) {
-        return new VeiculoEntity(veiculo.getId(), veiculo.getPlaca(), veiculo.getMarca(), veiculo.getModelo(), veiculo.getAno());
+        return new VeiculoEntity(veiculo.getPlaca(), veiculo.getMarca(), veiculo.getModelo(), veiculo.getAno());
     }
 
     public Veiculo toDomain(VeiculoEntity entity) {
-        return new Veiculo(entity.getId(), entity.getPlaca(), entity.getMarca(), entity.getModelo(), entity.getAno());
+        return new Veiculo(entity.getPlaca(), entity.getMarca(), entity.getModelo(), entity.getAno());
     }
 }

@@ -26,7 +26,7 @@ class OrdemDeServicoController {
     @PostMapping
     public ResponseEntity<Void> criarOrdemDeServico(@Valid @RequestBody @NonNull OrdemDeServico request) {
         criarOrdemDeServico.criarOrdemDeServico(
-                new OrdemDeServico(UUID.randomUUID(), request.getIdCliente(), request.getIdVeiculo(), request.getDescricaoQueixas())
+                new OrdemDeServico(UUID.randomUUID(), request.getDocumentoCliente(), request.getPlacaVeiculo(), request.getDescricaoQueixas())
         );
         return ResponseEntity.ok().build();
     }

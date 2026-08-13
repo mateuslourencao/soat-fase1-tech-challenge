@@ -36,7 +36,7 @@ public class VeiculoController {
 
     @PostMapping
     public ResponseEntity<VeiculoResponseDTO> criar(@RequestBody @Valid VeiculoRequestDTO request) {
-        Veiculo veiculo = new Veiculo(UUID.randomUUID(), request.placa(), request.marca(), request.modelo(), request.ano());
+        Veiculo veiculo = new Veiculo(request.placa(), request.marca(), request.modelo(), request.ano());
         Veiculo salvo = cadastrarVeiculo.cadastrarVeiculo(veiculo);
         return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(salvo));
     }
@@ -50,25 +50,25 @@ public class VeiculoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VeiculoResponseDTO> buscarPorId(@PathVariable UUID id) {
-        Veiculo veiculo = buscarVeiculo.buscarVeiculo(id);
+    public ResponseEntity<VeiculoResponseDTO> buscarPorId(@PathVariable String placa) {
+        Veiculo veiculo = buscarVeiculo.buscarVeiculo(placa);
         return ResponseEntity.ok(converterParaDTO(veiculo));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VeiculoResponseDTO> atualizar(@PathVariable UUID id, @RequestBody @Valid VeiculoRequestDTO request) {
-        Veiculo veiculoAtualizado = new Veiculo(null, request.placa(), request.marca(), request.modelo(), request.ano());
-        Veiculo salvo = atualizarVeiculo.atualizarVeiculo(id, veiculoAtualizado);
+    public ResponseEntity<VeiculoResponseDTO> atualizar(@PathVariable String placa, @RequestBody @Valid VeiculoRequestDTO request) {
+        Veiculo veiculoAtualizado = new Veiculo(placa, request.marca(), request.modelo(), request.ano());
+        Veiculo salvo = atualizarVeiculo.atualizarVeiculo(placa, veiculoAtualizado);
         return ResponseEntity.ok(converterParaDTO(salvo));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remover(@PathVariable UUID id) {
-        removerVeiculo.removerVeiculo(id);
+    public ResponseEntity<Void> remover(@PathVariable String placa) {
+        removerVeiculo.removerVeiculo(placa);
         return ResponseEntity.noContent().build();
     }
 
     private VeiculoResponseDTO converterParaDTO(Veiculo veiculo) {
-        return new VeiculoResponseDTO(veiculo.getId(), veiculo.getPlaca(), veiculo.getMarca(), veiculo.getModelo(), veiculo.getAno());
+        return new VeiculoResponseDTO(veiculo.getPlaca(), veiculo.getMarca(), veiculo.getModelo(), veiculo.getAno());
     }
 }

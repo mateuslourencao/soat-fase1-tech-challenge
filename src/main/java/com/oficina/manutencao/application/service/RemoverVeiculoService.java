@@ -14,8 +14,8 @@ public class RemoverVeiculoService implements RemoverVeiculoUseCase {
     }
 
     @Override
-    public void removerVeiculo(UUID id){
-        veiculoRepositoryPort.buscarPorId(id).orElseThrow(() -> new RuntimeException("Veiculo não encontrado."));
-        veiculoRepositoryPort.remover(id);
+    public void removerVeiculo(String placa){
+        veiculoRepositoryPort.buscarPorId(placa).orElseThrow(() -> new RuntimeException("Veiculo não encontrado."));
+        veiculoRepositoryPort.remover(placa);
     }
 }

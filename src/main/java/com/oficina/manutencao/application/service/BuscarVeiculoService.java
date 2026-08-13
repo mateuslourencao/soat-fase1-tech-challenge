@@ -14,7 +14,7 @@ public class BuscarVeiculoService implements BuscarVeiculoUseCase {
     }
 
     @Override
-    public Veiculo buscarVeiculo(UUID id) {
-        return veiculoRepositoryPort.buscarPorId(id).orElseThrow(() -> new RuntimeException("Veiculo não encontrado."));
+    public Veiculo buscarVeiculo(String placa) {
+        return veiculoRepositoryPort.buscarPorId(placa).orElseThrow(() -> new RuntimeException("Veiculo não encontrado."));
     }
 }

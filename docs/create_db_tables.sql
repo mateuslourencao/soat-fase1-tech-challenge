@@ -6,21 +6,19 @@ USE oficina;
 
 -- Adicionando UNIQUE
 CREATE TABLE clientes (
-    id BINARY(36) NOT NULL,
     nome VARCHAR(255),
     email VARCHAR(255),
-    documento VARCHAR(255) UNIQUE, -- Evita duplicidade
+    documento VARCHAR(255) NOT NULL UNIQUE,
     telefone VARCHAR(255),
-    PRIMARY KEY (id)
+    PRIMARY KEY (documento)
 ) ENGINE=InnoDB;
 
 CREATE TABLE veiculos (
-    id BINARY(36) NOT NULL,
-    placa VARCHAR(255) UNIQUE,       -- Evita duplicidade
+    placa VARCHAR(255) NOT NULL UNIQUE,
     marca VARCHAR(255),
     modelo VARCHAR(255),
     ano INT,
-    PRIMARY KEY (id)
+    PRIMARY KEY (placa)
 ) ENGINE=InnoDB;
 
 CREATE TABLE pecas (
@@ -40,8 +38,8 @@ CREATE TABLE servicos (
 
 CREATE TABLE ordens_de_servico (
     id BINARY(36) NOT NULL,
-    id_cliente BINARY(36) NOT NULL,
-    id_veiculo BINARY(36) NOT NULL,
+    documento_cliente VARCHAR(255) NOT NULL,
+    placa_veiculo VARCHAR(255) NOT NULL,
     orcamento DECIMAL(10,2),
     status VARCHAR(50),
     data_criacao DATETIME,
@@ -50,16 +48,16 @@ CREATE TABLE ordens_de_servico (
     diagnosticos VARCHAR(255),
     PRIMARY KEY (id),
     CONSTRAINT fk_ordens_de_servico_clientes
-        FOREIGN KEY (id_cliente) REFERENCES clientes (id),
+        FOREIGN KEY (documento_cliente) REFERENCES clientes (documento),
     CONSTRAINT fk_ordens_de_servico_veiculos
-        FOREIGN KEY (id_veiculo) REFERENCES veiculos (id)
+        FOREIGN KEY (placa_veiculo) REFERENCES veiculos (placa)
 ) ENGINE=InnoDB;
 
 -- Adicionando o Valor Histórico
 CREATE TABLE ordens_de_servico_servicos (
     ordem_de_servico_id BINARY(36) NOT NULL,
     servico_id BINARY(36) NOT NULL,
-    valor_cobrado DECIMAL(10,2) NOT NULL, -- Salva o preço no dia da OS
+    valor_cobrado DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (ordem_de_servico_id, servico_id),
     CONSTRAINT fk_os_servicos_ordens_de_servico FOREIGN KEY (ordem_de_servico_id) REFERENCES ordens_de_servico (id),
     CONSTRAINT fk_os_servicos_servicos FOREIGN KEY (servico_id) REFERENCES servicos (id)
@@ -69,7 +67,7 @@ CREATE TABLE pecas_necessarias (
     ordem_de_servico_id BINARY(36) NOT NULL,
     peca_id BINARY(36) NOT NULL,
     quantidade INT NOT NULL,
-    valor_unitario DECIMAL(10,2) NOT NULL, -- Salva o preço no dia da OS
+    valor_unitario DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (ordem_de_servico_id, peca_id),
     CONSTRAINT fk_pecas_necessarias_ordens_de_servico FOREIGN KEY (ordem_de_servico_id) REFERENCES ordens_de_servico (id),
     CONSTRAINT fk_pecas_necessarias_pecas FOREIGN KEY (peca_id) REFERENCES pecas (id)

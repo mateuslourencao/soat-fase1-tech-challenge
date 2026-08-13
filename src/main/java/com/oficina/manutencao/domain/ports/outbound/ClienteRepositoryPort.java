@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface ClienteRepositoryPort {
     Cliente salvar(Cliente cliente);
-    Optional<Cliente> buscarPorId(UUID id);
+    Optional<Cliente> buscarPorId(String documento);
     List<Cliente> listarTodos();
-    void remover(UUID id);
+    void remover(String documento);
 }

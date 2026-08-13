@@ -14,13 +14,12 @@ public class AtualizarVeiculoService implements AtualizarVeiculoUseCase {
     }
 
     @Override
-    public Veiculo atualizarVeiculo(UUID id, Veiculo veiculo){
-        Veiculo existente = veiculoRepositoryPort.buscarPorId(id)
+    public Veiculo atualizarVeiculo(String placa, Veiculo veiculo){
+        Veiculo existente = veiculoRepositoryPort.buscarPorId(placa)
                 .orElseThrow(() -> new RuntimeException("Veiculo não encontrado.")); // Ideal usar sua exceção de negócio
 
         Veiculo veiculoParaSalvar = new Veiculo(
-                existente.getId(),
-                veiculo.getPlaca(),
+                existente.getPlaca(),
                 veiculo.getMarca(),
                 veiculo.getModelo(),
                 veiculo.getAno()

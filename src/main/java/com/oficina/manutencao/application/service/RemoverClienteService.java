@@ -13,8 +13,8 @@ public class RemoverClienteService implements RemoverClienteUseCase {
     }
 
     @Override
-    public void removerCliente(UUID id){
-        clienteRepositoryPort.buscarPorId(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
-        clienteRepositoryPort.remover(id);
+    public void removerCliente(String documento){
+        clienteRepositoryPort.buscarPorId(documento).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+        clienteRepositoryPort.remover(documento);
     }
 }

@@ -5,5 +5,5 @@ import com.oficina.manutencao.domain.model.Veiculo;
 import java.util.UUID;
 
 public interface AtualizarVeiculoUseCase {
-    Veiculo atualizarVeiculo(UUID id, Veiculo veiculo);
+    Veiculo atualizarVeiculo(String placa, Veiculo veiculo);
 }

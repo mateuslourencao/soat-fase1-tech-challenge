@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface PecaRepositoryPort {
     Peca salvar(Peca peca);
-    Optional<Peca> buscarPorId(UUID id);
+    Optional<Peca> buscarPorId(int id);
 
     List<Peca> listarPecas();
 }

@@ -11,12 +11,12 @@ public class OrdemDeServicoServicosId implements Serializable {
     private UUID ordemDeServicoId;
 
     @Column(name = "servico_id")
-    private UUID servicoId;
+    private int servicoId;
 
     protected OrdemDeServicoServicosId() {
     }
 
-    public OrdemDeServicoServicosId(UUID ordemDeServicoId, UUID servicoId) {
+    public OrdemDeServicoServicosId(UUID ordemDeServicoId, int servicoId) {
         this.ordemDeServicoId = ordemDeServicoId;
         this.servicoId = servicoId;
     }

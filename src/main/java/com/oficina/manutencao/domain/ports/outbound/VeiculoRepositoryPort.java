@@ -4,7 +4,6 @@ import com.oficina.manutencao.domain.model.Veiculo;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface VeiculoRepositoryPort {
     Veiculo salvar(Veiculo veiculo);

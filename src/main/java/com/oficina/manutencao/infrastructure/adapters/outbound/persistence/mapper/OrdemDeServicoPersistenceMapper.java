@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class OrdemDeServicoPersistenceMapper {
@@ -55,9 +54,9 @@ public class OrdemDeServicoPersistenceMapper {
                 entity.getDataCriacao(), entity.getDataAtualizacao(), entity.getDescricaoQueixas(), entity.getDiagnosticos());
     }
 
-    private PecaNecessariaEntity toPecaEntity(UUID ordemId, PecasNecessarias peca) {
-        return new PecaNecessariaEntity(ordemId, pecaRepository.getReferenceById(peca.getPeca().getId()),
-                peca.getQuantidade(), BigDecimal.valueOf(peca.getValorUnitario()));
+    private PecaNecessariaEntity toPecaEntity(int ordemId, PecasNecessarias peca) {
+        return new PecaNecessariaEntity(ordemId, pecaRepository.getReferenceById(peca.peca().getId()),
+                peca.quantidade(), BigDecimal.valueOf(peca.getValorUnitario()));
     }
 
     private PecasNecessarias toPecaDomain(PecaNecessariaEntity entity) {
@@ -66,7 +65,7 @@ public class OrdemDeServicoPersistenceMapper {
         return new PecasNecessarias(pecaDomain, entity.getQuantidade());
     }
 
-    private OrdemDeServicoServicosEntity toServicoEntity(UUID ordemId, Servico servico) {
+    private OrdemDeServicoServicosEntity toServicoEntity(int ordemId, Servico servico) {
         return new OrdemDeServicoServicosEntity(ordemId, servicoRepository.getReferenceById(servico.getId()),
                 BigDecimal.valueOf(servico.getValor()));
     }

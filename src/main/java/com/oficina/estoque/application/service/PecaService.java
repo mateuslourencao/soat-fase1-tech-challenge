@@ -1,13 +1,13 @@
 package com.oficina.estoque.application.service;
 
 import com.oficina.estoque.domain.model.Peca;
-import com.oficina.estoque.domain.model.Servico;
-import com.oficina.estoque.domain.ports.inbound.*;
+import com.oficina.estoque.domain.ports.inbound.CadastrarPecaUseCase;
+import com.oficina.estoque.domain.ports.inbound.ListarPecaUseCase;
+import com.oficina.estoque.domain.ports.inbound.ObterPecaUseCase;
+import com.oficina.estoque.domain.ports.inbound.ReporPecaUseCase;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
-import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
 
 import java.util.List;
-import java.util.UUID;
 
 public class PecaService implements CadastrarPecaUseCase,
         ObterPecaUseCase, ReporPecaUseCase, ListarPecaUseCase {

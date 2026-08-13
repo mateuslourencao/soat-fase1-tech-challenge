@@ -4,7 +4,6 @@ import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.P
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Entity
 @Table(name = "pecas_necessarias")
@@ -32,7 +31,7 @@ public class PecaNecessariaEntity {
     protected PecaNecessariaEntity() {}
 
     public PecaNecessariaEntity(
-            UUID ordemDeServicoId,
+            int ordemDeServicoId,
             PecaEntity peca,
             Integer quantidade,
             BigDecimal valorUnitario

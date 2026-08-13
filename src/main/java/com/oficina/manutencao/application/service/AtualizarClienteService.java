@@ -4,8 +4,6 @@ import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.ports.inbound.AtualizarClienteUseCase;
 import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
 
-import java.util.UUID;
-
 public class AtualizarClienteService implements AtualizarClienteUseCase {
     private final ClienteRepositoryPort clienteRepositoryPort;
 

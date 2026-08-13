@@ -4,7 +4,6 @@ import com.oficina.manutencao.domain.model.Cliente;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface ClienteRepositoryPort {
     Cliente salvar(Cliente cliente);

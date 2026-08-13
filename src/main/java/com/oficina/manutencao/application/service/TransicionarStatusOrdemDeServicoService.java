@@ -3,7 +3,6 @@ package com.oficina.manutencao.application.service;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
-import java.util.UUID;
 
 abstract class TransicionarStatusOrdemDeServicoService {
     private final OrdemDeServicoRepositoryPort repositorio;
@@ -12,7 +11,7 @@ abstract class TransicionarStatusOrdemDeServicoService {
         this.repositorio = repositorio;
     }
 
-    protected void transicionar(UUID id, StatusOS origem, StatusOS destino) {
+    protected void transicionar(int id, StatusOS origem, StatusOS destino) {
         OrdemDeServico ordem = repositorio.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Ordem de serviço não encontrada"));
         if (ordem.getStatus() != origem) {

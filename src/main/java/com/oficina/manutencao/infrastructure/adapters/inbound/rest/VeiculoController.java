@@ -1,6 +1,5 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
-import com.oficina.manutencao.application.service.*;
 import com.oficina.manutencao.domain.model.Veiculo;
 import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.VeiculoRequestDTO;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -49,20 +47,20 @@ public class VeiculoController {
         return ResponseEntity.ok(veiculos);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{placa}")
     public ResponseEntity<VeiculoResponseDTO> buscarPorId(@PathVariable String placa) {
         Veiculo veiculo = buscarVeiculo.buscarVeiculo(placa);
         return ResponseEntity.ok(converterParaDTO(veiculo));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{placa}")
     public ResponseEntity<VeiculoResponseDTO> atualizar(@PathVariable String placa, @RequestBody @Valid VeiculoRequestDTO request) {
         Veiculo veiculoAtualizado = new Veiculo(placa, request.marca(), request.modelo(), request.ano());
         Veiculo salvo = atualizarVeiculo.atualizarVeiculo(placa, veiculoAtualizado);
         return ResponseEntity.ok(converterParaDTO(salvo));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{placa}")
     public ResponseEntity<Void> remover(@PathVariable String placa) {
         removerVeiculo.removerVeiculo(placa);
         return ResponseEntity.noContent().build();

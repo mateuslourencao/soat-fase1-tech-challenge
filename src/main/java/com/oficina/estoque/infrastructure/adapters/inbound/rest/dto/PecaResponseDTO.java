@@ -2,8 +2,6 @@ package com.oficina.estoque.infrastructure.adapters.inbound.rest.dto;
 
 import com.oficina.estoque.domain.model.Peca;
 
-import java.util.UUID;
-
 public record PecaResponseDTO(
         int id,
         String descricao,

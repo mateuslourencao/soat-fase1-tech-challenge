@@ -4,11 +4,10 @@ import com.oficina.estoque.domain.model.Servico;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 public class OrdemDeServico {
 
-    private UUID id;
+    private int id;
     private String documentoCliente;
     private String placaVeiculo;
     private List<Servico> servicos;
@@ -20,7 +19,7 @@ public class OrdemDeServico {
     private String descricaoQueixas;
     private String diagnosticos;
 
-    public OrdemDeServico(UUID id, String documentoCliente, String placaVeiculo, String descricaoQueixas) {
+    public OrdemDeServico(int id, String documentoCliente, String placaVeiculo, String descricaoQueixas) {
         this.id = id;
         this.documentoCliente = documentoCliente;
         this.placaVeiculo = placaVeiculo;
@@ -32,7 +31,18 @@ public class OrdemDeServico {
         this.dataAtualizacao = this.dataCriacao;
     }
 
-    public OrdemDeServico(UUID id, String documentoCliente, String placaVeiculo, List<Servico> servicos, List<PecasNecessarias> pecas,
+    public OrdemDeServico(String documentoCliente, String placaVeiculo, String descricaoQueixas) {
+        this.documentoCliente = documentoCliente;
+        this.placaVeiculo = placaVeiculo;
+        this.descricaoQueixas = descricaoQueixas;
+        this.servicos = List.of();
+        this.pecasNecessarias = List.of();
+        this.status = StatusOS.RECEBIDA;
+        this.dataCriacao = LocalDateTime.now();
+        this.dataAtualizacao = this.dataCriacao;
+    }
+
+    public OrdemDeServico(int id, String documentoCliente, String placaVeiculo, List<Servico> servicos, List<PecasNecessarias> pecas,
                           double orcamento, StatusOS status, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao,
                           String descricaoQueixas, String diagnosticos) {
         this.id = id;
@@ -48,7 +58,7 @@ public class OrdemDeServico {
         this.diagnosticos = diagnosticos;
     }
 
-    public UUID getId() { return id; }
+    public int getId() { return id; }
     public String getDocumentoCliente() { return documentoCliente; }
     public String getPlacaVeiculo() { return placaVeiculo; }
     public List<Servico> getServicos() { return servicos; }

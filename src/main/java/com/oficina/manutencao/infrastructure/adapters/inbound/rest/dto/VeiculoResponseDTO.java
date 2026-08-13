@@ -1,7 +1,5 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto;
 
-import java.util.UUID;
-
 public record VeiculoResponseDTO(
         String placa,
         String marca,

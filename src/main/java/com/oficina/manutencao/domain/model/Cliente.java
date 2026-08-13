@@ -1,13 +1,11 @@
 package com.oficina.manutencao.domain.model;
 
-import java.util.UUID;
-
 public class Cliente {
 
-    private String documento;
-    private String nome;
-    private String email;
-    private String telefone;
+    private final String documento;
+    private final String nome;
+    private final String email;
+    private final String telefone;
 
     public Cliente(String documento, String nome, String email, String telefone) {
         this.documento = documento;

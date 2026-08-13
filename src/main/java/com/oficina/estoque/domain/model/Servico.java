@@ -1,12 +1,10 @@
 package com.oficina.estoque.domain.model;
 
-import java.util.UUID;
-
 public class Servico {
 
     private int id;
-    private String descricao;
-    private double valor;
+    private final String descricao;
+    private final double valor;
 
     public Servico(String descricao, double valor) {
         this.descricao = descricao;

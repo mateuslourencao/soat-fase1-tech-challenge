@@ -2,13 +2,12 @@ package com.oficina.manutencao.infrastructure.adapters.outbound.persistence;
 
 import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
-import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.repository.ClienteJpaRepository;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.mapper.ClientePersistenceMapper;
+import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.repository.ClienteJpaRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component

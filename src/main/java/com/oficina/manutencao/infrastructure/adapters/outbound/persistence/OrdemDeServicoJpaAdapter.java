@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 public class OrdemDeServicoJpaAdapter
@@ -34,7 +32,7 @@ public class OrdemDeServicoJpaAdapter
     }
 
     @Override
-    public Optional<OrdemDeServico> buscarPorId(UUID id) {
+    public Optional<OrdemDeServico> buscarPorId(int id) {
         return repository.findById(id).map(mapper::toDomain);
     }
 

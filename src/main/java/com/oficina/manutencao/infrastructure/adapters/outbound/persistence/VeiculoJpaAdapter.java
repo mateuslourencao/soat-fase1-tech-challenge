@@ -1,6 +1,5 @@
 package com.oficina.manutencao.infrastructure.adapters.outbound.persistence;
 
-import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.model.Veiculo;
 import com.oficina.manutencao.domain.ports.outbound.VeiculoRepositoryPort;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.mapper.VeiculoPersistenceMapper;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component

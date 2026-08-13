@@ -3,6 +3,4 @@ package com.oficina.manutencao.infrastructure.adapters.outbound.persistence.repo
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.entity.ClienteEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.UUID;
-
 public interface ClienteJpaRepository extends JpaRepository<ClienteEntity, String> {}

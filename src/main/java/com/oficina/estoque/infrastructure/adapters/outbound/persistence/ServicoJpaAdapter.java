@@ -2,7 +2,6 @@ package com.oficina.estoque.infrastructure.adapters.outbound.persistence;
 
 import com.oficina.estoque.domain.model.Servico;
 import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
-import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.ServicoEntity;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.mapper.ServicoPersistenceMapper;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.ServicoJpaRepository;
 import org.springframework.stereotype.Component;

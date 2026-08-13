@@ -4,8 +4,6 @@ import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.ports.inbound.BuscarClienteUseCase;
 import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
 
-import java.util.UUID;
-
 public class BuscarClienteService implements BuscarClienteUseCase {
     private final ClienteRepositoryPort clienteRepositoryPort;
 

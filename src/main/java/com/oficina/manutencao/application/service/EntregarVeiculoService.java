@@ -3,9 +3,8 @@ package com.oficina.manutencao.application.service;
 import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.inbound.EntregarVeiculoUseCase;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
-import java.util.UUID;
 
 public class EntregarVeiculoService extends TransicionarStatusOrdemDeServicoService implements EntregarVeiculoUseCase {
     public EntregarVeiculoService(OrdemDeServicoRepositoryPort repositorio) { super(repositorio); }
-    public void EntregarVeiculo(UUID id) { transicionar(id, StatusOS.FINALIZADA, StatusOS.ENTREGUE); }
+    public void EntregarVeiculo(int id) { transicionar(id, StatusOS.FINALIZADA, StatusOS.ENTREGUE); }
 }

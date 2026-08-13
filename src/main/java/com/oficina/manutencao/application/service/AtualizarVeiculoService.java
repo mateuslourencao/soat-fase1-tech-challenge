@@ -4,8 +4,6 @@ import com.oficina.manutencao.domain.model.Veiculo;
 import com.oficina.manutencao.domain.ports.inbound.AtualizarVeiculoUseCase;
 import com.oficina.manutencao.domain.ports.outbound.VeiculoRepositoryPort;
 
-import java.util.UUID;
-
 public class AtualizarVeiculoService implements AtualizarVeiculoUseCase {
     private final VeiculoRepositoryPort veiculoRepositoryPort;
 

@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
-import java.util.UUID;
-
 public record PecaRequestDTO(
         @NotBlank(message = "A descricao da peca e obrigatoria")
         String descricao,

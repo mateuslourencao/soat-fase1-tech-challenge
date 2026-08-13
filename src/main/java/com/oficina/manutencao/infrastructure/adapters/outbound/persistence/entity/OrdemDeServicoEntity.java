@@ -2,11 +2,11 @@ package com.oficina.manutencao.infrastructure.adapters.outbound.persistence.enti
 
 import com.oficina.manutencao.domain.model.StatusOS;
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "ordens_de_servico")
@@ -14,7 +14,7 @@ public class OrdemDeServicoEntity {
 
     @Id
     @Column(name = "id", length = 36)
-    private UUID id;
+    private int id;
 
     @Column(name = "documento_cliente", nullable = false, length = 255)
     private String documentoCliente;
@@ -49,7 +49,7 @@ public class OrdemDeServicoEntity {
 
     public OrdemDeServicoEntity() {}
 
-    public UUID getId() { return id; }
+    public int getId() { return id; }
     public String getDocumentoCliente() { return documentoCliente; }
     public String getPlacaVeiculo() { return placaVeiculo; }
     public BigDecimal getOrcamento() { return orcamento; }
@@ -61,7 +61,7 @@ public class OrdemDeServicoEntity {
     public List<PecaNecessariaEntity> getPecasNecessarias() { return pecasNecessarias; }
     public List<OrdemDeServicoServicosEntity> getServicos() { return servicos; }
 
-    public void setId(UUID id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
     public void setDocumentoCliente(String documentoCliente) { this.documentoCliente = documentoCliente; }
     public void setPlacaVeiculo(String placaVeiculo) { this.placaVeiculo = placaVeiculo; }
     public void setOrcamento(BigDecimal orcamento) { this.orcamento = orcamento; }

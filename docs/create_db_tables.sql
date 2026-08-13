@@ -62,3 +62,14 @@ CREATE TABLE pecas_necessarias (
     valor_unitario DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (ordem_de_servico_id, peca_id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE funcionarios (
+    id INT NOT NULL AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    senha_hash VARCHAR(100) NOT NULL,
+    perfil ENUM('ADMIN', 'MECANICO', 'ATENDENTE') NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_funcionarios_email (email)
+) ENGINE=InnoDB;

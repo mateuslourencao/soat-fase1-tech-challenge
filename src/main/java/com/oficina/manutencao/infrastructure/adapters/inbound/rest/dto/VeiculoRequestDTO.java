@@ -1,10 +1,12 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto;
 
+import com.oficina.common.domain.validation.PlacaVeiculo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record VeiculoRequestDTO(
         @NotBlank(message = "A placa é obrigatória")
+        @PlacaVeiculo
         String placa,
 
         @NotBlank(message = "A marca é obrigatória")

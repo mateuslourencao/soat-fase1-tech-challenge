@@ -1,5 +1,7 @@
 package com.oficina.manutencao.infrastructure.config;
 
+import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
+import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
 import com.oficina.manutencao.application.service.AtualizarItensOrdemDeServicoService;
 import com.oficina.manutencao.application.service.BuscarOrdemDeServicoService;
 import com.oficina.manutencao.application.service.CadastrarOrdemDeServicoService;
@@ -30,7 +32,10 @@ class OrdemDeServicoConfig {
     }
 
     @Bean
-    AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServicoUseCase(OrdemDeServicoRepositoryPort repositorio) {
-        return new AtualizarItensOrdemDeServicoService(repositorio);
+    AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServicoUseCase(
+            OrdemDeServicoRepositoryPort repositorio,
+            PecaRepositoryPort pecaRepositorio,
+            ServicoRepositoryPort servicoRepositorio) {
+        return new AtualizarItensOrdemDeServicoService(repositorio, pecaRepositorio, servicoRepositorio);
     }
 }

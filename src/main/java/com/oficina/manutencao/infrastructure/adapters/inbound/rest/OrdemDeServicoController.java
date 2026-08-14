@@ -1,13 +1,13 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
-import com.oficina.estoque.domain.model.Servico;
-import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.ServicoResponseDTO;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
+import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ItensOSRequestDTO;
+import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.OrdemDeServicoResponseDTO;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
@@ -35,26 +35,33 @@ class OrdemDeServicoController {
     }
 
     @PostMapping
-    public ResponseEntity<OrdemDeServico> criar(@Valid @RequestBody @NonNull OrdemDeServico request) {
+    public ResponseEntity<OrdemDeServicoResponseDTO> criar(@Valid @RequestBody @NonNull CriarOrdemDeServicoRequestDTO request) {
         OrdemDeServico salvo = cadastrarOrdemDeServico.cadastrarOrdemDeServico(
-                new OrdemDeServico(request.getDocumentoCliente(), request.getPlacaVeiculo(), request.getDescricaoQueixas())
+                new OrdemDeServico(request.documentoCliente(), request.placaVeiculo(), request.descricaoQueixas())
         );
-        return ResponseEntity.ok(salvo);
+        return ResponseEntity.ok(new OrdemDeServicoResponseDTO(salvo));
     }
 
     @GetMapping
-    public ResponseEntity<List<OrdemDeServico>> listar() {
-        return ResponseEntity.ok(listarOrdensDeServico.listarOrdensDeServico());
+    public ResponseEntity<List<OrdemDeServicoResponseDTO>> listar() {
+        List<OrdemDeServicoResponseDTO> lista = listarOrdensDeServico.listarOrdensDeServico().stream()
+                .map(OrdemDeServicoResponseDTO::new)
+                .toList();
+        return ResponseEntity.ok(lista);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrdemDeServico> buscarPorId(@PathVariable int id) {
-        return ResponseEntity.ok(buscarOrdemDeServico.buscarOrdemDeServico(id));
+    public ResponseEntity<OrdemDeServicoResponseDTO> buscarPorId(@PathVariable int id) {
+        return ResponseEntity.ok(new OrdemDeServicoResponseDTO(buscarOrdemDeServico.buscarOrdemDeServico(id)));
     }
 
     @PostMapping("/{id}/itens")
-    public ResponseEntity<OrdemDeServico> atualizarItens(@PathVariable int id, @Valid @RequestBody ItensOSRequestDTO request) {
-        OrdemDeServico response = atualizarItensOrdemDeServico.atualizarItensOrdemDeServico(id, request.pecasNecessarias(), request.servicos());
-        return ResponseEntity.ok(response);
+    public ResponseEntity<OrdemDeServicoResponseDTO> atualizarItens(@PathVariable int id, @Valid @RequestBody ItensOSRequestDTO request) {
+        List<AtualizarItensOrdemDeServicoUseCase.PecaItemInput> pecas = request.pecasNecessarias() == null ? List.of() : request.pecasNecessarias().stream()
+                .map(p -> new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(p.pecaId(), p.quantidade()))
+                .toList();
+
+        OrdemDeServico response = atualizarItensOrdemDeServico.atualizarItensOrdemDeServico(id, pecas, request.servicosIds());
+        return ResponseEntity.ok(new OrdemDeServicoResponseDTO(response));
     }
 }

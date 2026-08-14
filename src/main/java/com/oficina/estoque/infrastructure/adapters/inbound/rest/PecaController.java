@@ -33,8 +33,11 @@ public class PecaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Peca>> listarPecas() {
-        return ResponseEntity.ok(listarPeca.listarPecas());
+    public ResponseEntity<List<PecaResponseDTO>> listarPecas() {
+        List<PecaResponseDTO> response = listarPeca.listarPecas().stream()
+                .map(PecaResponseDTO::new)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/criar")

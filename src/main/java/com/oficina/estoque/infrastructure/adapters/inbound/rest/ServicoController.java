@@ -33,8 +33,11 @@ public class ServicoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Servico>> listar() {
-        return ResponseEntity.ok(listarServicos.listarServico());
+    public ResponseEntity<List<ServicoResponseDTO>> listar() {
+        List<ServicoResponseDTO> response = listarServicos.listarServico().stream()
+                .map(ServicoResponseDTO::new)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping

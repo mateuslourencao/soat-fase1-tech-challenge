@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/veiculos")
@@ -40,8 +39,11 @@ public class VeiculoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Veiculo>> listar() {
-        return ResponseEntity.ok(listarVeiculos.listarVeiculos());
+    public ResponseEntity<List<VeiculoResponseDTO>> listar() {
+        List<VeiculoResponseDTO> response = listarVeiculos.listarVeiculos().stream()
+                .map(this::converterParaDTO)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{placa}")

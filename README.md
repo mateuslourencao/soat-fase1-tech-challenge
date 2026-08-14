@@ -1,2 +1,89 @@
-# soat-fase1-tech-challenge
-MVP do Sistema de Oficina Mecânica - Pós Tech Arq. SW
+# Oficina Mecânica - SOAT Tech Challenge
+
+Este projeto é um MVP de um Sistema de Oficina Mecânica, desenvolvido como parte do Tech Challenge da Pós-Graduação em Arquitetura de Software (SOAT). A aplicação gerencia o fluxo administrativo, de estoque e de manutenção de uma oficina.
+
+## 🛠 Tecnologias Utilizadas
+
+- **Java 21**: Linguagem principal.
+- **Spring Boot 4.1.0**: Framework para construção da aplicação.
+- **Spring Data JPA**: Abstração de persistência de dados.
+- **Spring Security & JWT**: Autenticação e autorização.
+- **MySQL 8.0**: Banco de dados relacional.
+- **Maven**: Gerenciador de dependências e build.
+- **Docker**: Conteinerização da aplicação e banco de dados.
+- **SpringDoc OpenAPI**: Documentação da API.
+- **Jacoco**: Relatórios de cobertura de testes.
+
+## 🏗 Arquitetura
+
+O projeto segue os princípios da **Arquitetura Hexagonal (Ports and Adapters)**, organizado em módulos de domínio para garantir a separação de responsabilidades e facilitar a testabilidade.
+
+### Módulos Principais:
+- **Administrativo**: Gestão de funcionários e autenticação.
+- **Estoque**: Controle de peças e serviços.
+- **Manutenção**: Gestão de clientes, veículos e ordens de serviço.
+
+## 🚀 Como Executar o Projeto
+
+### Pré-requisitos
+- Docker e Docker Compose instalados.
+- Java 21 e Maven (caso deseje rodar localmente sem Docker).
+
+### Usando Docker (Recomendado)
+
+Na raiz do projeto, execute o comando:
+
+```bash
+docker-compose up --build
+```
+
+Isso iniciará:
+1. Um container MySQL (`oficina-mysql`) na porta `3306`.
+2. O container da aplicação (`oficina-app`) na porta `8080`.
+
+A aplicação aguardará o banco de dados estar pronto antes de iniciar (via `restart: on-failure`).
+
+### Executando Localmente
+
+1. Certifique-se de ter um banco MySQL rodando.
+2. Configure as variáveis de ambiente necessárias ou altere o `src/main/resources/application.properties`.
+   - `DB_URL`: URL de conexão (Ex: `jdbc:mysql://localhost:3306/oficina`)
+   - `DB_USERNAME`: Usuário do banco.
+   - `DB_PASSWORD`: Senha do banco.
+3. Execute via Maven:
+
+```bash
+mvn clean spring-boot:run
+```
+
+## 📖 Documentação da API (Swagger)
+
+Com a aplicação rodando, você pode acessar a documentação interativa e realizar testes nas rotas através do Swagger UI:
+
+🔗 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+### Principais Endpoints:
+- `/api/v1/administrativo/autenticacao`: Login de funcionários.
+- `/api/v1/administrativo/funcionarios`: Gestão de funcionários.
+- `/api/v1/pecas`: Gestão de peças em estoque.
+- `/api/v1/servicos`: Gestão de serviços oferecidos.
+- `/api/v1/clientes`: Gestão de clientes.
+- `/api/v1/veiculos`: Gestão de veículos.
+- `/api/v1/ordensdeservico`: Abertura e acompanhamento de ordens de serviço.
+
+## 🧪 Testes e Cobertura
+
+Para executar os testes unitários e integrados:
+
+```bash
+mvn test
+```
+
+Para gerar o relatório de cobertura do Jacoco:
+
+```bash
+mvn verify
+```
+O relatório será gerado em `target/site/jacoco/index.html`.
+
+A configuração do Jacoco no `pom.xml` inclui exclusões para classes de configuração, DTOs, entidades e classes geradas, focando a métrica na lógica de negócio (Use Cases e Modelos).

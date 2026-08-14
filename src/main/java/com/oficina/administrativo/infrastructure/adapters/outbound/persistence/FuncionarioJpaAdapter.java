@@ -7,8 +7,8 @@ import com.oficina.administrativo.infrastructure.adapters.outbound.persistence.m
 import com.oficina.administrativo.infrastructure.adapters.outbound.persistence.repository.FuncionarioJpaRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class FuncionarioJpaAdapter implements FuncionarioRepositoryPort {

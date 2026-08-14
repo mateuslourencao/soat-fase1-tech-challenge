@@ -12,4 +12,9 @@ public class BCryptSenhaCriptografadaAdapter implements SenhaCriptografadaPort {
     public boolean confere(String senha, String senhaHash) {
         return passwordEncoder.matches(senha, senhaHash);
     }
+
+    @Override
+    public String criptografar(String senha) {
+        return passwordEncoder.encode(senha);
+    }
 }

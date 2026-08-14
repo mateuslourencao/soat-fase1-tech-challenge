@@ -25,6 +25,7 @@ public class SecurityConfig {
                         (request, response, exception) -> response.sendError(401, "Autenticação necessária")))
                 .authorizeHttpRequests(authorization -> authorization
                         .requestMatchers(HttpMethod.POST, "/api/v1/administrativo/autenticacao").permitAll()
+                        .requestMatchers("/api/v1/administrativo/funcionarios/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

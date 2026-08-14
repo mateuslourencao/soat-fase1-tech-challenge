@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("api/v1/administrativo/autenticacao")
+@RequestMapping("/api/v1/administrativo/autenticacao")
 public class AutenticacaoFuncionarioController {
     private final AutenticarFuncionarioUseCase autenticarFuncionario;
 

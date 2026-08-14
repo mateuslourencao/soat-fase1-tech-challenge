@@ -24,6 +24,10 @@ public class SecurityConfig {
                 .exceptionHandling(handler -> handler.authenticationEntryPoint(
                         (request, response, exception) -> response.sendError(401, "Autenticação necessária")))
                 .authorizeHttpRequests(authorization -> authorization
+                        .requestMatchers(HttpMethod.GET, "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html", "/error").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/administrativo/autenticacao").permitAll()
                         .requestMatchers("/api/v1/administrativo/funcionarios/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

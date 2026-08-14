@@ -6,5 +6,5 @@ import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort
 
 public class FinalizarReparoService extends TransicionarStatusOrdemDeServicoService implements FinalizarReparoUseCase {
     public FinalizarReparoService(OrdemDeServicoRepositoryPort repositorio) { super(repositorio); }
-    public void FinalizarReparo(int id) { transicionar(id, StatusOS.EM_EXECUCAO, StatusOS.FINALIZADA); }
+    public void finalizarReparo(int id) { transicionar(id, StatusOS.EM_EXECUCAO, StatusOS.FINALIZADA); }
 }

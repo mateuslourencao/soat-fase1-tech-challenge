@@ -17,12 +17,12 @@ public class PecaService implements CadastrarPecaUseCase,
         this.pecaRepository = pecaRepository;
     }
 
-    public Peca CadastrarPeca(String descricao, Double valor, int quantidade) {
+    public Peca cadastrarPeca(String descricao, Double valor, int quantidade) {
         validarCadastro(descricao, valor, quantidade);
         return pecaRepository.salvar(new Peca(descricao, valor, quantidade));
     }
 
-    public Peca ObtemPeca(int id, int quantidadeBaixar) {
+    public Peca obterPeca(int id, int quantidadeBaixar) {
         if (quantidadeBaixar <= 0) throw new IllegalArgumentException("Quantidade para baixa deve ser positiva");
         Peca peca = buscaPeca(id);
         if (peca.getQuantidade() < quantidadeBaixar) throw new IllegalStateException("Estoque insuficiente");

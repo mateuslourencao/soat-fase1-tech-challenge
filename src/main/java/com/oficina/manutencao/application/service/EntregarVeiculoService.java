@@ -6,5 +6,5 @@ import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort
 
 public class EntregarVeiculoService extends TransicionarStatusOrdemDeServicoService implements EntregarVeiculoUseCase {
     public EntregarVeiculoService(OrdemDeServicoRepositoryPort repositorio) { super(repositorio); }
-    public void EntregarVeiculo(int id) { transicionar(id, StatusOS.FINALIZADA, StatusOS.ENTREGUE); }
+    public void entregarVeiculo(int id) { transicionar(id, StatusOS.FINALIZADA, StatusOS.ENTREGUE); }
 }

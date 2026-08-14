@@ -39,7 +39,7 @@ public class ServicoController {
 
     @PostMapping
     public ResponseEntity<ServicoResponseDTO> criar(@Valid @RequestBody ServicoRequestDTO request) {
-        Servico novoServico = cadastrarServico.CadastrarServico(request.descricao(), request.valor());
+        Servico novoServico = cadastrarServico.cadastrarServico(request.descricao(), request.valor());
         ServicoResponseDTO response = new ServicoResponseDTO(novoServico);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

@@ -44,7 +44,7 @@ class PecaServiceTest {
         PecaRepositoryEmMemoria repositoryMemoria = new PecaRepositoryEmMemoria(pecaTemp);
         PecaService service = new PecaService(repositoryMemoria);
 
-        Peca peca = service.ObtemPeca(1,1);
+        Peca peca = service.obterPeca(1,1);
 
         assertEquals(peca.getQuantidade(), 9);
     }
@@ -55,7 +55,7 @@ class PecaServiceTest {
         PecaRepositoryEmMemoria repositoryMemoria = new PecaRepositoryEmMemoria();
         PecaService service = new PecaService(repositoryMemoria);
 
-        Peca peca = service.CadastrarPeca(pecaTemp.getDescricao(), pecaTemp.getValor(), 10);
+        Peca peca = service.cadastrarPeca(pecaTemp.getDescricao(), pecaTemp.getValor(), 10);
 
         assertEquals(peca.getDescricao(), "Filtro de oleo");
         assertEquals(pecaTemp.getValor(), peca.getValor());

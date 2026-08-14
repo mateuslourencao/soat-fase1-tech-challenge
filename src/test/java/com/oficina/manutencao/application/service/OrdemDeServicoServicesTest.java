@@ -52,11 +52,11 @@ class OrdemDeServicoServicesTest {
         assertEquals(160, resultado.getOrcamento());
     }
 
-    @Test void deveIniciarDiagnostico() { assertTransicao(StatusOS.RECEBIDA, StatusOS.EM_DIAGNOSTICO, ordem -> new IniciarDiagnosticoService(repository).IniciarDiagnostico(1)); }
-    @Test void deveEnviarOrcamento() { assertTransicao(StatusOS.EM_DIAGNOSTICO, StatusOS.AGUARDANDO_APROVACAO, ordem -> new EnviarOrcamentoService(repository).EnviarOrcamento(1)); }
-    @Test void deveAprovarOrcamento() { assertTransicao(StatusOS.AGUARDANDO_APROVACAO, StatusOS.EM_EXECUCAO, ordem -> new AprovarOrcamentoService(repository).AprovarOrcamento(1)); }
-    @Test void deveFinalizarReparo() { assertTransicao(StatusOS.EM_EXECUCAO, StatusOS.FINALIZADA, ordem -> new FinalizarReparoService(repository).FinalizarReparo(1)); }
-    @Test void deveEntregarVeiculo() { assertTransicao(StatusOS.FINALIZADA, StatusOS.ENTREGUE, ordem -> new EntregarVeiculoService(repository).EntregarVeiculo(1)); }
+    @Test void deveIniciarDiagnostico() { assertTransicao(StatusOS.RECEBIDA, StatusOS.EM_DIAGNOSTICO, ordem -> new IniciarDiagnosticoService(repository).iniciarDiagnostico(1)); }
+    @Test void deveEnviarOrcamento() { assertTransicao(StatusOS.EM_DIAGNOSTICO, StatusOS.AGUARDANDO_APROVACAO, ordem -> new EnviarOrcamentoService(repository).enviarOrcamento(1)); }
+    @Test void deveAprovarOrcamento() { assertTransicao(StatusOS.AGUARDANDO_APROVACAO, StatusOS.EM_EXECUCAO, ordem -> new AprovarOrcamentoService(repository).aprovarOrcamento(1)); }
+    @Test void deveFinalizarReparo() { assertTransicao(StatusOS.EM_EXECUCAO, StatusOS.FINALIZADA, ordem -> new FinalizarReparoService(repository).finalizarReparo(1)); }
+    @Test void deveEntregarVeiculo() { assertTransicao(StatusOS.FINALIZADA, StatusOS.ENTREGUE, ordem -> new EntregarVeiculoService(repository).entregarVeiculo(1)); }
 
     private void assertTransicao(StatusOS origem, StatusOS destino, AcaoTransicao acao) {
         OrdemDeServico ordem = ordem(origem);

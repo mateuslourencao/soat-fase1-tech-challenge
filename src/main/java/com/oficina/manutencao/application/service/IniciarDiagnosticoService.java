@@ -6,5 +6,5 @@ import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort
 
 public class IniciarDiagnosticoService extends TransicionarStatusOrdemDeServicoService implements IniciarDiagnosticoUseCase {
     public IniciarDiagnosticoService(OrdemDeServicoRepositoryPort repositorio) { super(repositorio); }
-    public void IniciarDiagnostico(int id) { transicionar(id, StatusOS.RECEBIDA, StatusOS.EM_DIAGNOSTICO); }
+    public void iniciarDiagnostico(int id) { transicionar(id, StatusOS.RECEBIDA, StatusOS.EM_DIAGNOSTICO); }
 }

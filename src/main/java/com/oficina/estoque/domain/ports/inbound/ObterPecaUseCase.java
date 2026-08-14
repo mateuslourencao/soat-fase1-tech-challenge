@@ -3,5 +3,5 @@ package com.oficina.estoque.domain.ports.inbound;
 import com.oficina.estoque.domain.model.Peca;
 
 public interface ObterPecaUseCase {
-    Peca ObtemPeca(int id, int quantidadeBaixar);
+    Peca obterPeca(int id, int quantidadeBaixar);
 }

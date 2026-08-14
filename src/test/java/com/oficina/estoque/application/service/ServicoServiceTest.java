@@ -24,7 +24,7 @@ class ServicoServiceTest {
     @Test void deveCadastrarServico() {
         Servico servico = new Servico(1, "Alinhamento", 80);
         when(repository.salvar("Alinhamento", 80.0)).thenReturn(servico);
-        assertSame(servico, service.CadastrarServico("Alinhamento", 80.0));
+        assertSame(servico, service.cadastrarServico("Alinhamento", 80.0));
     }
 
     @Test void deveAtualizarServico() {

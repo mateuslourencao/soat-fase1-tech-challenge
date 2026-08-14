@@ -7,6 +7,7 @@ import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.VeiculoRe
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/veiculos")
 @Tag(name = "Veículos", description = "Gestão de veículos dos clientes")
+@SecurityRequirement(name = "bearerAuth")
 public class VeiculoController {
 
     private final CadastrarVeiculoUseCase cadastrarVeiculo;

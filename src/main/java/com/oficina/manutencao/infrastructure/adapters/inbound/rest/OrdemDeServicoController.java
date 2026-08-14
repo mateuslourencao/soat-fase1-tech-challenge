@@ -11,6 +11,7 @@ import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.OrdemDeSe
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.NonNull;
@@ -40,6 +41,7 @@ class OrdemDeServicoController {
     }
 
     @PostMapping
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Criar ordem de serviço", description = "Abre uma nova ordem de serviço para um cliente e veículo")
     @ApiResponse(responseCode = "200", description = "Ordem de serviço criada com sucesso")
     public ResponseEntity<OrdemDeServicoResponseDTO> criar(@Valid @RequestBody @NonNull CriarOrdemDeServicoRequestDTO request) {
@@ -50,6 +52,7 @@ class OrdemDeServicoController {
     }
 
     @GetMapping
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Listar ordens de serviço", description = "Retorna uma lista de todas as ordens de serviço cadastradas")
     @ApiResponse(responseCode = "200", description = "Lista de ordens de serviço retornada com sucesso")
     public ResponseEntity<List<OrdemDeServicoResponseDTO>> listar() {
@@ -68,6 +71,7 @@ class OrdemDeServicoController {
     }
 
     @PostMapping("/{id}/itens")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Atualizar itens da ordem de serviço", description = "Adiciona peças e serviços a uma ordem de serviço aberta")
     @ApiResponse(responseCode = "200", description = "Itens atualizados com sucesso")
     public ResponseEntity<OrdemDeServicoResponseDTO> atualizarItens(@Parameter(description = "ID da ordem de serviço") @PathVariable int id, @Valid @RequestBody ItensOSRequestDTO request) {

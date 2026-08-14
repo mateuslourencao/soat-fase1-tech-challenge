@@ -1,10 +1,8 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
+import com.oficina.manutencao.domain.model.MetricaExecucao;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
-import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
+import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ItensOSRequestDTO;
 import org.junit.jupiter.api.Test;
@@ -18,16 +16,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 class OrdemDeServicoControllerTest {
 
     private final CadastrarOrdemDeServicoUseCase cadastrarUseCase = mock(CadastrarOrdemDeServicoUseCase.class);
     private final ListarOrdensDeServicoUseCase listarUseCase = mock(ListarOrdensDeServicoUseCase.class);
     private final BuscarOrdemDeServicoUseCase buscarUseCase = mock(BuscarOrdemDeServicoUseCase.class);
-    private final AtualizarItensOrdemDeServicoUseCase atualizarItensUseCase = mock(AtualizarItensOrdemDeServicoUseCase.class);
+    private final AtualizarItensOrdemDeServicoUseCase atualizarItens = mock(AtualizarItensOrdemDeServicoUseCase.class);
+    private final CalcularMetricaExecucaoUseCase calcularMetricaExecucao = mock(CalcularMetricaExecucaoUseCase.class);
 
     private final OrdemDeServicoController controller = new OrdemDeServicoController(
-            cadastrarUseCase, listarUseCase, buscarUseCase, atualizarItensUseCase
+            cadastrarUseCase, listarUseCase, buscarUseCase, atualizarItens, calcularMetricaExecucao
     );
 
     @Test
@@ -75,12 +75,24 @@ class OrdemDeServicoControllerTest {
         ItensOSRequestDTO request = new ItensOSRequestDTO(List.of(new ItensOSRequestDTO.PecaItemRequest(1, 2)), List.of(2));
         OrdemDeServico os = new OrdemDeServico("123", "ABC", "Queixa");
 
-        when(atualizarItensUseCase.atualizarItensOrdemDeServico(eq(id), anyList(), anyList())).thenReturn(os);
+        when(atualizarItens.atualizarItensOrdemDeServico(eq(id), anyList(), anyList())).thenReturn(os);
 
         ResponseEntity<?> response = controller.atualizarItens(id, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        verify(atualizarItensUseCase).atualizarItensOrdemDeServico(eq(id), anyList(), anyList());
+        verify(atualizarItens).atualizarItensOrdemDeServico(eq(id), anyList(), anyList());
+    }
+
+    @Test
+    void deveCalcularMetricaExecucao() {
+        int dias = 5;
+        MetricaExecucao metricaExecucao = mock(MetricaExecucao.class);
+        when(calcularMetricaExecucao.calcularMetricaExecucao(dias)).thenReturn(metricaExecucao);
+
+        ResponseEntity<?> response = controller.calcularMetricaExecucao(dias);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 }

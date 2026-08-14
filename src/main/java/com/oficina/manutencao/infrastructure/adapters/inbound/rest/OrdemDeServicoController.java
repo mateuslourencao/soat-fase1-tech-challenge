@@ -1,13 +1,11 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
 import com.oficina.manutencao.domain.model.OrdemDeServico;
-import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
+import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ItensOSRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.OrdemDeServicoResponseDTO;
+import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.RelatorioTempoMedioResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,15 +27,17 @@ class OrdemDeServicoController {
     private final ListarOrdensDeServicoUseCase listarOrdensDeServico;
     private final BuscarOrdemDeServicoUseCase buscarOrdemDeServico;
     private final AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico;
+    private final CalcularMetricaExecucaoUseCase calcularMetricaExecucao;
 
     OrdemDeServicoController(CadastrarOrdemDeServicoUseCase cadastrarOrdemDeServico,
                              ListarOrdensDeServicoUseCase listarOrdensDeServico,
                              BuscarOrdemDeServicoUseCase buscarOrdemDeServico,
-                             AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico) {
+                             AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico, CalcularMetricaExecucaoUseCase calcularMetricaExecucao) {
         this.cadastrarOrdemDeServico = cadastrarOrdemDeServico;
         this.listarOrdensDeServico = listarOrdensDeServico;
         this.buscarOrdemDeServico = buscarOrdemDeServico;
         this.atualizarItensOrdemDeServico = atualizarItensOrdemDeServico;
+        this.calcularMetricaExecucao = calcularMetricaExecucao;
     }
 
     @PostMapping
@@ -81,5 +81,14 @@ class OrdemDeServicoController {
 
         OrdemDeServico response = atualizarItensOrdemDeServico.atualizarItensOrdemDeServico(id, pecas, request.servicosIds());
         return ResponseEntity.ok(new OrdemDeServicoResponseDTO(response));
+    }
+
+    @GetMapping("/metricas/{dias}")
+    @Operation(summary = "Buscar tempo médio de execução de OS", description = "Buscar tempo médio de execução de OS dos úlimos x dias")
+    @ApiResponse(responseCode = "200", description = "Média de tempo de execução calculada")
+    @ApiResponse(responseCode = "404", description = "Sem registros de Ordem de Serviço finalizada no período indicado")
+    public ResponseEntity<RelatorioTempoMedioResponseDTO> calcularMetricaExecucao(@Parameter(description = "Dias para cálculo") @PathVariable int dias) {
+
+        return ResponseEntity.ok(new RelatorioTempoMedioResponseDTO(dias, calcularMetricaExecucao.calcularMetricaExecucao(dias).getTempoMs()));
     }
 }

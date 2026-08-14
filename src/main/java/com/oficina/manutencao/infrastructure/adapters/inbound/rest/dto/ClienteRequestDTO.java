@@ -1,10 +1,12 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto;
 
+import com.oficina.common.domain.validation.CpfCnpj;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record ClienteRequestDTO(
         @NotBlank(message = "O documento é obrigatório")
+        @CpfCnpj
         String documento,
 
         @NotBlank(message = "O nome é obrigatório")

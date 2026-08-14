@@ -1,5 +1,6 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
+import com.oficina.common.domain.validation.PlacaVeiculo;
 import com.oficina.manutencao.domain.model.Veiculo;
 import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.VeiculoRequestDTO;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequestMapping("/api/v1/veiculos")
 @Tag(name = "Veículos", description = "Gestão de veículos dos clientes")
 @SecurityRequirement(name = "bearerAuth")
+@Validated
 public class VeiculoController {
 
     private final CadastrarVeiculoUseCase cadastrarVeiculo;
@@ -61,7 +64,7 @@ public class VeiculoController {
     @Operation(summary = "Buscar veículo por placa", description = "Retorna os detalhes de um veículo através da sua placa")
     @ApiResponse(responseCode = "200", description = "Veículo encontrado")
     @ApiResponse(responseCode = "404", description = "Veículo não encontrado")
-    public ResponseEntity<VeiculoResponseDTO> buscarPorId(@Parameter(description = "Placa do veículo") @PathVariable String placa) {
+    public ResponseEntity<VeiculoResponseDTO> buscarPorId(@Parameter(description = "Placa do veículo") @PathVariable @PlacaVeiculo String placa) {
         Veiculo veiculo = buscarVeiculo.buscarVeiculo(placa);
         return ResponseEntity.ok(converterParaDTO(veiculo));
     }
@@ -69,7 +72,7 @@ public class VeiculoController {
     @PutMapping("/{placa}")
     @Operation(summary = "Atualizar veículo", description = "Atualiza os dados de um veículo existente")
     @ApiResponse(responseCode = "200", description = "Veículo atualizado com sucesso")
-    public ResponseEntity<VeiculoResponseDTO> atualizar(@Parameter(description = "Placa do veículo") @PathVariable String placa, @RequestBody @Valid VeiculoRequestDTO request) {
+    public ResponseEntity<VeiculoResponseDTO> atualizar(@Parameter(description = "Placa do veículo") @PathVariable @PlacaVeiculo String placa, @RequestBody @Valid VeiculoRequestDTO request) {
         Veiculo veiculoAtualizado = new Veiculo(placa, request.marca(), request.modelo(), request.ano());
         Veiculo salvo = atualizarVeiculo.atualizarVeiculo(placa, veiculoAtualizado);
         return ResponseEntity.ok(converterParaDTO(salvo));
@@ -78,7 +81,7 @@ public class VeiculoController {
     @DeleteMapping("/{placa}")
     @Operation(summary = "Remover veículo", description = "Remove o cadastro de um veículo do sistema")
     @ApiResponse(responseCode = "204", description = "Veículo removido com sucesso")
-    public ResponseEntity<Void> remover(@Parameter(description = "Placa do veículo") @PathVariable String placa) {
+    public ResponseEntity<Void> remover(@Parameter(description = "Placa do veículo") @PathVariable @PlacaVeiculo String placa) {
         removerVeiculo.removerVeiculo(placa);
         return ResponseEntity.noContent().build();
     }

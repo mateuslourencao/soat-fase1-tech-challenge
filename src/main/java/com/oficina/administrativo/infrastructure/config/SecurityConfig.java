@@ -1,6 +1,8 @@
 package com.oficina.administrativo.infrastructure.config;
 
 import com.oficina.administrativo.infrastructure.adapters.inbound.security.JwtAuthenticationFilter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +15,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@SecurityScheme(
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SecurityConfig {
 
     @Bean
@@ -24,12 +32,14 @@ public class SecurityConfig {
                 .exceptionHandling(handler -> handler.authenticationEntryPoint(
                         (request, response, exception) -> response.sendError(401, "Autenticação necessária")))
                 .authorizeHttpRequests(authorization -> authorization
-                        .requestMatchers(HttpMethod.GET, "/v3/api-docs",
+                        .requestMatchers(HttpMethod.GET,
+                                "/v3/api-docs",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html", "/error").permitAll()
+                                "/swagger-ui.html",
+                                "/error").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/administrativo/autenticacao").permitAll()
-                        .requestMatchers("/api/v1/administrativo/funcionarios/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/ordensdeservico/{id}").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

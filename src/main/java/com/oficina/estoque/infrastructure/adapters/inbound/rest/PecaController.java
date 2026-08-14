@@ -11,6 +11,7 @@ import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.PecaResponse
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.ReporPecaRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/pecas")
 @Tag(name = "Peças", description = "Gestão de peças em estoque")
+@SecurityRequirement(name = "bearerAuth")
 public class PecaController {
 
     private final CadastrarPecaUseCase cadastrarPeca;

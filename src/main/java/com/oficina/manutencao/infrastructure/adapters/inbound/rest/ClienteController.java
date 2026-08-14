@@ -7,6 +7,7 @@ import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ClienteRe
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/clientes")
 @Tag(name = "Clientes", description = "Gestão de clientes da oficina")
+@SecurityRequirement(name = "bearerAuth")
 public class ClienteController {
 
     private final CadastrarClienteUseCase cadastrarCliente;

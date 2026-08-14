@@ -8,6 +8,7 @@ import com.oficina.administrativo.infrastructure.adapters.inbound.rest.dto.Funci
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/administrativo/funcionarios")
 @Tag(name = "Funcionários", description = "Gestão de funcionários da oficina")
+@SecurityRequirement(name = "bearerAuth")
 public class FuncionarioController {
 
     private final CadastrarFuncionarioUseCase cadastrarFuncionario;

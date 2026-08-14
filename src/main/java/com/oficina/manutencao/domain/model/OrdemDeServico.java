@@ -7,16 +7,16 @@ import java.util.List;
 
 public class OrdemDeServico {
 
-    private int id;
-    private String documentoCliente;
-    private String placaVeiculo;
+    private final int id;
+    private final String documentoCliente;
+    private final String placaVeiculo;
     private List<Servico> servicos;
     private List<PecasNecessarias> pecasNecessarias;
     private double orcamento;
     private StatusOS status;
-    private LocalDateTime dataCriacao;
+    private final LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;
-    private String descricaoQueixas;
+    private final String descricaoQueixas;
     private String diagnosticos;
 
     public OrdemDeServico(int id, String documentoCliente, String placaVeiculo, String descricaoQueixas) {
@@ -32,6 +32,7 @@ public class OrdemDeServico {
     }
 
     public OrdemDeServico(String documentoCliente, String placaVeiculo, String descricaoQueixas) {
+        this.id = 0;
         this.documentoCliente = documentoCliente;
         this.placaVeiculo = placaVeiculo;
         this.descricaoQueixas = descricaoQueixas;

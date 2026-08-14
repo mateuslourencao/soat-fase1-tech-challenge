@@ -2,9 +2,11 @@ package com.oficina.manutencao.application.service;
 
 import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.model.Servico;
+import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
+import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
-import com.oficina.manutencao.domain.model.PecasNecessarias;
 import com.oficina.manutencao.domain.model.StatusOS;
+import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +20,8 @@ import static org.mockito.Mockito.*;
 
 class OrdemDeServicoServicesTest {
     private final OrdemDeServicoRepositoryPort repository = mock(OrdemDeServicoRepositoryPort.class);
+    private final PecaRepositoryPort pecaRepository = mock(PecaRepositoryPort.class);
+    private final ServicoRepositoryPort servicoRepository = mock(ServicoRepositoryPort.class);
 
     @Test void deveCadastrarOrdemDeServico() {
         OrdemDeServico ordem = ordem(StatusOS.RECEBIDA);
@@ -39,24 +43,29 @@ class OrdemDeServicoServicesTest {
 
     @Test void deveAtualizarItensDaOrdemEmDiagnostico() {
         OrdemDeServico ordem = ordem(StatusOS.EM_DIAGNOSTICO);
-        PecasNecessarias peca = new PecasNecessarias(new Peca(1, "Filtro", 30, 2), 2);
+        Peca peca = new Peca(1, "Filtro", 30, 2);
         Servico servico = new Servico(1, "Troca", 100);
+
         when(repository.buscarPorId(1)).thenReturn(Optional.of(ordem));
         when(repository.salvar(ordem)).thenReturn(ordem);
+        when(pecaRepository.buscarPorId(1)).thenReturn(Optional.of(peca));
+        when(servicoRepository.buscarPorId(1)).thenReturn(Optional.of(servico));
 
-        OrdemDeServico resultado = new AtualizarItensOrdemDeServicoService(repository)
-                .atualizarItensOrdemDeServico(1, List.of(peca), List.of(servico));
+        AtualizarItensOrdemDeServicoUseCase.PecaItemInput pecaInput = new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 2);
+
+        OrdemDeServico resultado = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository)
+                .atualizarItensOrdemDeServico(1, List.of(pecaInput), List.of(1));
 
         assertEquals(1, resultado.getPecasNecessarias().size());
         assertEquals(1, resultado.getServicos().size());
         assertEquals(160, resultado.getOrcamento());
     }
 
-    @Test void deveIniciarDiagnostico() { assertTransicao(StatusOS.RECEBIDA, StatusOS.EM_DIAGNOSTICO, ordem -> new IniciarDiagnosticoService(repository).IniciarDiagnostico(1)); }
-    @Test void deveEnviarOrcamento() { assertTransicao(StatusOS.EM_DIAGNOSTICO, StatusOS.AGUARDANDO_APROVACAO, ordem -> new EnviarOrcamentoService(repository).EnviarOrcamento(1)); }
-    @Test void deveAprovarOrcamento() { assertTransicao(StatusOS.AGUARDANDO_APROVACAO, StatusOS.EM_EXECUCAO, ordem -> new AprovarOrcamentoService(repository).AprovarOrcamento(1)); }
-    @Test void deveFinalizarReparo() { assertTransicao(StatusOS.EM_EXECUCAO, StatusOS.FINALIZADA, ordem -> new FinalizarReparoService(repository).FinalizarReparo(1)); }
-    @Test void deveEntregarVeiculo() { assertTransicao(StatusOS.FINALIZADA, StatusOS.ENTREGUE, ordem -> new EntregarVeiculoService(repository).EntregarVeiculo(1)); }
+    @Test void deveIniciarDiagnostico() { assertTransicao(StatusOS.RECEBIDA, StatusOS.EM_DIAGNOSTICO, ordem -> new IniciarDiagnosticoService(repository).iniciarDiagnostico(1)); }
+    @Test void deveEnviarOrcamento() { assertTransicao(StatusOS.EM_DIAGNOSTICO, StatusOS.AGUARDANDO_APROVACAO, ordem -> new EnviarOrcamentoService(repository).enviarOrcamento(1)); }
+    @Test void deveAprovarOrcamento() { assertTransicao(StatusOS.AGUARDANDO_APROVACAO, StatusOS.EM_EXECUCAO, ordem -> new AprovarOrcamentoService(repository).aprovarOrcamento(1)); }
+    @Test void deveFinalizarReparo() { assertTransicao(StatusOS.EM_EXECUCAO, StatusOS.FINALIZADA, ordem -> new FinalizarReparoService(repository).finalizarReparo(1)); }
+    @Test void deveEntregarVeiculo() { assertTransicao(StatusOS.FINALIZADA, StatusOS.ENTREGUE, ordem -> new EntregarVeiculoService(repository).entregarVeiculo(1)); }
 
     private void assertTransicao(StatusOS origem, StatusOS destino, AcaoTransicao acao) {
         OrdemDeServico ordem = ordem(origem);

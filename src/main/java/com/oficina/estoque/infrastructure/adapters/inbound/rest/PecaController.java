@@ -33,20 +33,23 @@ public class PecaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Peca>> listarPecas() {
-        return ResponseEntity.ok(listarPeca.listarPecas());
+    public ResponseEntity<List<PecaResponseDTO>> listarPecas() {
+        List<PecaResponseDTO> response = listarPeca.listarPecas().stream()
+                .map(PecaResponseDTO::new)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/criar")
     public ResponseEntity<PecaResponseDTO> cadastrarPeca(@Valid @RequestBody PecaRequestDTO request) {
-        Peca novaPeca = cadastrarPeca.CadastrarPeca(request.descricao(), request.valor(), request.quantidade());
+        Peca novaPeca = cadastrarPeca.cadastrarPeca(request.descricao(), request.valor(), request.quantidade());
         PecaResponseDTO response = new PecaResponseDTO(novaPeca);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/obter")
     public ResponseEntity<Object> ObterPeca(@Valid @RequestBody ObterPecaRequestDTO request) {
-        obterPeca.ObtemPeca(request.id(), request.quantidade());
+        obterPeca.obterPeca(request.id(), request.quantidade());
         return ResponseEntity.ok().build();
     }
 

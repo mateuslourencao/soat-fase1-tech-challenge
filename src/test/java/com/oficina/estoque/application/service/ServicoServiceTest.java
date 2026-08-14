@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
@@ -24,7 +23,7 @@ class ServicoServiceTest {
     @Test void deveCadastrarServico() {
         Servico servico = new Servico(1, "Alinhamento", 80);
         when(repository.salvar("Alinhamento", 80.0)).thenReturn(servico);
-        assertSame(servico, service.CadastrarServico("Alinhamento", 80.0));
+        assertSame(servico, service.cadastrarServico("Alinhamento", 80.0));
     }
 
     @Test void deveAtualizarServico() {

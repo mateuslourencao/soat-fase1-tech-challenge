@@ -1,11 +1,11 @@
 package com.oficina.manutencao.domain.ports.inbound;
 
-import com.oficina.estoque.domain.model.Servico;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
-import com.oficina.manutencao.domain.model.PecasNecessarias;
 
 import java.util.List;
 
 public interface AtualizarItensOrdemDeServicoUseCase {
-    OrdemDeServico atualizarItensOrdemDeServico(int ordemDeServicoID, List<PecasNecessarias> pecasNecessarias, List<Servico> servicos);
+    OrdemDeServico atualizarItensOrdemDeServico(int ordemDeServicoID, List<PecaItemInput> pecasNecessarias, List<Integer> servicosIds);
+
+    record PecaItemInput(int pecaId, int quantidade) {}
 }

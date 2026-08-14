@@ -63,6 +63,10 @@ class VeiculoServiceTest {
     }
 
     @Test void deveRemoverVeiculo() {
+        Veiculo existente = new Veiculo("ABC1234", "Toyota", "Corolla", 2020);
+
+        when(repository.buscarPorId("ABC1234")).thenReturn(Optional.of(existente));
+
         new RemoverVeiculoService(repository).removerVeiculo("ABC1234");
         verify(repository).remover("ABC1234");
     }

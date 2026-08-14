@@ -64,6 +64,9 @@ class ClienteServiceTest {
     }
 
     @Test void deveRemoverCliente() {
+        Cliente existente = new Cliente("123", "Joao", "joao@email.com", "11999999999");
+        when(repository.buscarPorId("123")).thenReturn(Optional.of(existente));
+
         new RemoverClienteService(repository).removerCliente("123");
         verify(repository).remover("123");
     }

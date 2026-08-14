@@ -9,6 +9,9 @@ import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.ObterPecaReq
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.PecaRequestDTO;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.PecaResponseDTO;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.ReporPecaRequestDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/pecas")
+@Tag(name = "Peças", description = "Gestão de peças em estoque")
 public class PecaController {
 
     private final CadastrarPecaUseCase cadastrarPeca;
@@ -33,6 +37,8 @@ public class PecaController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar peças", description = "Retorna uma lista de todas as peças cadastradas no estoque")
+    @ApiResponse(responseCode = "200", description = "Lista de peças retornada com sucesso")
     public ResponseEntity<List<PecaResponseDTO>> listarPecas() {
         List<PecaResponseDTO> response = listarPeca.listarPecas().stream()
                 .map(PecaResponseDTO::new)
@@ -41,6 +47,8 @@ public class PecaController {
     }
 
     @PostMapping("/criar")
+    @Operation(summary = "Cadastrar peça", description = "Cadastra uma nova peça no estoque")
+    @ApiResponse(responseCode = "201", description = "Peça cadastrada com sucesso")
     public ResponseEntity<PecaResponseDTO> cadastrarPeca(@Valid @RequestBody PecaRequestDTO request) {
         Peca novaPeca = cadastrarPeca.cadastrarPeca(request.descricao(), request.valor(), request.quantidade());
         PecaResponseDTO response = new PecaResponseDTO(novaPeca);
@@ -48,12 +56,17 @@ public class PecaController {
     }
 
     @PutMapping("/obter")
+    @Operation(summary = "Dar baixa em peça", description = "Retira uma quantidade de peças do estoque")
+    @ApiResponse(responseCode = "200", description = "Baixa realizada com sucesso")
+    @ApiResponse(responseCode = "400", description = "Quantidade insuficiente em estoque")
     public ResponseEntity<Object> ObterPeca(@Valid @RequestBody ObterPecaRequestDTO request) {
         obterPeca.obterPeca(request.id(), request.quantidade());
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/repor")
+    @Operation(summary = "Repor estoque de peça", description = "Adiciona uma quantidade de peças ao estoque existente")
+    @ApiResponse(responseCode = "200", description = "Reposição realizada com sucesso")
     public ResponseEntity<Object> ReporPeca(@Valid @RequestBody ReporPecaRequestDTO request) {
         reporPeca.reporEstoque(request.id(), request.quantidade());
         return ResponseEntity.ok().build();

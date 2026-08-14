@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class OrdemDeServicoServicesTest {
@@ -59,6 +58,34 @@ class OrdemDeServicoServicesTest {
         assertEquals(1, resultado.getPecasNecessarias().size());
         assertEquals(1, resultado.getServicos().size());
         assertEquals(160, resultado.getOrcamento());
+    }
+
+    @Test void deveLancarExcecaoQuandoAtualizarItensSemDados() {
+        AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
+        assertThrows(IllegalArgumentException.class, () -> service.atualizarItensOrdemDeServico(1, null, null));
+        assertThrows(IllegalArgumentException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(), List.of()));
+    }
+
+    @Test void deveLancarExcecaoQuandoOrdemNaoEncontrada() {
+        when(repository.buscarPorId(1)).thenReturn(Optional.empty());
+        AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
+        assertThrows(IllegalArgumentException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
+    }
+
+    @Test void deveLancarExcecaoQuandoStatusInvalidoParaAtualizarItens() {
+        OrdemDeServico ordem = ordem(StatusOS.RECEBIDA);
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(ordem));
+        AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
+        assertThrows(IllegalStateException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
+    }
+
+    @Test void deveLancarExcecaoQuandoPecaNaoEncontrada() {
+        OrdemDeServico ordem = ordem(StatusOS.EM_DIAGNOSTICO);
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(ordem));
+        when(pecaRepository.buscarPorId(1)).thenReturn(Optional.empty());
+        
+        AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
+        assertThrows(IllegalArgumentException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
     }
 
     @Test void deveIniciarDiagnostico() { assertTransicao(StatusOS.RECEBIDA, StatusOS.EM_DIAGNOSTICO, ordem -> new IniciarDiagnosticoService(repository).iniciarDiagnostico(1)); }

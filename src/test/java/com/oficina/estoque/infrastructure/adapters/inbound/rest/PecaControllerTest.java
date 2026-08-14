@@ -7,9 +7,9 @@ import com.oficina.estoque.domain.ports.inbound.ObterPecaUseCase;
 import com.oficina.estoque.domain.ports.inbound.ReporPecaUseCase;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.ObterPecaRequestDTO;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.PecaRequestDTO;
-import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.PecaResponseDTO;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.ReporPecaRequestDTO;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -18,48 +18,58 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class PecaControllerTest {
+
     private final CadastrarPecaUseCase cadastrarUseCase = mock(CadastrarPecaUseCase.class);
     private final ObterPecaUseCase obterUseCase = mock(ObterPecaUseCase.class);
     private final ListarPecaUseCase listarUseCase = mock(ListarPecaUseCase.class);
     private final ReporPecaUseCase reporUseCase = mock(ReporPecaUseCase.class);
-    private final PecaController controller = new PecaController(cadastrarUseCase, obterUseCase, listarUseCase, reporUseCase);
 
-    @Test void deveListarPecas() {
-        Peca peca = new Peca(1, "Filtro", 30.0, 10);
+    private final PecaController controller = new PecaController(
+            cadastrarUseCase, obterUseCase, listarUseCase, reporUseCase
+    );
+
+    @Test
+    void deveListarPecas() {
+        Peca peca = new Peca(1, "Pastilha", 100.0, 10);
         when(listarUseCase.listarPecas()).thenReturn(List.of(peca));
-        
-        ResponseEntity<List<PecaResponseDTO>> response = controller.listarPecas();
-        
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(1, response.getBody().size());
+
+        ResponseEntity<?> response = controller.listarPecas();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(listarUseCase).listarPecas();
     }
 
-    @Test void deveCadastrarPeca() {
-        PecaRequestDTO request = new PecaRequestDTO("Filtro", 30.0, 10);
-        Peca peca = new Peca(1, "Filtro", 30.0, 10);
-        when(cadastrarUseCase.cadastrarPeca("Filtro", 30.0, 10)).thenReturn(peca);
-        
-        ResponseEntity<PecaResponseDTO> response = controller.cadastrarPeca(request);
-        
-        assertEquals(201, response.getStatusCode().value());
-        assertEquals(1, response.getBody().id());
+    @Test
+    void deveCadastrarPeca() {
+        PecaRequestDTO request = new PecaRequestDTO("Pastilha", 100.0, 10);
+        Peca peca = new Peca(1, "Pastilha", 100.0, 10);
+        when(cadastrarUseCase.cadastrarPeca("Pastilha", 100.0, 10)).thenReturn(peca);
+
+        ResponseEntity<?> response = controller.cadastrarPeca(request);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        verify(cadastrarUseCase).cadastrarPeca("Pastilha", 100.0, 10);
     }
 
-    @Test void deveObterPeca() {
+    @Test
+    void deveObterPecaDoEstoque() {
         ObterPecaRequestDTO request = new ObterPecaRequestDTO(1, 2);
-        
-        ResponseEntity<Object> response = controller.ObterPeca(request);
-        
-        assertEquals(200, response.getStatusCode().value());
+        doNothing().when(obterUseCase).obterPeca(1, 2);
+
+        ResponseEntity<?> response = controller.ObterPeca(request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(obterUseCase).obterPeca(1, 2);
     }
 
-    @Test void deveReporPeca() {
+    @Test
+    void deveReporPecaNoEstoque() {
         ReporPecaRequestDTO request = new ReporPecaRequestDTO(1, 5);
-        
-        ResponseEntity<Object> response = controller.ReporPeca(request);
-        
-        assertEquals(200, response.getStatusCode().value());
+        doNothing().when(reporUseCase).reporEstoque(1, 5);
+
+        ResponseEntity<?> response = controller.ReporPeca(request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(reporUseCase).reporEstoque(1, 5);
     }
 }

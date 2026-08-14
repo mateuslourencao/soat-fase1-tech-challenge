@@ -39,6 +39,33 @@ class OrdemDeServicoJpaAdapterTest {
         verify(repository).save(entity);
     }
 
+    @Test void deveSalvarOrdemComPecasEServicos() {
+        com.oficina.estoque.domain.model.Peca peca = new com.oficina.estoque.domain.model.Peca(1, "Pastilha", 100.0, 10);
+        com.oficina.estoque.domain.model.Servico servico = new com.oficina.estoque.domain.model.Servico(2, "Mão de obra", 50.0);
+        
+        OrdemDeServico ordem = new OrdemDeServico(1, "123", "ABC1234", 
+            List.of(servico),
+            List.of(new com.oficina.manutencao.domain.model.PecasNecessarias(peca, 2)), 
+            250.0, StatusOS.RECEBIDA, null, null, "Queixa", null);
+
+        OrdemDeServicoEntity entity = new OrdemDeServicoEntity();
+        PecaEntity pecaEntity = mock(PecaEntity.class);
+        ServicoEntity servicoEntity = mock(ServicoEntity.class);
+
+        when(pecaRepository.getReferenceById(1)).thenReturn(pecaEntity);
+        when(servicoRepository.getReferenceById(2)).thenReturn(servicoEntity);
+        when(mapper.toEntity(eq(ordem), anyMap(), anyMap())).thenReturn(entity);
+        when(repository.save(entity)).thenReturn(entity);
+        when(mapper.toDomain(entity)).thenReturn(ordem);
+
+        OrdemDeServico resultado = adapter.salvar(ordem);
+
+        assertEquals(ordem, resultado);
+        verify(pecaRepository).getReferenceById(1);
+        verify(servicoRepository).getReferenceById(2);
+        verify(repository).save(entity);
+    }
+
     @Test void deveBuscarPorId() {
         OrdemDeServicoEntity entity = new OrdemDeServicoEntity();
         OrdemDeServico domain = new OrdemDeServico("123", "ABC1234", "Queixa");

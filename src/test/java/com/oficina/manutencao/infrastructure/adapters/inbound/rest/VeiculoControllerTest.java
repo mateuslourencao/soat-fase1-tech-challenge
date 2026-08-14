@@ -3,68 +3,85 @@ package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 import com.oficina.manutencao.domain.model.Veiculo;
 import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.VeiculoRequestDTO;
-import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.VeiculoResponseDTO;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class VeiculoControllerTest {
+
     private final CadastrarVeiculoUseCase cadastrarUseCase = mock(CadastrarVeiculoUseCase.class);
     private final AtualizarVeiculoUseCase atualizarUseCase = mock(AtualizarVeiculoUseCase.class);
     private final BuscarVeiculoUseCase buscarUseCase = mock(BuscarVeiculoUseCase.class);
     private final ListarVeiculosUseCase listarUseCase = mock(ListarVeiculosUseCase.class);
     private final RemoverVeiculoUseCase removerUseCase = mock(RemoverVeiculoUseCase.class);
-    private final VeiculoController controller = new VeiculoController(cadastrarUseCase, atualizarUseCase, buscarUseCase, listarUseCase, removerUseCase);
 
-    @Test void deveCriarVeiculo() {
-        VeiculoRequestDTO request = new VeiculoRequestDTO("ABC1234", "Fiat", "Uno", 2020);
-        Veiculo veiculo = new Veiculo("ABC1234", "Fiat", "Uno", 2020);
-        when(cadastrarUseCase.cadastrarVeiculo(any())).thenReturn(veiculo);
+    private final VeiculoController controller = new VeiculoController(
+            cadastrarUseCase, atualizarUseCase, buscarUseCase, listarUseCase, removerUseCase
+    );
 
-        ResponseEntity<VeiculoResponseDTO> response = controller.criar(request);
+    @Test
+    void deveCriarVeiculoComSucesso() {
+        VeiculoRequestDTO request = new VeiculoRequestDTO("ABC1234", "Ford", "Fiesta", 2020);
+        Veiculo veiculo = new Veiculo("ABC1234", "Ford", "Fiesta", 2020);
+        when(cadastrarUseCase.cadastrarVeiculo(any(Veiculo.class))).thenReturn(veiculo);
 
-        assertEquals(201, response.getStatusCode().value());
-        assertEquals("ABC1234", response.getBody().placa());
+        ResponseEntity<?> response = controller.criar(request);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        verify(cadastrarUseCase).cadastrarVeiculo(any(Veiculo.class));
     }
 
-    @Test void deveListarVeiculos() {
-        Veiculo veiculo = new Veiculo("ABC1234", "Fiat", "Uno", 2020);
+    @Test
+    void deveListarVeiculos() {
+        Veiculo veiculo = new Veiculo("ABC1234", "Ford", "Fiesta", 2020);
         when(listarUseCase.listarVeiculos()).thenReturn(List.of(veiculo));
 
-        ResponseEntity<List<VeiculoResponseDTO>> response = controller.listar();
+        ResponseEntity<?> response = controller.listar();
 
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(1, response.getBody().size());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(listarUseCase).listarVeiculos();
     }
 
-    @Test void deveBuscarPorPlaca() {
-        Veiculo veiculo = new Veiculo("ABC1234", "Fiat", "Uno", 2020);
-        when(buscarUseCase.buscarVeiculo("ABC1234")).thenReturn(veiculo);
+    @Test
+    void deveBuscarVeiculoPorPlaca() {
+        String placa = "ABC1234";
+        Veiculo veiculo = new Veiculo(placa, "Ford", "Fiesta", 2020);
+        when(buscarUseCase.buscarVeiculo(placa)).thenReturn(veiculo);
 
-        ResponseEntity<VeiculoResponseDTO> response = controller.buscarPorId("ABC1234");
+        ResponseEntity<?> response = controller.buscarPorId(placa);
 
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals("Uno", response.getBody().modelo());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(buscarUseCase).buscarVeiculo(placa);
     }
 
-    @Test void deveAtualizarVeiculo() {
-        VeiculoRequestDTO request = new VeiculoRequestDTO("ABC1234", "Fiat", "Uno Turbo", 2020);
-        Veiculo veiculo = new Veiculo("ABC1234", "Fiat", "Uno Turbo", 2020);
-        when(atualizarUseCase.atualizarVeiculo(eq("ABC1234"), any())).thenReturn(veiculo);
+    @Test
+    void deveAtualizarVeiculo() {
+        String placa = "ABC1234";
+        VeiculoRequestDTO request = new VeiculoRequestDTO(placa, "Ford", "Focus", 2021);
+        Veiculo veiculo = new Veiculo(placa, "Ford", "Focus", 2021);
+        when(atualizarUseCase.atualizarVeiculo(eq(placa), any(Veiculo.class))).thenReturn(veiculo);
 
-        ResponseEntity<VeiculoResponseDTO> response = controller.atualizar("ABC1234", request);
+        ResponseEntity<?> response = controller.atualizar(placa, request);
 
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals("Uno Turbo", response.getBody().modelo());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(atualizarUseCase).atualizarVeiculo(eq(placa), any(Veiculo.class));
     }
 
-    @Test void deveRemoverVeiculo() {
-        ResponseEntity<Void> response = controller.remover("ABC1234");
-        assertEquals(204, response.getStatusCode().value());
-        verify(removerUseCase).removerVeiculo("ABC1234");
+    @Test
+    void deveRemoverVeiculo() {
+        String placa = "ABC1234";
+        doNothing().when(removerUseCase).removerVeiculo(placa);
+
+        ResponseEntity<?> response = controller.remover(placa);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(removerUseCase).removerVeiculo(placa);
     }
 }

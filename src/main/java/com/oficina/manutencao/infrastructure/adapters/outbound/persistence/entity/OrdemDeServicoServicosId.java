@@ -21,4 +21,26 @@ public class OrdemDeServicoServicosId implements Serializable {
         this.servicoId = servicoId;
     }
 
+    public int getOrdemDeServicoId() {
+        return ordemDeServicoId;
+    }
+
+    public int getServicoId() {
+        return servicoId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrdemDeServicoServicosId that = (OrdemDeServicoServicosId) o;
+        return ordemDeServicoId == that.ordemDeServicoId && servicoId == that.servicoId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = ordemDeServicoId;
+        result = 31 * result + servicoId;
+        return result;
+    }
 }

@@ -9,4 +9,15 @@ public class FuncionarioPersistenceMapper {
     public Funcionario toDomain(FuncionarioEntity entity) {
         return new Funcionario(entity.getId(), entity.getNome(), entity.getEmail(), entity.getSenhaHash(), entity.getPerfil(), entity.isAtivo());
     }
+
+    public FuncionarioEntity toEntity(Funcionario funcionario) {
+        return new FuncionarioEntity(
+                funcionario.getId(),
+                funcionario.getNome(),
+                funcionario.getEmail(),
+                funcionario.getSenhaHash(),
+                funcionario.getPerfil(),
+                funcionario.isAtivo()
+        );
+    }
 }

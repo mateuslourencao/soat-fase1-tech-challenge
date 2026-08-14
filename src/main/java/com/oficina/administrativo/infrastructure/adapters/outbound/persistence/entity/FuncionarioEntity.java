@@ -28,6 +28,15 @@ public class FuncionarioEntity {
 
     protected FuncionarioEntity() { }
 
+    public FuncionarioEntity(int id, String nome, String email, String senhaHash, PerfilFuncionario perfil, boolean ativo) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.senhaHash = senhaHash;
+        this.perfil = perfil;
+        this.ativo = ativo;
+    }
+
     public int getId() { return id; }
     public String getNome() { return nome; }
     public String getEmail() { return email; }

@@ -1,92 +1,55 @@
 package com.oficina.estoque.application.service;
-
+    
 import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
 
 class PecaServiceTest {
+    private final PecaRepositoryPort repository = mock(PecaRepositoryPort.class);
+    private final PecaService service = new PecaService(repository);
 
-    @Test
-    void deveReporEstoqueDaPeca() {
-        Peca pecaTemp = new Peca(1, "Filtro de oleo", 35.0, 10);
-        PecaRepositoryEmMemoria repositoryEmMemoria = new PecaRepositoryEmMemoria(pecaTemp);
-        PecaService service = new PecaService(repositoryEmMemoria);
+    @Test void deveReporEstoqueDaPeca() {
+        Peca peca = new Peca(1, "Filtro de oleo", 35.0, 10);
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(peca));
+        when(repository.salvar(any(Peca.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Peca pecaReposta = service.reporEstoque(1, 5);
 
         assertEquals(15, pecaReposta.getQuantidade());
-        assertSame(pecaReposta, repositoryEmMemoria.pecaSalva);
+        verify(repository).salvar(pecaReposta);
     }
 
-    @Test
-    void deveListarPecas() {
-        Peca pecaTemp = new Peca(1, "Filtro de oleo", 35.0, 10);
-        PecaRepositoryEmMemoria repositoryMemoria = new PecaRepositoryEmMemoria(pecaTemp);
-        PecaService service = new PecaService(repositoryMemoria);
-        List<Peca> listaPecasEsperada = Arrays.asList(pecaTemp);
-
-        List<Peca> pecas = service.listarPecas();
-
-        assertEquals(pecas, listaPecasEsperada);
-
+    @Test void deveListarPecas() {
+        List<Peca> pecasEsperadas = List.of(new Peca(1, "Filtro de oleo", 35.0, 10));
+        when(repository.listarPecas()).thenReturn(pecasEsperadas);
+        assertSame(pecasEsperadas, service.listarPecas());
     }
 
-    @Test
-    void deveObterPeca() {
-        Peca pecaTemp = new Peca(1, "Filtro de oleo", 35.0, 10);
-        PecaRepositoryEmMemoria repositoryMemoria = new PecaRepositoryEmMemoria(pecaTemp);
-        PecaService service = new PecaService(repositoryMemoria);
+    @Test void deveObterPeca() {
+        Peca peca = new Peca(1, "Filtro de oleo", 35.0, 10);
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(peca));
+        when(repository.salvar(any(Peca.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Peca peca = service.obterPeca(1,1);
+        Peca resultado = service.obterPeca(1, 1);
 
-        assertEquals(peca.getQuantidade(), 9);
+        assertEquals(9, resultado.getQuantidade());
+        verify(repository).salvar(resultado);
     }
 
-    @Test
-    void deveCadastrarPeca() {
-        Peca pecaTemp = new Peca("Filtro de oleo", 35.0, 10);
-        PecaRepositoryEmMemoria repositoryMemoria = new PecaRepositoryEmMemoria();
-        PecaService service = new PecaService(repositoryMemoria);
+    @Test void deveCadastrarPeca() {
+        Peca peca = new Peca(1, "Filtro de oleo", 35.0, 10);
+        when(repository.salvar(any(Peca.class))).thenReturn(peca);
 
-        Peca peca = service.cadastrarPeca(pecaTemp.getDescricao(), pecaTemp.getValor(), 10);
+        Peca resultado = service.cadastrarPeca("Filtro de oleo", 35.0, 10);
 
-        assertEquals(peca.getDescricao(), "Filtro de oleo");
-        assertEquals(pecaTemp.getValor(), peca.getValor());
-        assertEquals(pecaTemp.getQuantidade(), 10);
-
-    }
-
-    private static class PecaRepositoryEmMemoria implements PecaRepositoryPort {
-        private Peca pecaTemporaria;
-        private Peca pecaSalva;
-
-        private PecaRepositoryEmMemoria(Peca pecaTemporaria) {
-            this.pecaTemporaria = pecaTemporaria;
-        }
-
-        private PecaRepositoryEmMemoria() {}
-
-        @Override
-        public Peca salvar(Peca peca) {
-            pecaSalva = peca;
-            return peca;
-        }
-
-        @Override
-        public Optional<Peca> buscarPorId(int id) {
-            return pecaTemporaria.getId() == id ? Optional.of(pecaTemporaria) : Optional.empty();
-        }
-
-        @Override
-        public List<Peca> listarPecas() {
-            return List.of(pecaTemporaria);
-        }
+        assertSame(peca, resultado);
+        verify(repository).salvar(any(Peca.class));
     }
 }

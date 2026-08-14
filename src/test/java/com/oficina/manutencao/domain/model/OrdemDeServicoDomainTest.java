@@ -24,7 +24,11 @@ class OrdemDeServicoDomainTest {
 
     @Test void deveRegistrarAtualizacaoDeItensECalcularOrcamento() {
         OrdemDeServico os = new OrdemDeServico("123", "ABC1234", "Revisao");
-        
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         Peca peca = new Peca(1, "Oleo", 50.0, 10);
         PecasNecessarias itemPeca = new PecasNecessarias(peca, 2); // 100.0
         Servico servico = new Servico(1, "Mao de obra", 150.0); // 150.0

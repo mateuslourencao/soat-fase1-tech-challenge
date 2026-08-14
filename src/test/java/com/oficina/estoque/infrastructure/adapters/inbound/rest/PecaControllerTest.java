@@ -53,8 +53,9 @@ class PecaControllerTest {
 
     @Test
     void deveObterPecaDoEstoque() {
+        Peca peca = new Peca(1, "Pastilha", 100.0, 10);
         ObterPecaRequestDTO request = new ObterPecaRequestDTO(1, 2);
-        doNothing().when(obterUseCase).obterPeca(1, 2);
+        when(obterUseCase.obterPeca(1, 2)).thenReturn(peca);
 
         ResponseEntity<?> response = controller.ObterPeca(request);
 
@@ -64,8 +65,9 @@ class PecaControllerTest {
 
     @Test
     void deveReporPecaNoEstoque() {
+        Peca peca = new Peca(1, "Pastilha", 100.0, 10);
         ReporPecaRequestDTO request = new ReporPecaRequestDTO(1, 5);
-        doNothing().when(reporUseCase).reporEstoque(1, 5);
+        when(reporUseCase.reporEstoque(1, 5)).thenReturn(peca);
 
         ResponseEntity<?> response = controller.ReporPeca(request);
 

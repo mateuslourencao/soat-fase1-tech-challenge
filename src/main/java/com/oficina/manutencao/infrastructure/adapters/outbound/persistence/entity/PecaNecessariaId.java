@@ -20,4 +20,27 @@ public class PecaNecessariaId implements Serializable {
         this.ordemDeServicoId = ordemDeServicoId;
         this.pecaId = pecaId;
     }
+
+    public int getOrdemDeServicoId() {
+        return ordemDeServicoId;
+    }
+
+    public int getPecaId() {
+        return pecaId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PecaNecessariaId that = (PecaNecessariaId) o;
+        return ordemDeServicoId == that.ordemDeServicoId && pecaId == that.pecaId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = ordemDeServicoId;
+        result = 31 * result + pecaId;
+        return result;
+    }
 }

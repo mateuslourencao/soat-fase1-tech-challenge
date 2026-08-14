@@ -85,6 +85,40 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<executions>
+					<execution>
+						<id>prepare-coverage-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>generate-coverage-report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>com/oficina/SoatTechChallengeApplication.class</exclude>
+								<exclude>**/domain/ports/**/*.class</exclude>
+
+								<exclude>**/infrastructure/adapters/inbound/rest/dto/**/*.class</exclude>
+								<exclude>**/domain/model/*Status*.class</exclude>
+								<exclude>**/domain/model/*Perfil*.class</exclude>
+
+								<exclude>**/infrastructure/adapters/outbound/persistence/entity/**/*.class</exclude>
+
+								<exclude>**/infrastructure/config/**/*.class</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

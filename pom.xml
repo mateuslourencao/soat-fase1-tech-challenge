@@ -77,6 +77,11 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -114,6 +119,7 @@
 								<exclude>**/infrastructure/adapters/outbound/persistence/entity/**/*.class</exclude>
 
 								<exclude>**/infrastructure/config/**/*.class</exclude>
+								<exclude>**/common/infrastructure/rest/GlobalExceptionHandler.class</exclude>
 							</excludes>
 						</configuration>
 					</execution>

@@ -14,42 +14,165 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class FuncionarioServicesTest {
+
     @Test
-    void deveCadastrarFuncionarioComSenhaCriptografada() {
+    void deveCadastrarFuncionarioComSucesso() {
         FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
-        SenhaCriptografadaPort senha = mock(SenhaCriptografadaPort.class);
+        SenhaCriptografadaPort senhaPort = mock(SenhaCriptografadaPort.class);
         Funcionario funcionario = new Funcionario(0, "Ana", " ANA@OFICINA.COM ", null, PerfilFuncionario.MECANICO, false);
+        
         when(repository.buscarPorEmail("ana@oficina.com")).thenReturn(Optional.empty());
-        when(senha.criptografar("segredo")).thenReturn("hash");
+        when(senhaPort.criptografar("segredo")).thenReturn("hash");
         when(repository.salvar(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Funcionario salvo = new CadastrarFuncionarioService(repository, senha).cadastrarFuncionario(funcionario, "segredo");
+        Funcionario salvo = new CadastrarFuncionarioService(repository, senhaPort).cadastrarFuncionario(funcionario, "segredo");
 
-        assertAll(() -> assertEquals("Ana", salvo.getNome()), () -> assertEquals("ana@oficina.com", salvo.getEmail()),
-                () -> assertEquals("hash", salvo.getSenhaHash()), () -> assertTrue(salvo.isAtivo()));
+        assertAll(
+            () -> assertEquals("Ana", salvo.getNome()),
+            () -> assertEquals("ana@oficina.com", salvo.getEmail()),
+            () -> assertEquals("hash", salvo.getSenhaHash()),
+            () -> assertTrue(salvo.isAtivo())
+        );
     }
 
     @Test
-    void deveListarBuscarAtualizarEAlterarStatus() {
+    void deveLancarExcecaoAoCadastrarComDadosInvalidos() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        SenhaCriptografadaPort senhaPort = mock(SenhaCriptografadaPort.class);
+        CadastrarFuncionarioService service = new CadastrarFuncionarioService(repository, senhaPort);
+
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(null, "senha"));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "", "email@email.com", null, PerfilFuncionario.MECANICO, true), "senha"));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "Nome", "", null, PerfilFuncionario.MECANICO, true), "senha"));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "Nome", "email@email.com", null, null, true), "senha"));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "Nome", "email@email.com", null, PerfilFuncionario.MECANICO, true), ""));
+    }
+
+    @Test
+    void deveLancarExcecaoAoCadastrarEmailDuplicado() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        SenhaCriptografadaPort senhaPort = mock(SenhaCriptografadaPort.class);
+        Funcionario funcionario = new Funcionario(0, "Ana", "ana@oficina.com", null, PerfilFuncionario.MECANICO, true);
+        
+        when(repository.buscarPorEmail("ana@oficina.com")).thenReturn(Optional.of(funcionario));
+        CadastrarFuncionarioService service = new CadastrarFuncionarioService(repository, senhaPort);
+
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(funcionario, "senha"));
+    }
+
+    @Test
+    void deveBuscarFuncionarioComSucesso() {
         FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         Funcionario existente = new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, true);
         when(repository.buscarPorId(1)).thenReturn(Optional.of(existente));
+
+        Funcionario buscado = new BuscarFuncionarioService(repository).buscarFuncionario(1);
+
+        assertSame(existente, buscado);
+    }
+
+    @Test
+    void deveListarFuncionarios() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        List<Funcionario> lista = List.of(new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, true));
+        when(repository.listarTodos()).thenReturn(lista);
+
+        List<Funcionario> resultado = new ListarFuncionariosService(repository).listarFuncionarios();
+
+        assertEquals(lista, resultado);
+    }
+
+    @Test
+    void deveAtualizarFuncionarioComSucesso() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        Funcionario existente = new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, true);
+        Funcionario novosDados = new Funcionario(0, "Ana Silva", " NOVO@OFICINA.COM ", null, PerfilFuncionario.ADMIN, false);
+        
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(existente));
         when(repository.buscarPorEmail("novo@oficina.com")).thenReturn(Optional.empty());
-        when(repository.listarTodos()).thenReturn(List.of(existente));
         when(repository.salvar(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        assertSame(existente, new BuscarFuncionarioService(repository).buscarFuncionario(1));
-        assertEquals(List.of(existente), new ListarFuncionariosService(repository).listarFuncionarios());
-        Funcionario atualizado = new AtualizarFuncionarioService(repository)
-                .atualizarFuncionario(1, new Funcionario(1, "Ana Silva", "novo@oficina.com", null, PerfilFuncionario.ADMIN, false));
-        assertAll(() -> assertEquals("Ana Silva", atualizado.getNome()), () -> assertEquals("hash", atualizado.getSenhaHash()),
-                () -> assertTrue(atualizado.isAtivo()));
+        Funcionario atualizado = new AtualizarFuncionarioService(repository).atualizarFuncionario(1, novosDados);
 
-        AtivarFuncionarioService ativarService = new AtivarFuncionarioService(repository);
-        InativarFuncionarioService inativarService = new InativarFuncionarioService(repository);
-        inativarService.inativarFuncionario(1);
-        verify(repository, atLeastOnce()).salvar(argThat(funcionario -> !funcionario.isAtivo()));
-        ativarService.ativarFuncionario(1);
-        verify(repository, atLeastOnce()).salvar(argThat(Funcionario::isAtivo));
+        assertAll(
+            () -> assertEquals("Ana Silva", atualizado.getNome()),
+            () -> assertEquals("novo@oficina.com", atualizado.getEmail()),
+            () -> assertEquals(PerfilFuncionario.ADMIN, atualizado.getPerfil()),
+            () -> assertEquals("hash", atualizado.getSenhaHash()),
+            () -> assertTrue(atualizado.isAtivo())
+        );
+    }
+
+    @Test
+    void deveLancarExcecaoAoAtualizarDadosInvalidos() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        AtualizarFuncionarioService service = new AtualizarFuncionarioService(repository);
+
+        assertThrows(IllegalArgumentException.class, () -> service.atualizarFuncionario(1, null));
+        assertThrows(IllegalArgumentException.class, () -> service.atualizarFuncionario(1, new Funcionario(0, "", "e@e.com", null, PerfilFuncionario.MECANICO, true)));
+    }
+
+    @Test
+    void deveLancarExcecaoAoAtualizarFuncionarioNaoEncontrado() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        when(repository.buscarPorId(1)).thenReturn(Optional.empty());
+        AtualizarFuncionarioService service = new AtualizarFuncionarioService(repository);
+        Funcionario novosDados = new Funcionario(0, "Ana Silva", "novo@oficina.com", null, PerfilFuncionario.ADMIN, false);
+
+        assertThrows(RuntimeException.class, () -> service.atualizarFuncionario(1, novosDados));
+    }
+
+    @Test
+    void deveLancarExcecaoAoAtualizarEmailJaExistenteEmOutroFuncionario() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        Funcionario existente = new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, true);
+        Funcionario outro = new Funcionario(2, "Joao", "joao@oficina.com", "hash2", PerfilFuncionario.MECANICO, true);
+        Funcionario novosDados = new Funcionario(0, "Ana Silva", "joao@oficina.com", null, PerfilFuncionario.ADMIN, false);
+        
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(existente));
+        when(repository.buscarPorEmail("joao@oficina.com")).thenReturn(Optional.of(outro));
+
+        AtualizarFuncionarioService service = new AtualizarFuncionarioService(repository);
+        assertThrows(IllegalArgumentException.class, () -> service.atualizarFuncionario(1, novosDados));
+    }
+
+    @Test
+    void deveAtivarFuncionarioComSucesso() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        Funcionario inativo = new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, false);
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(inativo));
+
+        new AtivarFuncionarioService(repository).ativarFuncionario(1);
+
+        verify(repository).salvar(argThat(Funcionario::isAtivo));
+    }
+
+    @Test
+    void deveLancarExcecaoAoAtivarFuncionarioInexistente() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        when(repository.buscarPorId(1)).thenReturn(Optional.empty());
+        
+        AtivarFuncionarioService service = new AtivarFuncionarioService(repository);
+        assertThrows(RuntimeException.class, () -> service.ativarFuncionario(1));
+    }
+
+    @Test
+    void deveInativarFuncionarioComSucesso() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        Funcionario ativo = new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, true);
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(ativo));
+
+        new InativarFuncionarioService(repository).inativarFuncionario(1);
+
+        verify(repository).salvar(argThat(f -> !f.isAtivo()));
+    }
+
+    @Test
+    void deveLancarExcecaoAoInativarFuncionarioInexistente() {
+        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
+        when(repository.buscarPorId(1)).thenReturn(Optional.empty());
+        
+        InativarFuncionarioService service = new InativarFuncionarioService(repository);
+        assertThrows(RuntimeException.class, () -> service.inativarFuncionario(1));
     }
 }

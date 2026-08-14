@@ -1,0 +1,385 @@
+{
+	"_type": "export",
+	"__export_format": 4,
+	"__export_date": "2024-05-20T00:00:00.000Z",
+	"__export_source": "insomnia.desktop.app:v2023.5.8",
+	"resources": [
+		{
+			"_id": "wrk_1",
+			"parentId": null,
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"name": "SOAT Oficina Mecânica",
+			"description": "Collection para o Tech Challenge da Pós-Tech SOAT (Fase 1)",
+			"scope": "collection",
+			"_type": "workspace"
+		},
+		{
+			"_id": "env_1",
+			"parentId": "wrk_1",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"name": "Base Environment",
+			"data": {
+				"base_url": "http://localhost:8080/api/v1",
+				"jwt_token": ""
+			},
+			"dataPropertyOrder": {
+				"&": [
+					"base_url",
+					"jwt_token"
+				]
+			},
+			"color": null,
+			"isPrivate": false,
+			"metaSortKey": 1716163200000,
+			"_type": "environment"
+		},
+		{
+			"_id": "fld_1",
+			"parentId": "wrk_1",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"name": "1. Administrativo (Autenticação e Funcionários)",
+			"description": "",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1716163200000,
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_1",
+			"parentId": "fld_1",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/administrativo/autenticacao",
+			"name": "Login (Gerar Token)",
+			"description": "Autentica um funcionário e retorna o JWT. Copie o token retornado para a variável 'jwt_token' no Environment.",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"email\": \"admin@oficina.com\",\n  \"senha\": \"admin123\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1716163200000,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_2",
+			"parentId": "fld_1",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/administrativo/funcionarios",
+			"name": "Cadastrar Funcionário",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"nome\": \"João Mecânico\",\n  \"email\": \"joao@oficina.com\",\n  \"senha\": \"senha123\",\n  \"perfil\": \"MECANICO\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200001,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_3",
+			"parentId": "fld_1",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/administrativo/funcionarios",
+			"name": "Listar Funcionários",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200002,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "fld_2",
+			"parentId": "wrk_1",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"name": "2. Clientes e Veículos",
+			"description": "",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1716163200001,
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_4",
+			"parentId": "fld_2",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/clientes",
+			"name": "Cadastrar Cliente",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"nome\": \"Cliente Exemplo\",\n  \"documento\": \"12345678901\",\n  \"email\": \"cliente@gmail.com\",\n  \"telefone\": \"11988887777\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200000,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_5",
+			"parentId": "fld_2",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/veiculos",
+			"name": "Cadastrar Veículo",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"placa\": \"ABC1234\",\n  \"modelo\": \"Civic\",\n  \"marca\": \"Honda\",\n  \"ano\": 2022,\n  \"documentoCliente\": \"12345678901\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200001,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "fld_3",
+			"parentId": "wrk_1",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"name": "3. Estoque (Peças e Serviços)",
+			"description": "",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1716163200002,
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_6",
+			"parentId": "fld_3",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/pecas",
+			"name": "Cadastrar Peça",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"nome\": \"Pastilha de Freio\",\n  \"quantidade\": 10,\n  \"precoUnitario\": 150.00\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200000,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_7",
+			"parentId": "fld_3",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/servicos",
+			"name": "Cadastrar Serviço",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"descricao\": \"Troca de Óleo\",\n  \"valor\": 250.00\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200001,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_8",
+			"parentId": "fld_3",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/servicos",
+			"name": "Listar Serviços",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200002,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "fld_4",
+			"parentId": "wrk_1",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"name": "4. Manutenção (Ordens de Serviço)",
+			"description": "",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1716163200003,
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_9",
+			"parentId": "fld_4",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/ordensdeservico",
+			"name": "Abrir Ordem de Serviço",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"placaVeiculo\": \"ABC1234\",\n  \"documentoCliente\": \"12345678901\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200000,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_10",
+			"parentId": "fld_4",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/ordensdeservico/1/itens",
+			"name": "Adicionar Itens à OS",
+			"description": "Substitua o '1' na URL pelo ID da OS retornada no passo anterior.",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"servicosIds\": [1],\n  \"pecasIds\": [1]\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200001,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_11",
+			"parentId": "fld_4",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/ordensdeservico/1",
+			"name": "Buscar OS por ID (Público)",
+			"description": "Endpoint público. Não exige JWT.",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1716163200002,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_12",
+			"parentId": "fld_4",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/ordensdeservico",
+			"name": "Listar todas as OS",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200003,
+			"isPrivate": false,
+			"_type": "request"
+		}
+	]
+}

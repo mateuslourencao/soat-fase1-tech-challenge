@@ -1,10 +1,7 @@
 package com.oficina.estoque.infrastructure.adapters.inbound.rest;
 
 import com.oficina.estoque.domain.model.Peca;
-import com.oficina.estoque.domain.ports.inbound.CadastrarPecaUseCase;
-import com.oficina.estoque.domain.ports.inbound.ListarPecaUseCase;
-import com.oficina.estoque.domain.ports.inbound.ObterPecaUseCase;
-import com.oficina.estoque.domain.ports.inbound.ReporPecaUseCase;
+import com.oficina.estoque.domain.ports.inbound.*;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.ObterPecaRequestDTO;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.PecaRequestDTO;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.ReporPecaRequestDTO;
@@ -23,9 +20,11 @@ class PecaControllerTest {
     private final ObterPecaUseCase obterUseCase = mock(ObterPecaUseCase.class);
     private final ListarPecaUseCase listarUseCase = mock(ListarPecaUseCase.class);
     private final ReporPecaUseCase reporUseCase = mock(ReporPecaUseCase.class);
+    private final AtualizarPecaUseCase atualizarUseCase = mock(AtualizarPecaUseCase.class);
+    private final RemoverPecaUseCase removerUseCase = mock(RemoverPecaUseCase.class);
 
     private final PecaController controller = new PecaController(
-            cadastrarUseCase, obterUseCase, listarUseCase, reporUseCase
+            cadastrarUseCase, obterUseCase, listarUseCase, reporUseCase, atualizarUseCase, removerUseCase
     );
 
     @Test
@@ -73,5 +72,27 @@ class PecaControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(reporUseCase).reporEstoque(1, 5);
+    }
+
+    @Test
+    void deveAtualizarPeca() {
+        int id = 1;
+        PecaRequestDTO request = new PecaRequestDTO("Pastilha Atualizada", 120.0, 15);
+        Peca peca = new Peca(id, "Pastilha Atualizada", 120.0, 15);
+        when(atualizarUseCase.atualizarPeca(any(Peca.class))).thenReturn(peca);
+
+        ResponseEntity<?> response = controller.atualizarPeca(id, request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(atualizarUseCase).atualizarPeca(any(Peca.class));
+    }
+
+    @Test
+    void deveRemoverPeca() {
+        int id = 1;
+        ResponseEntity<Void> response = controller.removerPeca(id);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(removerUseCase).removerPeca(id);
     }
 }

@@ -30,8 +30,13 @@ public class PecaJpaAdapter implements PecaRepositoryPort {
         return repository.findById(id).map(mapper::toDomain);
     }
 
+    @Override
     public List<Peca> listarPecas() {
-        List<Peca> pecas = repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
-        return pecas;
+        return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deletar(int id) {
+        repository.deleteById(id);
     }
 }

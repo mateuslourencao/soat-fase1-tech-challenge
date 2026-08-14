@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class PecaConfig {
     @Bean
-    PecaService PecaService(PecaRepositoryPort pecaRepository) {
+    PecaService pecaService(PecaRepositoryPort pecaRepository) {
         return new PecaService(pecaRepository);
     }
 }

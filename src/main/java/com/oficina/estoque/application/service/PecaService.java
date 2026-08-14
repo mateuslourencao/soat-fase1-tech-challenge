@@ -1,16 +1,14 @@
 package com.oficina.estoque.application.service;
 
 import com.oficina.estoque.domain.model.Peca;
-import com.oficina.estoque.domain.ports.inbound.CadastrarPecaUseCase;
-import com.oficina.estoque.domain.ports.inbound.ListarPecaUseCase;
-import com.oficina.estoque.domain.ports.inbound.ObterPecaUseCase;
-import com.oficina.estoque.domain.ports.inbound.ReporPecaUseCase;
+import com.oficina.estoque.domain.ports.inbound.*;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
 
 import java.util.List;
 
 public class PecaService implements CadastrarPecaUseCase,
-        ObterPecaUseCase, ReporPecaUseCase, ListarPecaUseCase {
+        ObterPecaUseCase, ReporPecaUseCase, ListarPecaUseCase,
+        AtualizarPecaUseCase, RemoverPecaUseCase {
     private final PecaRepositoryPort pecaRepository;
 
     public PecaService(PecaRepositoryPort pecaRepository) {
@@ -46,7 +44,19 @@ public class PecaService implements CadastrarPecaUseCase,
 
     @Override
     public List<Peca> listarPecas() {
-        List<Peca> pecas = pecaRepository.listarPecas();
-        return pecas;
+        return pecaRepository.listarPecas();
+    }
+
+    @Override
+    public Peca atualizarPeca(Peca peca) {
+        Peca pecaExistente = buscaPeca(peca.getId());
+        validarCadastro(peca.getDescricao(), peca.getValor(), peca.getQuantidade());
+        return pecaRepository.salvar(peca);
+    }
+
+    @Override
+    public void removerPeca(int id) {
+        buscaPeca(id);
+        pecaRepository.deletar(id);
     }
 }

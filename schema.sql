@@ -5,33 +5,33 @@ CREATE DATABASE IF NOT EXISTS oficina
 USE oficina;
 
 CREATE TABLE clientes (
-    nome VARCHAR(255),
-    email VARCHAR(255),
     documento VARCHAR(20) NOT NULL,
-    telefone VARCHAR(50),
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    telefone VARCHAR(50) NOT NULL,
     PRIMARY KEY (documento)
 ) ENGINE=InnoDB;
 
 CREATE TABLE veiculos (
     placa VARCHAR(10) NOT NULL,
-    marca VARCHAR(255),
-    modelo VARCHAR(255),
-    ano INT,
+    marca VARCHAR(255) NOT NULL,
+    modelo VARCHAR(255) NOT NULL,
+    ano INT NOT NULL,
     PRIMARY KEY (placa)
 ) ENGINE=InnoDB;
 
 CREATE TABLE pecas (
     id INT NOT NULL AUTO_INCREMENT,
-    descricao VARCHAR(255),
-    valor DECIMAL(10,2),
-    quantidade INT,
+    descricao VARCHAR(255) NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    quantidade INT NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE servicos (
     id INT NOT NULL AUTO_INCREMENT,
-    descricao VARCHAR(255),
-    valor DECIMAL(10,2),
+    descricao VARCHAR(255) NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
@@ -67,8 +67,8 @@ CREATE TABLE funcionarios (
     id INT NOT NULL AUTO_INCREMENT,
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    senha_hash VARCHAR(100) NOT NULL,
-    perfil ENUM('ADMIN', 'MECANICO', 'ATENDENTE') NOT NULL,
+    senha_hash VARCHAR(255) NOT NULL,
+    perfil VARCHAR(50) NOT NULL,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id),
     UNIQUE KEY uk_funcionarios_email (email)

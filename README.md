@@ -43,6 +43,11 @@ Isso iniciará:
 
 A aplicação aguardará o banco de dados estar pronto antes de iniciar (via `restart: on-failure`).
 
+### 🗄️ Estrutura do Banco de Dados
+Embora o Hibernate esteja configurado para criar as tabelas automaticamente (`ddl-auto: update`), fornecemos um script SQL completo para referência ou criação manual.
+- **Arquivo**: `schema.sql` (na raiz do projeto).
+- **Conteúdo**: Definição de tabelas, índices e restrições.
+
 ### Executando Localmente
 
 1. Certifique-se de ter um banco MySQL rodando.
@@ -55,6 +60,16 @@ A aplicação aguardará o banco de dados estar pronto antes de iniciar (via `re
 ```bash
 mvn clean spring-boot:run
 ```
+
+### 📥 Insomnia Collection
+Para facilitar os testes dos endpoints, incluímos uma collection do Insomnia na raiz do projeto:
+- **Arquivo**: `oficina-insomnia-collection.json`
+- **Como usar**:
+  1. Abra o Insomnia.
+  2. Clique em **Import** e selecione o arquivo.
+  3. No ambiente (Environment), a variável `base_url` já está configurada para `http://localhost:8080/api/v1`.
+  4. Realize o login no endpoint de **Autenticação** para obter o token.
+  5. Copie o token para a variável `jwt_token` no Environment para habilitar a autenticação automática nos demais requests.
 
 ## 📖 Documentação da API (Swagger)
 

@@ -1,5 +1,8 @@
 # Oficina Mecânica - SOAT Tech Challenge
 
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=mateuslourencao_soat-fase1-tech-challenge&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mateuslourencao_soat-fase1-tech-challenge)
+
+
 Este projeto é um MVP de um Sistema de Oficina Mecânica, desenvolvido como parte do Tech Challenge da Pós-Graduação em Arquitetura de Software (SOAT). A aplicação gerencia o fluxo administrativo, de estoque e de manutenção de uma oficina.
 
 ## 🛠 Tecnologias Utilizadas

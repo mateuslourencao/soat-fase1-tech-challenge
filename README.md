@@ -150,4 +150,11 @@ Nota: Este comando irá recompilar o projeto, executar toda a suíte de testes (
 **5. Visualizar o Relatório**
 Após aparecer BUILD SUCCESS no terminal, volte ao navegador em http://localhost:9000 para visualizar o dashboard completo com os Security Hotspots, Code Smells e a cobertura de testes da arquitetura.
 
+Você também pode conferir o relatório completo, detalhado e atualizado ao vivo acessando o painel público do nosso projeto no SonarCloud:
+
+📊 **[Acessar o Dashboard do SonarCloud](https://sonarcloud.io/summary/overall?id=mateuslourencao_soat-fase1-tech-challenge&branch=main)**
+
+
+
 A configuração do Jacoco no `pom.xml` inclui exclusões para classes de configuração, DTOs, entidades e classes geradas, focando a métrica na lógica de negócio (Use Cases e Modelos).
+

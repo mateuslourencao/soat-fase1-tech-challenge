@@ -75,23 +75,26 @@ class OrdemDeServicoServicesTest {
     @Test void deveLancarExcecaoQuandoOrdemNaoEncontrada() {
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
-        assertThrows(EntidadeNaoEncontradaException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
+        List<AtualizarItensOrdemDeServicoUseCase.PecaItemInput> pecas = List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.atualizarItensOrdemDeServico(1, pecas, null));
     }
 
     @Test void deveLancarExcecaoQuandoStatusInvalidoParaAtualizarItens() {
         OrdemDeServico ordem = ordem(StatusOS.RECEBIDA);
         when(repository.buscarPorId(1)).thenReturn(Optional.of(ordem));
         AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
-        assertThrows(IllegalStateException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
+        List<AtualizarItensOrdemDeServicoUseCase.PecaItemInput> pecas = List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1));
+        assertThrows(IllegalStateException.class, () -> service.atualizarItensOrdemDeServico(1, pecas, null));
     }
 
     @Test void deveLancarExcecaoQuandoPecaNaoEncontrada() {
         OrdemDeServico ordem = ordem(StatusOS.EM_DIAGNOSTICO);
         when(repository.buscarPorId(1)).thenReturn(Optional.of(ordem));
         when(pecaRepository.buscarPorId(1)).thenReturn(Optional.empty());
-        
+
         AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
-        assertThrows(EntidadeNaoEncontradaException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
+        List<AtualizarItensOrdemDeServicoUseCase.PecaItemInput> pecas = List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.atualizarItensOrdemDeServico(1, pecas, null));
     }
 
     @Test void deveIniciarDiagnostico() { assertTransicao(StatusOS.RECEBIDA, StatusOS.EM_DIAGNOSTICO, ordem -> new IniciarDiagnosticoService(repository).iniciarDiagnostico(1)); }

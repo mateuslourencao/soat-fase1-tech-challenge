@@ -34,10 +34,8 @@ class AutenticarFuncionarioServiceTest {
 
     @Test void deveLancarExcecaoQuandoEmailNaoEncontrado() {
         when(repository.buscarPorEmail("invalido@oficina.com")).thenReturn(Optional.empty());
-        
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> 
-            service.autenticar("invalido@oficina.com", "senha123")
-        );
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> service.autenticar("invalido@oficina.com", "senha123"));
         assertEquals("Credenciais invalidas", exception.getMessage());
     }
 
@@ -46,9 +44,7 @@ class AutenticarFuncionarioServiceTest {
         when(repository.buscarPorEmail("admin@oficina.com")).thenReturn(Optional.of(funcionario));
         when(senhaCriptografada.confere("senha_errada", "hash")).thenReturn(false);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> 
-            service.autenticar("admin@oficina.com", "senha_errada")
-        );
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> service.autenticar("admin@oficina.com", "senha_errada"));
         assertEquals("Credenciais invalidas", exception.getMessage());
     }
 
@@ -56,9 +52,7 @@ class AutenticarFuncionarioServiceTest {
         Funcionario funcionario = new Funcionario(1, "Admin", "admin@oficina.com", "hash", PerfilFuncionario.ADMIN, false);
         when(repository.buscarPorEmail("admin@oficina.com")).thenReturn(Optional.of(funcionario));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> 
-            service.autenticar("admin@oficina.com", "senha123")
-        );
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> service.autenticar("admin@oficina.com", "senha123"));
         assertEquals("Credenciais invalidas", exception.getMessage());
     }
 

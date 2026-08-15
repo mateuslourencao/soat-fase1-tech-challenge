@@ -48,11 +48,16 @@ class FuncionarioServicesTest {
     void deveLancarExcecaoAoCadastrarComDadosInvalidos() {
         CadastrarFuncionarioService service = new CadastrarFuncionarioService(repository, senhaPort);
 
+        Funcionario func1 = new Funcionario(0, "", "email@email.com", null, PerfilFuncionario.MECANICO, true);
+        Funcionario func2 = new Funcionario(0, "Nome", "", null, PerfilFuncionario.MECANICO, true);
+        Funcionario func3 = new Funcionario(0, "Nome", "email@email.com", null, null, true);
+        Funcionario func4 = new Funcionario(0, "Nome", "email@email.com", null, PerfilFuncionario.MECANICO, true);
+
         assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(null, "senha"));
-        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "", "email@email.com", null, PerfilFuncionario.MECANICO, true), "senha"));
-        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "Nome", "", null, PerfilFuncionario.MECANICO, true), "senha"));
-        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "Nome", "email@email.com", null, null, true), "senha"));
-        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "Nome", "email@email.com", null, PerfilFuncionario.MECANICO, true), ""));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(func1, "senha"));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(func2, "senha"));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(func3, "senha"));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(func4, ""));
     }
 
     @Test
@@ -108,9 +113,10 @@ class FuncionarioServicesTest {
     @Test
     void deveLancarExcecaoAoAtualizarDadosInvalidos() {
         AtualizarFuncionarioService service = new AtualizarFuncionarioService(repository);
+        Funcionario func1 = new Funcionario(0, "", "e@e.com", null, PerfilFuncionario.MECANICO, true);
 
         assertThrows(IllegalArgumentException.class, () -> service.atualizarFuncionario(1, null));
-        assertThrows(IllegalArgumentException.class, () -> service.atualizarFuncionario(1, new Funcionario(0, "", "e@e.com", null, PerfilFuncionario.MECANICO, true)));
+        assertThrows(IllegalArgumentException.class, () -> service.atualizarFuncionario(1, func1));
     }
 
     @Test

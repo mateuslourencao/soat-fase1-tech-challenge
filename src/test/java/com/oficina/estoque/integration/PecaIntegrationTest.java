@@ -108,7 +108,8 @@ class PecaIntegrationTest {
         mockMvc.perform(delete("/api/v1/pecas/" + pecaSalva.getId()))
                 .andExpect(status().isNoContent());
 
-        assertThrows(NoSuchElementException.class, () -> pecaRepository.findById(pecaSalva.getId()).orElseThrow());
+        var optionalPeca = pecaRepository.findById(pecaSalva.getId());
+        assertThrows(NoSuchElementException.class, () -> optionalPeca.orElseThrow());
     }
 
     @Test

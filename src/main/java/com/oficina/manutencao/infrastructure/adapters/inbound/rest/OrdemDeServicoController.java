@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ import java.util.List;
 @RequestMapping("api/v1/ordensdeservico")
 @Tag(name = "Ordens de Serviço", description = "Gestão de aberturas e acompanhamento de ordens de serviço")
 class OrdemDeServicoController {
+    private static final Logger logger = LoggerFactory.getLogger(OrdemDeServicoController.class);
 
     private final CadastrarOrdemDeServicoUseCase cadastrarOrdemDeServico;
     private final ListarOrdensDeServicoUseCase listarOrdensDeServico;
@@ -61,9 +64,12 @@ class OrdemDeServicoController {
     @Operation(summary = "Criar ordem de serviço", description = "Abre uma nova ordem de serviço para um cliente e veículo")
     @ApiResponse(responseCode = "200", description = "Ordem de serviço criada com sucesso")
     public ResponseEntity<OrdemDeServicoResponseDTO> criar(@Valid @RequestBody @NonNull CriarOrdemDeServicoRequestDTO request) {
+        String documentoLimpo = request.documentoCliente().replaceAll("[^a-zA-Z0-9]", "");
+        logger.info("Recebida requisição para criar Ordem de Serviço: Cliente={}, Veículo={}", documentoLimpo, request.placaVeiculo());
         OrdemDeServico salvo = cadastrarOrdemDeServico.cadastrarOrdemDeServico(
-                new OrdemDeServico(request.documentoCliente(), request.placaVeiculo(), request.descricaoQueixas())
+                new OrdemDeServico(documentoLimpo, request.placaVeiculo(), request.descricaoQueixas())
         );
+        logger.info("Ordem de Serviço criada com sucesso. ID: {}", salvo.getId());
         return ResponseEntity.ok(new OrdemDeServicoResponseDTO(salvo));
     }
 

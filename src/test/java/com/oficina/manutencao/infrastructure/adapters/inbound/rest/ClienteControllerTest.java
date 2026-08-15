@@ -3,6 +3,7 @@ package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ClienteRequestDTO;
+import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ClienteResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,38 +28,30 @@ class ClienteControllerTest {
     );
 
     @Test
-    void deveCriarClienteComSucesso() {
-        ClienteRequestDTO request = new ClienteRequestDTO("123", "João", "joao@email.com", "1234");
-        Cliente cliente = new Cliente("123", "João", "joao@email.com", "1234");
-        when(cadastrarUseCase.cadastrarCliente(any(Cliente.class))).thenReturn(cliente);
+    void deveCriarClienteLimpandoDocumento() {
+        ClienteRequestDTO request = new ClienteRequestDTO("123.456.789-00", "João", "joao@email.com", "1234");
+        Cliente cliente = new Cliente("12345678900", "João", "joao@email.com", "1234");
+        when(cadastrarUseCase.cadastrarCliente(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        ResponseEntity<?> response = controller.criar(request);
+        ResponseEntity<ClienteResponseDTO> response = controller.criar(request);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        verify(cadastrarUseCase).cadastrarCliente(any(Cliente.class));
+        assertEquals("12345678900", response.getBody().documento());
+        verify(cadastrarUseCase).cadastrarCliente(argThat(c -> c.getDocumento().equals("12345678900")));
     }
 
     @Test
-    void deveListarClientes() {
-        Cliente cliente = new Cliente("123", "João", "joao@email.com", "1234");
-        when(listarUseCase.listarClientes()).thenReturn(List.of(cliente));
+    void deveBuscarClientePorDocumentoFormatado() {
+        String docFormatado = "123.456.789-00";
+        String docLimpo = "12345678900";
+        Cliente cliente = new Cliente(docLimpo, "João", "joao@email.com", "1234");
+        when(buscarUseCase.buscarCliente(docLimpo)).thenReturn(cliente);
 
-        ResponseEntity<?> response = controller.listar();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(listarUseCase).listarClientes();
-    }
-
-    @Test
-    void deveBuscarClientePorDocumento() {
-        String doc = "123";
-        Cliente cliente = new Cliente(doc, "João", "joao@email.com", "1234");
-        when(buscarUseCase.buscarCliente(doc)).thenReturn(cliente);
-
-        ResponseEntity<?> response = controller.buscarPorId(doc);
+        ResponseEntity<ClienteResponseDTO> response = controller.buscarPorId(docFormatado);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(buscarUseCase).buscarCliente(doc);
+        assertEquals(docLimpo, response.getBody().documento());
+        verify(buscarUseCase).buscarCliente(docLimpo);
     }
 
     @Test

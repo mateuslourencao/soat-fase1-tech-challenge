@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClientePersistenceMapper {
     public ClienteEntity toEntity(Cliente cliente) {
-        return new ClienteEntity(cliente.getDocumento(), cliente.getNome(), cliente.getEmail(), cliente.getTelefone());
+        String documentoLimpo = cliente.getDocumento().replaceAll("[^a-zA-Z0-9]", "");
+        return new ClienteEntity(documentoLimpo, cliente.getNome(), cliente.getEmail(), cliente.getTelefone());
     }
 
     public Cliente toDomain(ClienteEntity entity) {

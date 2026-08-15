@@ -24,31 +24,6 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
       - db
-  sonarqube:
-    image: sonarqube:latest
-    ports:
-      - 9000:9000
-    networks:
-      - sonarnet
-    environment:
-      - SONARQUBE_JDBC_USERNAME=sonar
-      - SONARQUBE_JDBC_PASSWORD=sonar
-      - SONARQUBE_JDBC_URL=postgresql://db_sonar:5432/sonar
-    volumes:
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_extensions:/opt/sonarqube/extensions
-    depends_on:
-      - db_sonar
-  db_sonar:
-    image: postgres:latest
-    networks:
-      - sonarnet
-    environment:
-      - POSTGRES_USER=sonar
-      - POSTGRES_PASSWORD=sonar
-      - POSTGRES_DB=sonar
-    volumes:
-      - sonarqube_db:/var/lib/postgresql/data
 
 networks:
   sonarnet:
@@ -56,6 +31,3 @@ networks:
 
 volumes:
   mysql_data:
-  sonarqube_data:
-  sonarqube_extensions:
-  sonarqube_db:

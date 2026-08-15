@@ -41,10 +41,10 @@ public class OrdemDeServicoEntity {
     @Column(name = "diagnosticos")
     private String diagnosticos;
 
-    @OneToMany(mappedBy = "ordemDeServico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "ordemDeServico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PecaNecessariaEntity> pecasNecessarias = new ArrayList<>();
 
-    @OneToMany(mappedBy = "ordemDeServico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "ordemDeServico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OrdemDeServicoServicosEntity> servicos = new ArrayList<>();
 
     public OrdemDeServicoEntity() {}

@@ -18,7 +18,7 @@ public class PecaNecessariaEntity {
     private OrdemDeServicoEntity ordemDeServico;
 
     @MapsId("pecaId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "peca_id")
     private PecaEntity peca;
 

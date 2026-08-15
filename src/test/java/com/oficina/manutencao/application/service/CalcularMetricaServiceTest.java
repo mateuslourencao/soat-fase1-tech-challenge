@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +54,7 @@ class CalcularMetricaServiceTest {
         OrdemDeServico ordem1 = ordem(StatusOS.FINALIZADA, inicio, agora);
         OrdemDeServico ordem2 = ordem(StatusOS.EM_DIAGNOSTICO, inicio, agora);
         OrdemDeServico ordem3 = ordem(StatusOS.EM_EXECUCAO, inicio, agora);
-        Long ResultadoEsperado = Duration.between(inicio, agora).toMillis();
+        Long ResultadoEsperado = Duration.between(inicio.atZone(ZoneOffset.UTC), agora.atZone(ZoneOffset.UTC)).toMillis();
 
         when(repository.buscarOrdensdeServicoPeriodo(any(), any())).thenReturn(List.of(ordem1, ordem2, ordem3));
         
@@ -72,8 +73,8 @@ class CalcularMetricaServiceTest {
         
         MetricaExecucao resultado = new CalcularMetricaExecucaoService(repository).calcularMetricaExecucao(1);
 
-        var diferenca1 = Duration.between(agora.minusHours(2), agora.minusHours(0));
-        var diferenca2 = Duration.between(agora.minusHours(4), agora.minusHours(2));
+        var diferenca1 = Duration.between(agora.minusHours(2).atZone(ZoneOffset.UTC), agora.minusHours(0).atZone(ZoneOffset.UTC));
+        var diferenca2 = Duration.between(agora.minusHours(4).atZone(ZoneOffset.UTC), agora.minusHours(2).atZone(ZoneOffset.UTC));
         long duracaoEsperada = (diferenca1.toMillis()+diferenca2.toMillis())/2;
         assertEquals(duracaoEsperada, resultado.getTempoMs());
     }

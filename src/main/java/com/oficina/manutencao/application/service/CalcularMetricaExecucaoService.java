@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Service
@@ -29,7 +30,10 @@ public class CalcularMetricaExecucaoService implements CalcularMetricaExecucaoUs
         
         List<Long> temposMs = oss.stream()
                 .filter(os -> os.getStatus() == StatusOS.FINALIZADA)
-                .map(os -> Duration.between(os.getDataCriacao(), os.getDataAtualizacao()).toMillis())
+                .map(os -> Duration.between(
+                        os.getDataCriacao().atZone(ZoneOffset.UTC),
+                        os.getDataAtualizacao().atZone(ZoneOffset.UTC)
+                ).toMillis())
                 .toList();
 
         long tempoMedio = calcularMedia(temposMs);

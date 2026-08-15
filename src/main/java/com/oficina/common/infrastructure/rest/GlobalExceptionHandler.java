@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -37,7 +36,7 @@ public class GlobalExceptionHandler {
                     err.put(MESSAGE_KEY, violation.getMessage());
                     return err;
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put(TIMESTAMP_KEY, LocalDateTime.now());
@@ -60,7 +59,7 @@ public class GlobalExceptionHandler {
                     err.put(MESSAGE_KEY, error.getDefaultMessage());
                     return err;
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put(TIMESTAMP_KEY, LocalDateTime.now());

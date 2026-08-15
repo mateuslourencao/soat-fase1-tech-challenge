@@ -73,7 +73,7 @@ public class OrdemDeServicoJpaAdapter implements OrdemDeServicoRepositoryPort {
                 .filter(os->os.getStatus() == StatusOS.FINALIZADA)
                 .filter(os->os.getDataAtualizacao().isAfter(inicio))
                 .filter(os->os.getDataAtualizacao().isBefore(fim))
-                .map(mapper::toDomain).collect(Collectors.toList());
+                .map(mapper::toDomain).toList();
         return ordensDeServicos;
     }
 }

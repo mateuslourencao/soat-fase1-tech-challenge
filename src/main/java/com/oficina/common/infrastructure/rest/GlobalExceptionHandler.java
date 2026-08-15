@@ -4,8 +4,11 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -15,6 +18,7 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
@@ -72,8 +76,14 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
     }
 
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex) {
+        return buildResponse(HttpStatus.valueOf(ex.getStatusCode().value()), ex.getReason());
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
+        logger.error("Erro inesperado no servidor: ", ex);
         // Se a mensagem contiver "não encontrado", podemos retornar 404
         if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("não encontrado")) {
             return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());

@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class PecaServiceTest {
@@ -24,6 +23,11 @@ class PecaServiceTest {
 
         assertEquals(15, pecaReposta.getQuantidade());
         verify(repository).salvar(pecaReposta);
+    }
+
+    @Test void deveLancarExcecaoAoReporEstoqueComQuantidadeInvalida() {
+        assertThrows(IllegalArgumentException.class, () -> service.reporEstoque(1, 0));
+        assertThrows(IllegalArgumentException.class, () -> service.reporEstoque(1, -1));
     }
 
     @Test void deveListarPecas() {
@@ -43,6 +47,23 @@ class PecaServiceTest {
         verify(repository).salvar(resultado);
     }
 
+    @Test void deveLancarExcecaoAoObterPecaComQuantidadeInvalida() {
+        assertThrows(IllegalArgumentException.class, () -> service.obterPeca(1, 0));
+        assertThrows(IllegalArgumentException.class, () -> service.obterPeca(1, -1));
+    }
+
+    @Test void deveLancarExcecaoAoObterPecaComEstoqueInsuficiente() {
+        Peca peca = new Peca(1, "Filtro de oleo", 35.0, 5);
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(peca));
+
+        assertThrows(IllegalStateException.class, () -> service.obterPeca(1, 10));
+    }
+
+    @Test void deveLancarExcecaoAoObterPecaNaoEncontrada() {
+        when(repository.buscarPorId(1)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> service.obterPeca(1, 1));
+    }
+
     @Test void deveCadastrarPeca() {
         Peca peca = new Peca(1, "Filtro de oleo", 35.0, 10);
         when(repository.salvar(any(Peca.class))).thenReturn(peca);
@@ -51,5 +72,37 @@ class PecaServiceTest {
 
         assertSame(peca, resultado);
         verify(repository).salvar(any(Peca.class));
+    }
+
+    @Test void deveLancarExcecaoAoCadastrarPecaComDadosInvalidos() {
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarPeca("", 35.0, 10));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarPeca(null, 35.0, 10));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarPeca("Peca", -1.0, 10));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarPeca("Peca", 35.0, -1));
+    }
+
+    @Test void deveAtualizarPeca() {
+        Peca peca = new Peca(1, "Filtro de oleo", 35.0, 10);
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(peca));
+        when(repository.salvar(any(Peca.class))).thenReturn(peca);
+
+        Peca resultado = service.atualizarPeca(peca);
+
+        assertSame(peca, resultado);
+        verify(repository).salvar(peca);
+    }
+
+    @Test void deveRemoverPeca() {
+        Peca peca = new Peca(1, "Filtro de oleo", 35.0, 10);
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(peca));
+
+        service.removerPeca(1);
+
+        verify(repository).remover(1);
+    }
+
+    @Test void deveLancarExcecaoAoRemoverPecaNaoEncontrada() {
+        when(repository.buscarPorId(1)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> service.removerPeca(1));
     }
 }

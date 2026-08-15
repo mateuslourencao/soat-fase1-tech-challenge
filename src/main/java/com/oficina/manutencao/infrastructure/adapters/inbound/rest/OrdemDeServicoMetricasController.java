@@ -5,6 +5,7 @@ import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.Relatorio
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ class OrdemDeServicoMetricasController {
     }
 
     @GetMapping("/metricas/{dias}")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Buscar tempo médio de execução de OS", description = "Buscar tempo médio de execução de OS dos úlimos x dias")
     @ApiResponse(responseCode = "200", description = "Média de tempo de execução calculada")
     @ApiResponse(responseCode = "404", description = "Sem registros de Ordem de Serviço finalizada no período indicado")

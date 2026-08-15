@@ -39,9 +39,20 @@ public class OrdemDeServicoPersistenceMapper {
     public OrdemDeServico toDomain(OrdemDeServicoEntity entity) {
         List<PecasNecessarias> pecas = entity.getPecasNecessarias().stream().map(this::toPecaDomain).toList();
         List<com.oficina.estoque.domain.model.Servico> servicos = entity.getServicos().stream().map(this::toServicoDomain).toList();
-        return new OrdemDeServico(entity.getId(), entity.getDocumentoCliente(), entity.getPlacaVeiculo(), servicos, pecas,
-                entity.getOrcamento() == null ? 0D : entity.getOrcamento().doubleValue(), entity.getStatus(),
-                entity.getDataCriacao(), entity.getDataAtualizacao(), entity.getDescricaoQueixas(), entity.getDiagnosticos());
+
+        return OrdemDeServico.builder()
+                .id(entity.getId())
+                .documentoCliente(entity.getDocumentoCliente())
+                .placaVeiculo(entity.getPlacaVeiculo())
+                .servicos(servicos)
+                .pecasNecessarias(pecas)
+                .orcamento(entity.getOrcamento() == null ? 0D : entity.getOrcamento().doubleValue())
+                .status(entity.getStatus())
+                .dataCriacao(entity.getDataCriacao())
+                .dataAtualizacao(entity.getDataAtualizacao())
+                .descricaoQueixas(entity.getDescricaoQueixas())
+                .diagnosticos(entity.getDiagnosticos())
+                .build();
     }
 
     private PecaNecessariaEntity toPecaEntity(int ordemId, PecasNecessarias peca, PecaEntity pecaEntity) {

@@ -1,9 +1,9 @@
 package com.oficina.administrativo.application.service;
 
-import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.administrativo.domain.model.Funcionario;
 import com.oficina.administrativo.domain.ports.inbound.AtivarFuncionarioUseCase;
 import com.oficina.administrativo.domain.ports.outbound.FuncionarioRepositoryPort;
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 
 public class AtivarFuncionarioService implements AtivarFuncionarioUseCase {
     private final FuncionarioRepositoryPort funcionarioRepository;

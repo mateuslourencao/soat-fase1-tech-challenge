@@ -2,11 +2,11 @@ package com.oficina.common.infrastructure.rest;
 
 import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import jakarta.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
@@ -80,7 +80,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Object> handleIllegalStateException(IllegalStateException ex) {
         // 422 Unprocessable Entity é comum para estados de negócio inválidos
-        return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
     }
 
     @ExceptionHandler(ResponseStatusException.class)

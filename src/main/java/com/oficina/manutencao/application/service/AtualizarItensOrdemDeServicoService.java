@@ -1,10 +1,10 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.model.Servico;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
 import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
-import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.PecasNecessarias;
 import com.oficina.manutencao.domain.model.StatusOS;

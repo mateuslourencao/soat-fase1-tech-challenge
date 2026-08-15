@@ -61,18 +61,19 @@ class AprovarOrcamentoServiceTest {
 
     private OrdemDeServico criarOrdem(StatusOS status) {
         LocalDateTime agora = LocalDateTime.now();
-        return new OrdemDeServico(
-                1,
-                "12345678900",
-                "ABC-1234",
-                List.of(),
-                List.of(),
-                150.0,
-                status,
-                agora,
-                agora,
-                "Problema no motor",
-                null
-        );
+
+        return OrdemDeServico.builder()
+                .id(1)
+                .documentoCliente("12345678900")
+                .placaVeiculo("ABC-1234")
+                .servicos(List.of())
+                .pecasNecessarias(List.of())
+                .orcamento(150.0)
+                .status(status)
+                .dataCriacao(agora)
+                .dataAtualizacao(agora)
+                .descricaoQueixas("Problema no motor")
+                .diagnosticos(null)
+                .build();
     }
 }

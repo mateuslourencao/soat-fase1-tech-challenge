@@ -25,11 +25,20 @@ class OrdemDeServicoPersistenceMapperTest {
     @Test void deveConverterParaEntity() {
         Peca peca = new Peca(1, "Filtro", 30.0, 10);
         Servico servico = new Servico(2, "Mao de obra", 100.0);
-        
-        OrdemDeServico os = new OrdemDeServico(1, "123", "ABC1234", 
-                List.of(servico), 
-                List.of(new PecasNecessarias(peca, 2)), 
-                160.0, StatusOS.RECEBIDA, LocalDateTime.now(), LocalDateTime.now(), "Queixa", "Diag");
+
+        OrdemDeServico os = OrdemDeServico.builder()
+                .id(1)
+                .documentoCliente("123")
+                .placaVeiculo("ABC1234")
+                .servicos(List.of(servico))
+                .pecasNecessarias(List.of(new PecasNecessarias(peca, 2)))
+                .orcamento(160.0)
+                .status(StatusOS.RECEBIDA)
+                .dataCriacao(LocalDateTime.now())
+                .dataAtualizacao(LocalDateTime.now())
+                .descricaoQueixas("Queixa")
+                .diagnosticos("Diag")
+                .build();
 
         PecaEntity pecaEntity = new PecaEntity(1, "Filtro", BigDecimal.valueOf(30.0), 10);
         ServicoEntity servicoEntity = new ServicoEntity(2, "Mao de obra", BigDecimal.valueOf(100.0));

@@ -1,10 +1,10 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.inbound.EnviarOrcamentoUseCase;
-import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
 import com.oficina.manutencao.domain.ports.outbound.NotificarClientePort;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
@@ -24,7 +24,7 @@ public class EnviarOrcamentoService extends TransicionarStatusOrdemDeServicoServ
         this.notificarCliente = notificarCliente;
     }
 
-    public void enviarOrcamento(int id) {
+    public OrdemDeServico enviarOrcamento(int id) {
         transicionar(id, StatusOS.EM_DIAGNOSTICO, StatusOS.AGUARDANDO_APROVACAO);
 
         OrdemDeServico os = ordemDeServicoRepository.buscarPorId(id)
@@ -34,5 +34,7 @@ public class EnviarOrcamentoService extends TransicionarStatusOrdemDeServicoServ
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não encontrado para a ordem de serviço"));
 
         notificarCliente.notificarOrcamentoAguardandoAprovacao(cliente, os);
+
+        return os;
     }
 }

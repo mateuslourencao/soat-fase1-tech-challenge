@@ -118,6 +118,18 @@ class TransicaoStatusServicesTest {
 
     private OrdemDeServico criarOrdem(StatusOS status) {
         LocalDateTime agora = LocalDateTime.now();
-        return new OrdemDeServico(1, "123", "ABC1234", List.of(), List.of(), 0, status, agora, agora, "Queixa", null);
+        return OrdemDeServico.builder()
+                .id(1)
+                .documentoCliente("123")
+                .placaVeiculo("ABC1234")
+                .servicos(List.of())
+                .pecasNecessarias(List.of())
+                .orcamento(0)
+                .status(status)
+                .dataCriacao(agora)
+                .dataAtualizacao(agora)
+                .descricaoQueixas("Queixa")
+                .diagnosticos(null)
+                .build();
     }
 }

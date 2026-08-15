@@ -380,6 +380,106 @@
 			"metaSortKey": -1716163200003,
 			"isPrivate": false,
 			"_type": "request"
+		},
+		{
+			"_id": "req_13",
+			"parentId": "fld_4",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/ordensdeservico/1/iniciar-diagnostico",
+			"name": "Iniciar Diagnóstico",
+			"description": "",
+			"method": "PATCH",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200004,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_14",
+			"parentId": "fld_4",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/ordensdeservico/1/enviar-orcamento",
+			"name": "Enviar Orçamento",
+			"description": "",
+			"method": "PATCH",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200005,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_15",
+			"parentId": "fld_4",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/ordensdeservico/1/aprovar-orcamento",
+			"name": "Aprovar Orçamento",
+			"description": "",
+			"method": "PATCH",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200006,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_16",
+			"parentId": "fld_4",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/ordensdeservico/1/finalizar-reparo",
+			"name": "Finalizar Reparo",
+			"description": "",
+			"method": "PATCH",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200007,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_17",
+			"parentId": "fld_4",
+			"modified": 1716163200000,
+			"created": 1716163200000,
+			"url": "{{ _.base_url }}/ordensdeservico/1/entregar-veiculo",
+			"name": "Entregar Veículo",
+			"description": "",
+			"method": "PATCH",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1716163200008,
+			"isPrivate": false,
+			"_type": "request"
 		}
 	]
 }

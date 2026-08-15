@@ -5,12 +5,14 @@ import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.S
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.PecaJpaRepository;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.ServicoJpaRepository;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
+import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.entity.OrdemDeServicoEntity;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.mapper.OrdemDeServicoPersistenceMapper;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.repository.OrdemDeServicoJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -63,5 +65,15 @@ public class OrdemDeServicoJpaAdapter implements OrdemDeServicoRepositoryPort {
     public List<OrdemDeServico> listarTodos() {
         List<OrdemDeServico> ordemDeServicos = repository.findAll().stream().map(mapper::toDomain).toList();
         return ordemDeServicos;
+    }
+
+    @Override
+    public List<OrdemDeServico> buscarOrdensdeServicoPeriodo(LocalDateTime inicio, LocalDateTime fim) {
+        List<OrdemDeServico> ordensDeServicos = repository.findAll().stream()
+                .filter(os->os.getStatus() == StatusOS.FINALIZADA)
+                .filter(os->os.getDataAtualizacao().isAfter(inicio))
+                .filter(os->os.getDataAtualizacao().isBefore(fim))
+                .map(mapper::toDomain).collect(Collectors.toList());
+        return ordensDeServicos;
     }
 }

@@ -1,5 +1,6 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
+import com.oficina.manutencao.domain.model.MetricaExecucao;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
@@ -21,17 +22,18 @@ class OrdemDeServicoControllerTest {
     private final CadastrarOrdemDeServicoUseCase cadastrarUseCase = mock(CadastrarOrdemDeServicoUseCase.class);
     private final ListarOrdensDeServicoUseCase listarUseCase = mock(ListarOrdensDeServicoUseCase.class);
     private final BuscarOrdemDeServicoUseCase buscarUseCase = mock(BuscarOrdemDeServicoUseCase.class);
-    private final AtualizarItensOrdemDeServicoUseCase atualizarItensUseCase = mock(AtualizarItensOrdemDeServicoUseCase.class);
     private final IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase = mock(IniciarDiagnosticoUseCase.class);
     private final EnviarOrcamentoUseCase enviarOrcamentoUseCase = mock(EnviarOrcamentoUseCase.class);
     private final AprovarOrcamentoUseCase aprovarOrcamentoUseCase = mock(AprovarOrcamentoUseCase.class);
     private final FinalizarReparoUseCase finalizarReparoUseCase = mock(FinalizarReparoUseCase.class);
     private final EntregarVeiculoUseCase entregarVeiculoUseCase = mock(EntregarVeiculoUseCase.class);
+    private final AtualizarItensOrdemDeServicoUseCase atualizarItens = mock(AtualizarItensOrdemDeServicoUseCase.class);
+    private final CalcularMetricaExecucaoUseCase calcularMetricaExecucao = mock(CalcularMetricaExecucaoUseCase.class);
 
     private final OrdemDeServicoController controller = new OrdemDeServicoController(
-            cadastrarUseCase, listarUseCase, buscarUseCase, atualizarItensUseCase,
+            cadastrarUseCase, listarUseCase, buscarUseCase, atualizarItens,
             iniciarDiagnosticoUseCase, enviarOrcamentoUseCase, aprovarOrcamentoUseCase,
-            finalizarReparoUseCase, entregarVeiculoUseCase
+            finalizarReparoUseCase, entregarVeiculoUseCase, calcularMetricaExecucao
     );
 
     @Test
@@ -79,13 +81,25 @@ class OrdemDeServicoControllerTest {
         ItensOSRequestDTO request = new ItensOSRequestDTO(List.of(new ItensOSRequestDTO.PecaItemRequest(1, 2)), List.of(2));
         OrdemDeServico os = new OrdemDeServico("123", "ABC", "Queixa");
 
-        when(atualizarItensUseCase.atualizarItensOrdemDeServico(eq(id), anyList(), anyList())).thenReturn(os);
+        when(atualizarItens.atualizarItensOrdemDeServico(eq(id), anyList(), anyList())).thenReturn(os);
 
         ResponseEntity<?> response = controller.atualizarItens(id, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        verify(atualizarItensUseCase).atualizarItensOrdemDeServico(eq(id), anyList(), anyList());
+        verify(atualizarItens).atualizarItensOrdemDeServico(eq(id), anyList(), anyList());
+    }
+
+    @Test
+    void deveCalcularMetricaExecucao() {
+        int dias = 5;
+        MetricaExecucao metricaExecucao = mock(MetricaExecucao.class);
+        when(calcularMetricaExecucao.calcularMetricaExecucao(dias)).thenReturn(metricaExecucao);
+
+        ResponseEntity<?> response = controller.calcularMetricaExecucao(dias);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 
     @Test

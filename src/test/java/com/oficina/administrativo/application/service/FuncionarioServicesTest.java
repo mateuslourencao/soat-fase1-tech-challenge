@@ -5,6 +5,9 @@ import com.oficina.administrativo.domain.model.PerfilFuncionario;
 import com.oficina.administrativo.domain.ports.outbound.FuncionarioRepositoryPort;
 import com.oficina.administrativo.domain.ports.outbound.SenhaCriptografadaPort;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,12 +16,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class FuncionarioServicesTest {
+
+    @Mock
+    private FuncionarioRepositoryPort repository;
+
+    @Mock
+    private SenhaCriptografadaPort senhaPort;
 
     @Test
     void deveCadastrarFuncionarioComSucesso() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
-        SenhaCriptografadaPort senhaPort = mock(SenhaCriptografadaPort.class);
         Funcionario funcionario = new Funcionario(0, "Ana", " ANA@OFICINA.COM ", null, PerfilFuncionario.MECANICO, false);
         
         when(repository.buscarPorEmail("ana@oficina.com")).thenReturn(Optional.empty());
@@ -37,8 +45,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveLancarExcecaoAoCadastrarComDadosInvalidos() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
-        SenhaCriptografadaPort senhaPort = mock(SenhaCriptografadaPort.class);
         CadastrarFuncionarioService service = new CadastrarFuncionarioService(repository, senhaPort);
 
         assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(null, "senha"));
@@ -50,8 +56,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveLancarExcecaoAoCadastrarEmailDuplicado() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
-        SenhaCriptografadaPort senhaPort = mock(SenhaCriptografadaPort.class);
         Funcionario funcionario = new Funcionario(0, "Ana", "ana@oficina.com", null, PerfilFuncionario.MECANICO, true);
         
         when(repository.buscarPorEmail("ana@oficina.com")).thenReturn(Optional.of(funcionario));
@@ -62,7 +66,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveBuscarFuncionarioComSucesso() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         Funcionario existente = new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, true);
         when(repository.buscarPorId(1)).thenReturn(Optional.of(existente));
 
@@ -73,7 +76,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveListarFuncionarios() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         List<Funcionario> lista = List.of(new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, true));
         when(repository.listarTodos()).thenReturn(lista);
 
@@ -84,7 +86,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveAtualizarFuncionarioComSucesso() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         Funcionario existente = new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, true);
         Funcionario novosDados = new Funcionario(0, "Ana Silva", " NOVO@OFICINA.COM ", null, PerfilFuncionario.ADMIN, false);
         
@@ -105,7 +106,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveLancarExcecaoAoAtualizarDadosInvalidos() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         AtualizarFuncionarioService service = new AtualizarFuncionarioService(repository);
 
         assertThrows(IllegalArgumentException.class, () -> service.atualizarFuncionario(1, null));
@@ -114,7 +114,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveLancarExcecaoAoAtualizarFuncionarioNaoEncontrado() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         AtualizarFuncionarioService service = new AtualizarFuncionarioService(repository);
         Funcionario novosDados = new Funcionario(0, "Ana Silva", "novo@oficina.com", null, PerfilFuncionario.ADMIN, false);
@@ -124,7 +123,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveLancarExcecaoAoAtualizarEmailJaExistenteEmOutroFuncionario() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         Funcionario existente = new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, true);
         Funcionario outro = new Funcionario(2, "Joao", "joao@oficina.com", "hash2", PerfilFuncionario.MECANICO, true);
         Funcionario novosDados = new Funcionario(0, "Ana Silva", "joao@oficina.com", null, PerfilFuncionario.ADMIN, false);
@@ -138,7 +136,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveAtivarFuncionarioComSucesso() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         Funcionario inativo = new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, false);
         when(repository.buscarPorId(1)).thenReturn(Optional.of(inativo));
 
@@ -149,7 +146,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveLancarExcecaoAoAtivarFuncionarioInexistente() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         
         AtivarFuncionarioService service = new AtivarFuncionarioService(repository);
@@ -158,7 +154,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveInativarFuncionarioComSucesso() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         Funcionario ativo = new Funcionario(1, "Ana", "ana@oficina.com", "hash", PerfilFuncionario.MECANICO, true);
         when(repository.buscarPorId(1)).thenReturn(Optional.of(ativo));
 
@@ -169,7 +164,6 @@ class FuncionarioServicesTest {
 
     @Test
     void deveLancarExcecaoAoInativarFuncionarioInexistente() {
-        FuncionarioRepositoryPort repository = mock(FuncionarioRepositoryPort.class);
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         
         InativarFuncionarioService service = new InativarFuncionarioService(repository);

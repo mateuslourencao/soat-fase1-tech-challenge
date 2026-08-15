@@ -43,6 +43,6 @@ class ServicoServiceTest {
         Servico servico = new Servico(1, "Revisao", 200);
         when(repository.buscarPorId(1)).thenReturn(Optional.of(servico));
         service.removerServico(1);
-        verify(repository).deletarServico(1);
+        verify(repository).removerServico(1);
     }
 }

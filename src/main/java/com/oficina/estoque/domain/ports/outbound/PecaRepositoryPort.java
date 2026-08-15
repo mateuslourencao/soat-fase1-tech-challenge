@@ -11,4 +11,5 @@ public interface PecaRepositoryPort {
     Optional<Peca> buscarPorId(int id);
 
     List<Peca> listarPecas();
+    void remover(int id);
 }

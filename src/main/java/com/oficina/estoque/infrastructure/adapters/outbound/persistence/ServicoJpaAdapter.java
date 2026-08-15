@@ -43,7 +43,7 @@ public class ServicoJpaAdapter implements ServicoRepositoryPort {
     }
 
     @Override
-    public Void  deletarServico(int id) {
+    public Void removerServico(int id) {
         repository.deleteById(id);
         return null;
     }

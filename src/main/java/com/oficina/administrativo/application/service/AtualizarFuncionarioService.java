@@ -1,5 +1,6 @@
 package com.oficina.administrativo.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.administrativo.domain.model.Funcionario;
 import com.oficina.administrativo.domain.ports.inbound.AtualizarFuncionarioUseCase;
 import com.oficina.administrativo.domain.ports.outbound.FuncionarioRepositoryPort;
@@ -18,7 +19,7 @@ public class AtualizarFuncionarioService implements AtualizarFuncionarioUseCase 
             throw new IllegalArgumentException("Dados do funcionário inválidos");
         }
         Funcionario existente = funcionarioRepository.buscarPorId(id)
-                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Funcionário não encontrado"));
         String email = funcionario.getEmail().trim().toLowerCase();
         funcionarioRepository.buscarPorEmail(email)
                 .filter(outroFuncionario -> outroFuncionario.getId() != id)

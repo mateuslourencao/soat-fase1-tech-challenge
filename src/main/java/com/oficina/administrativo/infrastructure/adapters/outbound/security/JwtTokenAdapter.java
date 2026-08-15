@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
@@ -86,7 +88,7 @@ public class JwtTokenAdapter implements TokenJwtPort {
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(new SecretKeySpec(secret, "HmacSHA256"));
             return mac.doFinal(conteudo.getBytes(StandardCharsets.UTF_8));
-        } catch (Exception exception) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException exception) {
             throw new IllegalStateException("Não foi possível assinar o token JWT", exception);
         }
     }

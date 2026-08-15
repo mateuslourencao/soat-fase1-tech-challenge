@@ -1,5 +1,6 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.model.Servico;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
@@ -74,7 +75,7 @@ class OrdemDeServicoServicesTest {
     @Test void deveLancarExcecaoQuandoOrdemNaoEncontrada() {
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
-        assertThrows(IllegalArgumentException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
     }
 
     @Test void deveLancarExcecaoQuandoStatusInvalidoParaAtualizarItens() {
@@ -90,7 +91,7 @@ class OrdemDeServicoServicesTest {
         when(pecaRepository.buscarPorId(1)).thenReturn(Optional.empty());
         
         AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
-        assertThrows(IllegalArgumentException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
     }
 
     @Test void deveIniciarDiagnostico() { assertTransicao(StatusOS.RECEBIDA, StatusOS.EM_DIAGNOSTICO, ordem -> new IniciarDiagnosticoService(repository).iniciarDiagnostico(1)); }

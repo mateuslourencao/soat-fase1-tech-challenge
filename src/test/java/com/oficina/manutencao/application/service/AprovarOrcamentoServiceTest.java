@@ -2,6 +2,7 @@ package com.oficina.manutencao.application.service;
 
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.StatusOS;
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +41,7 @@ class AprovarOrcamentoServiceTest {
         when(repository.buscarPorId(id)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> service.aprovarOrcamento(id));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.aprovarOrcamento(id));
         verify(repository).buscarPorId(id);
         verify(repository, never()).salvar(any());
     }

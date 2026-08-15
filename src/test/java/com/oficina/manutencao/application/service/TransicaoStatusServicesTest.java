@@ -2,6 +2,7 @@ package com.oficina.manutencao.application.service;
 
 import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
 import com.oficina.manutencao.domain.ports.outbound.NotificarClientePort;
@@ -112,7 +113,7 @@ class TransicaoStatusServicesTest {
         IniciarDiagnosticoService service = new IniciarDiagnosticoService(repository);
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         
-        assertThrows(IllegalArgumentException.class, () -> service.iniciarDiagnostico(1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.iniciarDiagnostico(1));
     }
 
     private OrdemDeServico criarOrdem(StatusOS status) {

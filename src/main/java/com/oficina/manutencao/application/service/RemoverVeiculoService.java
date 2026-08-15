@@ -1,5 +1,6 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.ports.inbound.RemoverVeiculoUseCase;
 import com.oficina.manutencao.domain.ports.outbound.VeiculoRepositoryPort;
 
@@ -12,7 +13,7 @@ public class RemoverVeiculoService implements RemoverVeiculoUseCase {
 
     @Override
     public void removerVeiculo(String placa){
-        veiculoRepositoryPort.buscarPorId(placa).orElseThrow(() -> new RuntimeException("Veiculo não encontrado."));
+        veiculoRepositoryPort.buscarPorId(placa).orElseThrow(() -> new EntidadeNaoEncontradaException("Veiculo não encontrado."));
         veiculoRepositoryPort.remover(placa);
     }
 }

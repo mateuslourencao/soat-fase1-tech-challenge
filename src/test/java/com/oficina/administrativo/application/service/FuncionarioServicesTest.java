@@ -1,5 +1,6 @@
 package com.oficina.administrativo.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.administrativo.domain.model.Funcionario;
 import com.oficina.administrativo.domain.model.PerfilFuncionario;
 import com.oficina.administrativo.domain.ports.outbound.FuncionarioRepositoryPort;
@@ -118,7 +119,7 @@ class FuncionarioServicesTest {
         AtualizarFuncionarioService service = new AtualizarFuncionarioService(repository);
         Funcionario novosDados = new Funcionario(0, "Ana Silva", "novo@oficina.com", null, PerfilFuncionario.ADMIN, false);
 
-        assertThrows(RuntimeException.class, () -> service.atualizarFuncionario(1, novosDados));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.atualizarFuncionario(1, novosDados));
     }
 
     @Test
@@ -149,7 +150,7 @@ class FuncionarioServicesTest {
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         
         AtivarFuncionarioService service = new AtivarFuncionarioService(repository);
-        assertThrows(RuntimeException.class, () -> service.ativarFuncionario(1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.ativarFuncionario(1));
     }
 
     @Test
@@ -167,6 +168,6 @@ class FuncionarioServicesTest {
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         
         InativarFuncionarioService service = new InativarFuncionarioService(repository);
-        assertThrows(RuntimeException.class, () -> service.inativarFuncionario(1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.inativarFuncionario(1));
     }
 }

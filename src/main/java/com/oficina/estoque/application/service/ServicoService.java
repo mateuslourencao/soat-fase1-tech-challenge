@@ -1,5 +1,6 @@
 package com.oficina.estoque.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.estoque.domain.model.Servico;
 import com.oficina.estoque.domain.ports.inbound.*;
 import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
@@ -32,12 +33,12 @@ public class ServicoService implements ListarServicoUseCase, AtualizarServicoUse
     }
 
     public Servico buscarServico(int id) {
-        return servicoRepository.buscarPorId(id).orElseThrow(() -> new IllegalArgumentException("Servico não encontrado"));
+        return servicoRepository.buscarPorId(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Servico não encontrado"));
     }
 
     @Override
     public Void removerServico(int idServico) {
-        Servico servico = servicoRepository.buscarPorId(idServico).orElseThrow(() -> new IllegalArgumentException("Servico não encontrado"));
+        Servico servico = servicoRepository.buscarPorId(idServico).orElseThrow(() -> new EntidadeNaoEncontradaException("Servico não encontrado"));
         servicoRepository.removerServico(servico.getId());
         return null;
     }

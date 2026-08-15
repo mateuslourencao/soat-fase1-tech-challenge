@@ -1,5 +1,6 @@
 package com.oficina.common.infrastructure.rest;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,13 +88,14 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.valueOf(ex.getStatusCode().value()), ex.getReason());
     }
 
+    @ExceptionHandler(EntidadeNaoEncontradaException.class)
+    public ResponseEntity<Object> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
         logger.error("Erro inesperado no servidor: ", ex);
-        // Se a mensagem contiver "não encontrado", podemos retornar 404
-        if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("não encontrado")) {
-            return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
-        }
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno no servidor");
     }
 

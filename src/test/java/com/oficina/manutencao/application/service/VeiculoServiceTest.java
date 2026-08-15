@@ -1,5 +1,6 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.model.Veiculo;
 import com.oficina.manutencao.domain.ports.outbound.VeiculoRepositoryPort;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class VeiculoServiceTest {
         when(repository.buscarPorId("XYZ9999")).thenReturn(Optional.empty());
         
         BuscarVeiculoService service = new BuscarVeiculoService(repository);
-        assertThrows(RuntimeException.class, () -> service.buscarVeiculo("XYZ9999"));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.buscarVeiculo("XYZ9999"));
     }
 
     @Test void deveListarVeiculos() {

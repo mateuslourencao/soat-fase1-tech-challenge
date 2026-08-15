@@ -1,5 +1,6 @@
 package com.oficina.administrativo.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.administrativo.domain.model.Funcionario;
 import com.oficina.administrativo.domain.ports.inbound.InativarFuncionarioUseCase;
 import com.oficina.administrativo.domain.ports.outbound.FuncionarioRepositoryPort;
@@ -14,7 +15,7 @@ public class InativarFuncionarioService implements InativarFuncionarioUseCase {
     @Override
     public void inativarFuncionario(int id) {
         Funcionario existente = funcionarioRepository.buscarPorId(id)
-                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Funcionário não encontrado"));
         
         Funcionario inativado = new Funcionario(
                 existente.getId(), 

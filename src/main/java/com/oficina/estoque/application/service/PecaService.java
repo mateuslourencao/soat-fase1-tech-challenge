@@ -1,5 +1,6 @@
 package com.oficina.estoque.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.ports.inbound.*;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
@@ -29,7 +30,7 @@ public class PecaService implements CadastrarPecaUseCase,
     }
 
     private Peca buscaPeca(int id) {
-        return pecaRepository.buscarPorId(id).orElseThrow(() -> new IllegalArgumentException("Peça não encontrada"));
+        return pecaRepository.buscarPorId(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Peça não encontrada"));
     }
     private void validarCadastro(String descricao, Double valor, int quantidade) {
         if (descricao == null || descricao.isBlank() || valor == null || valor < 0 || quantidade < 0) throw new IllegalArgumentException("Dados da peça inválidos");

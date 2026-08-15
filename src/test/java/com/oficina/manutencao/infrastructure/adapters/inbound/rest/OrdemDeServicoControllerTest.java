@@ -1,10 +1,7 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
 import com.oficina.manutencao.domain.model.OrdemDeServico;
-import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
+import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ItensOSRequestDTO;
 import org.junit.jupiter.api.Test;
@@ -25,9 +22,16 @@ class OrdemDeServicoControllerTest {
     private final ListarOrdensDeServicoUseCase listarUseCase = mock(ListarOrdensDeServicoUseCase.class);
     private final BuscarOrdemDeServicoUseCase buscarUseCase = mock(BuscarOrdemDeServicoUseCase.class);
     private final AtualizarItensOrdemDeServicoUseCase atualizarItensUseCase = mock(AtualizarItensOrdemDeServicoUseCase.class);
+    private final IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase = mock(IniciarDiagnosticoUseCase.class);
+    private final EnviarOrcamentoUseCase enviarOrcamentoUseCase = mock(EnviarOrcamentoUseCase.class);
+    private final AprovarOrcamentoUseCase aprovarOrcamentoUseCase = mock(AprovarOrcamentoUseCase.class);
+    private final FinalizarReparoUseCase finalizarReparoUseCase = mock(FinalizarReparoUseCase.class);
+    private final EntregarVeiculoUseCase entregarVeiculoUseCase = mock(EntregarVeiculoUseCase.class);
 
     private final OrdemDeServicoController controller = new OrdemDeServicoController(
-            cadastrarUseCase, listarUseCase, buscarUseCase, atualizarItensUseCase
+            cadastrarUseCase, listarUseCase, buscarUseCase, atualizarItensUseCase,
+            iniciarDiagnosticoUseCase, enviarOrcamentoUseCase, aprovarOrcamentoUseCase,
+            finalizarReparoUseCase, entregarVeiculoUseCase
     );
 
     @Test
@@ -82,5 +86,45 @@ class OrdemDeServicoControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(atualizarItensUseCase).atualizarItensOrdemDeServico(eq(id), anyList(), anyList());
+    }
+
+    @Test
+    void deveIniciarDiagnostico() {
+        int id = 1;
+        ResponseEntity<Void> response = controller.iniciarDiagnostico(id);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(iniciarDiagnosticoUseCase).iniciarDiagnostico(id);
+    }
+
+    @Test
+    void deveEnviarOrcamento() {
+        int id = 1;
+        ResponseEntity<Void> response = controller.enviarOrcamento(id);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(enviarOrcamentoUseCase).enviarOrcamento(id);
+    }
+
+    @Test
+    void deveAprovarOrcamento() {
+        int id = 1;
+        ResponseEntity<Void> response = controller.aprovarOrcamento(id);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(aprovarOrcamentoUseCase).aprovarOrcamento(id);
+    }
+
+    @Test
+    void deveFinalizarReparo() {
+        int id = 1;
+        ResponseEntity<Void> response = controller.finalizarReparo(id);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(finalizarReparoUseCase).finalizarReparo(id);
+    }
+
+    @Test
+    void deveEntregarVeiculo() {
+        int id = 1;
+        ResponseEntity<Void> response = controller.entregarVeiculo(id);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(entregarVeiculoUseCase).entregarVeiculo(id);
     }
 }

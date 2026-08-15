@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class GlobalExceptionHandler {
                 .toList();
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put(TIMESTAMP_KEY, LocalDateTime.now());
+        body.put(TIMESTAMP_KEY, LocalDateTime.now(ZoneId.of("UTC")));
         body.put(STATUS_KEY, HttpStatus.BAD_REQUEST.value());
         body.put(ERROR_KEY, "Bad Request");
         body.put(MESSAGE_KEY, "Erro de validação nos parâmetros");
@@ -63,7 +64,7 @@ public class GlobalExceptionHandler {
                 .toList();
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put(TIMESTAMP_KEY, LocalDateTime.now());
+        body.put(TIMESTAMP_KEY, LocalDateTime.now(ZoneId.of("UTC")));
         body.put(STATUS_KEY, HttpStatus.BAD_REQUEST.value());
         body.put(ERROR_KEY, "Bad Request");
         body.put(MESSAGE_KEY, "Erro de validação nos campos informados");
@@ -101,7 +102,7 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<Object> buildResponse(HttpStatus status, String message) {
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put(TIMESTAMP_KEY, LocalDateTime.now());
+        body.put(TIMESTAMP_KEY, LocalDateTime.now(ZoneId.of("UTC")));
         body.put(STATUS_KEY, status.value());
         body.put(ERROR_KEY, status.getReasonPhrase());
         body.put(MESSAGE_KEY, message);

@@ -3,6 +3,7 @@ package com.oficina.manutencao.domain.model;
 import com.oficina.estoque.domain.model.Servico;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public class OrdemDeServico {
@@ -27,7 +28,7 @@ public class OrdemDeServico {
         this.servicos = List.of();
         this.pecasNecessarias = List.of();
         this.status = StatusOS.RECEBIDA;
-        this.dataCriacao = LocalDateTime.now();
+        this.dataCriacao = LocalDateTime.now(ZoneId.of("UTC"));
         this.dataAtualizacao = this.dataCriacao;
     }
 
@@ -39,7 +40,7 @@ public class OrdemDeServico {
         this.servicos = List.of();
         this.pecasNecessarias = List.of();
         this.status = StatusOS.RECEBIDA;
-        this.dataCriacao = LocalDateTime.now();
+        this.dataCriacao = LocalDateTime.now(ZoneId.of("UTC"));
         this.dataAtualizacao = this.dataCriacao;
     }
 
@@ -69,7 +70,7 @@ public class OrdemDeServico {
         private List<PecasNecessarias> pecasNecessarias = List.of();
         private double orcamento;
         private StatusOS status = StatusOS.RECEBIDA;
-        private LocalDateTime dataCriacao = LocalDateTime.now();
+        private LocalDateTime dataCriacao = LocalDateTime.now(ZoneId.of("UTC"));
         private LocalDateTime dataAtualizacao;
         private String descricaoQueixas;
         private String diagnosticos;
@@ -159,5 +160,5 @@ public class OrdemDeServico {
         registraAtualizacao();
     }
 
-    private void registraAtualizacao() { this.dataAtualizacao = LocalDateTime.now(); }
+    private void registraAtualizacao() { this.dataAtualizacao = LocalDateTime.now(ZoneId.of("UTC")); }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 
@@ -23,8 +24,8 @@ public class CalcularMetricaExecucaoService implements CalcularMetricaExecucaoUs
 
     @Override
     public MetricaExecucao calcularMetricaExecucao(int diasAvaliados) {
-        LocalDateTime dataInicio = LocalDateTime.now().minusDays(diasAvaliados);
-        LocalDateTime dataFim = LocalDateTime.now();
+        LocalDateTime dataInicio = LocalDateTime.now(ZoneId.of("UTC")).minusDays(diasAvaliados);
+        LocalDateTime dataFim = LocalDateTime.now(ZoneId.of("UTC"));
         
         List<OrdemDeServico> oss = ordemDeServicoRepository.buscarOrdensdeServicoPeriodo(dataInicio, dataFim);
         

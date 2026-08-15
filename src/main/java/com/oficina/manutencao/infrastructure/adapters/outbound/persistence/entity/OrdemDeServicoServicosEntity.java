@@ -25,7 +25,9 @@ public class OrdemDeServicoServicosEntity {
     @Column(name = "valor_cobrado", nullable = false, precision = 10, scale = 2)
     private BigDecimal valorCobrado;
 
-    protected OrdemDeServicoServicosEntity() {}
+    protected OrdemDeServicoServicosEntity() {
+        // Construtor padrão exigido pelo JPA
+    }
 
     public OrdemDeServicoServicosEntity(
             int ordemDeServicoId,

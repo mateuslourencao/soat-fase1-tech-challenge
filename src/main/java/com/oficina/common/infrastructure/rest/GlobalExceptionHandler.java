@@ -20,24 +20,31 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    private static final String TIMESTAMP_KEY = "timestamp";
+    private static final String STATUS_KEY = "status";
+    private static final String ERROR_KEY = "error";
+    private static final String MESSAGE_KEY = "message";
+    private static final String ERRORS_KEY = "errors";
+    private static final String FIELD_KEY = "field";
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
         List<Map<String, String>> errors = ex.getConstraintViolations()
                 .stream()
                 .map(violation -> {
                     Map<String, String> err = new LinkedHashMap<>();
-                    err.put("field", violation.getPropertyPath().toString());
-                    err.put("message", violation.getMessage());
+                    err.put(FIELD_KEY, violation.getPropertyPath().toString());
+                    err.put(MESSAGE_KEY, violation.getMessage());
                     return err;
                 })
                 .collect(Collectors.toList());
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("error", "Bad Request");
-        body.put("message", "Erro de validação nos parâmetros");
-        body.put("errors", errors);
+        body.put(TIMESTAMP_KEY, LocalDateTime.now());
+        body.put(STATUS_KEY, HttpStatus.BAD_REQUEST.value());
+        body.put(ERROR_KEY, "Bad Request");
+        body.put(MESSAGE_KEY, "Erro de validação nos parâmetros");
+        body.put(ERRORS_KEY, errors);
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
@@ -49,18 +56,18 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(error -> {
                     Map<String, String> err = new LinkedHashMap<>();
-                    err.put("field", error.getField());
-                    err.put("message", error.getDefaultMessage());
+                    err.put(FIELD_KEY, error.getField());
+                    err.put(MESSAGE_KEY, error.getDefaultMessage());
                     return err;
                 })
                 .collect(Collectors.toList());
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("error", "Bad Request");
-        body.put("message", "Erro de validação nos campos informados");
-        body.put("errors", errors);
+        body.put(TIMESTAMP_KEY, LocalDateTime.now());
+        body.put(STATUS_KEY, HttpStatus.BAD_REQUEST.value());
+        body.put(ERROR_KEY, "Bad Request");
+        body.put(MESSAGE_KEY, "Erro de validação nos campos informados");
+        body.put(ERRORS_KEY, errors);
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
@@ -93,10 +100,10 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<Object> buildResponse(HttpStatus status, String message) {
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", status.value());
-        body.put("error", status.getReasonPhrase());
-        body.put("message", message);
+        body.put(TIMESTAMP_KEY, LocalDateTime.now());
+        body.put(STATUS_KEY, status.value());
+        body.put(ERROR_KEY, status.getReasonPhrase());
+        body.put(MESSAGE_KEY, message);
         return new ResponseEntity<>(body, status);
     }
 }

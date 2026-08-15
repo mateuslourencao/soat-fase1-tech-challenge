@@ -48,7 +48,9 @@ public class OrdemDeServicoEntity {
     @OneToMany(mappedBy = "ordemDeServico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OrdemDeServicoServicosEntity> servicos = new ArrayList<>();
 
-    public OrdemDeServicoEntity() {}
+    public OrdemDeServicoEntity() {
+        // Construtor padrão exigido pelo JPA
+    }
 
     public int getId() { return id; }
     public String getDocumentoCliente() { return documentoCliente; }

@@ -27,6 +27,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)
             throws Exception {
         return http
+                // Desabilitado CSRF pois a API é STATELESS (utiliza JWT) e não utiliza Cookies/Sessão.
+                // Isso mitiga os riscos de ataques CSRF por padrão.
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(handler -> handler.authenticationEntryPoint(

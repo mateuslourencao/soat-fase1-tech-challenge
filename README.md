@@ -10,7 +10,7 @@ Este projeto é um MVP de um Sistema de Oficina Mecânica, desenvolvido como par
 - **Spring Security & JWT**: Autenticação e autorização.
 - **MySQL 8.0**: Banco de dados relacional.
 - **Maven**: Gerenciador de dependências e build.
-- **Docker**: Conteinerização da aplicação e banco de dados.
+- **Docker & Docker Compose**: Conteinerização da aplicação e banco de dados.
 - **SpringDoc OpenAPI**: Documentação da API.
 - **Jacoco**: Relatórios de cobertura de testes.
 
@@ -38,7 +38,7 @@ docker-compose up --build
 ```
 
 Isso iniciará:
-1. Um container MySQL (`oficina-mysql`) na porta `3306`.
+1. Um container MySQL (`oficina-mysql`) na porta `3306` (inicializado com o `schema.sql`).
 2. O container da aplicação (`oficina-app`) na porta `8080`.
 
 A aplicação aguardará o banco de dados estar pronto antes de iniciar (via `restart: on-failure`).

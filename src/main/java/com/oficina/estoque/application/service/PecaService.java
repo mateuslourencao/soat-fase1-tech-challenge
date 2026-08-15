@@ -49,7 +49,7 @@ public class PecaService implements CadastrarPecaUseCase,
 
     @Override
     public Peca atualizarPeca(Peca peca) {
-        Peca pecaExistente = buscaPeca(peca.getId());
+        buscaPeca(peca.getId());
         validarCadastro(peca.getDescricao(), peca.getValor(), peca.getQuantidade());
         return pecaRepository.salvar(peca);
     }
@@ -57,6 +57,6 @@ public class PecaService implements CadastrarPecaUseCase,
     @Override
     public void removerPeca(int id) {
         buscaPeca(id);
-        pecaRepository.deletar(id);
+        pecaRepository.remover(id);
     }
 }

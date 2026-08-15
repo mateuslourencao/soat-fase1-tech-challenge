@@ -80,11 +80,11 @@ class ServicoJpaAdapterTest {
     }
 
     @Test
-    void deveDeletarServico() {
+    void deveRemoverServico() {
         int id = 1;
         doNothing().when(repository).deleteById(id);
 
-        adapter.deletarServico(id);
+        adapter.removerServico(id);
 
         verify(repository).deleteById(id);
     }

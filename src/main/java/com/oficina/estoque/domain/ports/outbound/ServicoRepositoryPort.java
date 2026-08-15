@@ -10,5 +10,5 @@ public interface ServicoRepositoryPort {
     Optional<Servico> buscarPorId(int id);
     List<Servico> listarServicos();
     Servico atualizarServico(Servico servico);
-    Void deletarServico(int id);
+    Void removerServico(int id);
 }

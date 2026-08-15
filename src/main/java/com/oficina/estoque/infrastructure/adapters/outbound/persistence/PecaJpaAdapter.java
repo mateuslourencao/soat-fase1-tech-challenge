@@ -36,7 +36,7 @@ public class PecaJpaAdapter implements PecaRepositoryPort {
     }
 
     @Override
-    public void deletar(int id) {
+    public void remover(int id) {
         repository.deleteById(id);
     }
 }

@@ -5,12 +5,12 @@ import com.oficina.administrativo.domain.ports.inbound.AutenticarFuncionarioUseC
 import com.oficina.administrativo.infrastructure.adapters.inbound.rest.dto.AutenticacaoRequestDTO;
 import com.oficina.administrativo.infrastructure.adapters.inbound.rest.dto.FuncionarioAutenticadoResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

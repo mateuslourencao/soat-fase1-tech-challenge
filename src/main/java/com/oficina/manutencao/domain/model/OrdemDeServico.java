@@ -3,6 +3,7 @@ package com.oficina.manutencao.domain.model;
 import com.oficina.estoque.domain.model.Servico;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public class OrdemDeServico {
@@ -27,7 +28,7 @@ public class OrdemDeServico {
         this.servicos = List.of();
         this.pecasNecessarias = List.of();
         this.status = StatusOS.RECEBIDA;
-        this.dataCriacao = LocalDateTime.now();
+        this.dataCriacao = LocalDateTime.now(ZoneId.of("UTC"));
         this.dataAtualizacao = this.dataCriacao;
     }
 
@@ -39,24 +40,99 @@ public class OrdemDeServico {
         this.servicos = List.of();
         this.pecasNecessarias = List.of();
         this.status = StatusOS.RECEBIDA;
-        this.dataCriacao = LocalDateTime.now();
+        this.dataCriacao = LocalDateTime.now(ZoneId.of("UTC"));
         this.dataAtualizacao = this.dataCriacao;
     }
 
-    public OrdemDeServico(int id, String documentoCliente, String placaVeiculo, List<Servico> servicos, List<PecasNecessarias> pecas,
-                          double orcamento, StatusOS status, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao,
-                          String descricaoQueixas, String diagnosticos) {
-        this.id = id;
-        this.documentoCliente = documentoCliente;
-        this.placaVeiculo = placaVeiculo;
-        this.servicos = servicos;
-        this.pecasNecessarias = pecas;
-        this.orcamento = orcamento;
-        this.status = status;
-        this.dataCriacao = dataCriacao;
-        this.dataAtualizacao = dataAtualizacao;
-        this.descricaoQueixas = descricaoQueixas;
-        this.diagnosticos = diagnosticos;
+    private OrdemDeServico(Builder builder) {
+        this.id = builder.id;
+        this.documentoCliente = builder.documentoCliente;
+        this.placaVeiculo = builder.placaVeiculo;
+        this.servicos = builder.servicos;
+        this.pecasNecessarias = builder.pecasNecessarias;
+        this.orcamento = builder.orcamento;
+        this.status = builder.status;
+        this.dataCriacao = builder.dataCriacao;
+        this.dataAtualizacao = builder.dataAtualizacao;
+        this.descricaoQueixas = builder.descricaoQueixas;
+        this.diagnosticos = builder.diagnosticos;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private int id;
+        private String documentoCliente;
+        private String placaVeiculo;
+        private List<Servico> servicos = List.of();
+        private List<PecasNecessarias> pecasNecessarias = List.of();
+        private double orcamento;
+        private StatusOS status = StatusOS.RECEBIDA;
+        private LocalDateTime dataCriacao = LocalDateTime.now(ZoneId.of("UTC"));
+        private LocalDateTime dataAtualizacao;
+        private String descricaoQueixas;
+        private String diagnosticos;
+
+        public Builder id(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder documentoCliente(String documentoCliente) {
+            this.documentoCliente = documentoCliente;
+            return this;
+        }
+
+        public Builder placaVeiculo(String placaVeiculo) {
+            this.placaVeiculo = placaVeiculo;
+            return this;
+        }
+
+        public Builder servicos(List<Servico> servicos) {
+            this.servicos = servicos;
+            return this;
+        }
+
+        public Builder pecasNecessarias(List<PecasNecessarias> pecasNecessarias) {
+            this.pecasNecessarias = pecasNecessarias;
+            return this;
+        }
+
+        public Builder orcamento(double orcamento) {
+            this.orcamento = orcamento;
+            return this;
+        }
+
+        public Builder status(StatusOS status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder dataCriacao(LocalDateTime dataCriacao) {
+            this.dataCriacao = dataCriacao;
+            return this;
+        }
+
+        public Builder dataAtualizacao(LocalDateTime dataAtualizacao) {
+            this.dataAtualizacao = dataAtualizacao;
+            return this;
+        }
+
+        public Builder descricaoQueixas(String descricaoQueixas) {
+            this.descricaoQueixas = descricaoQueixas;
+            return this;
+        }
+
+        public Builder diagnosticos(String diagnosticos) {
+            this.diagnosticos = diagnosticos;
+            return this;
+        }
+
+        public OrdemDeServico build() {
+            return new OrdemDeServico(this);
+        }
     }
 
     public int getId() { return id; }
@@ -84,5 +160,5 @@ public class OrdemDeServico {
         registraAtualizacao();
     }
 
-    private void registraAtualizacao() { this.dataAtualizacao = LocalDateTime.now(); }
+    private void registraAtualizacao() { this.dataAtualizacao = LocalDateTime.now(ZoneId.of("UTC")); }
 }

@@ -4,7 +4,6 @@ import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.P
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.PecaJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -17,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -108,7 +109,8 @@ class PecaIntegrationTest {
         mockMvc.perform(delete("/api/v1/pecas/" + pecaSalva.getId()))
                 .andExpect(status().isNoContent());
 
-        assertThrows(NoSuchElementException.class, () -> pecaRepository.findById(pecaSalva.getId()).orElseThrow());
+        var optionalPeca = pecaRepository.findById(pecaSalva.getId());
+        assertThrows(NoSuchElementException.class, optionalPeca::orElseThrow);
     }
 
     @Test

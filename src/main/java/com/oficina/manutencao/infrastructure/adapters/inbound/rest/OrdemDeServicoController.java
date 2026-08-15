@@ -1,20 +1,22 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
 import com.oficina.manutencao.domain.model.OrdemDeServico;
-import com.oficina.manutencao.domain.ports.inbound.*;
+import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
+import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
+import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
+import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ItensOSRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.OrdemDeServicoResponseDTO;
-import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.RelatorioTempoMedioResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,33 +32,15 @@ class OrdemDeServicoController {
     private final ListarOrdensDeServicoUseCase listarOrdensDeServico;
     private final BuscarOrdemDeServicoUseCase buscarOrdemDeServico;
     private final AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico;
-    private final IniciarDiagnosticoUseCase iniciarDiagnostico;
-    private final EnviarOrcamentoUseCase enviarOrcamento;
-    private final AprovarOrcamentoUseCase aprovarOrcamento;
-    private final FinalizarReparoUseCase finalizarReparo;
-    private final EntregarVeiculoUseCase entregarVeiculo;
-    private final CalcularMetricaExecucaoUseCase calcularMetricaExecucao;
 
     OrdemDeServicoController(CadastrarOrdemDeServicoUseCase cadastrarOrdemDeServico,
                              ListarOrdensDeServicoUseCase listarOrdensDeServico,
                              BuscarOrdemDeServicoUseCase buscarOrdemDeServico,
-                             AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico,
-                             IniciarDiagnosticoUseCase iniciarDiagnostico,
-                             EnviarOrcamentoUseCase enviarOrcamento,
-                             AprovarOrcamentoUseCase aprovarOrcamento,
-                             FinalizarReparoUseCase finalizarReparo,
-                             EntregarVeiculoUseCase entregarVeiculo,
-                             CalcularMetricaExecucaoUseCase calcularMetricaExecucao) {
+                             AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico) {
         this.cadastrarOrdemDeServico = cadastrarOrdemDeServico;
         this.listarOrdensDeServico = listarOrdensDeServico;
         this.buscarOrdemDeServico = buscarOrdemDeServico;
         this.atualizarItensOrdemDeServico = atualizarItensOrdemDeServico;
-        this.iniciarDiagnostico = iniciarDiagnostico;
-        this.enviarOrcamento = enviarOrcamento;
-        this.aprovarOrcamento = aprovarOrcamento;
-        this.finalizarReparo = finalizarReparo;
-        this.entregarVeiculo = entregarVeiculo;
-        this.calcularMetricaExecucao = calcularMetricaExecucao;
     }
 
     @PostMapping
@@ -103,54 +87,5 @@ class OrdemDeServicoController {
 
         OrdemDeServico response = atualizarItensOrdemDeServico.atualizarItensOrdemDeServico(id, pecas, request.servicosIds());
         return ResponseEntity.ok(new OrdemDeServicoResponseDTO(response));
-    }
-
-    @PatchMapping("/{id}/iniciar-diagnostico")
-    @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Iniciar diagnóstico", description = "Altera o status da ordem de serviço para Em Diagnóstico")
-    public ResponseEntity<Void> iniciarDiagnostico(@PathVariable int id) {
-        iniciarDiagnostico.iniciarDiagnostico(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}/enviar-orcamento")
-    @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Enviar orçamento", description = "Altera o status da ordem de serviço para Aguardando Aprovação e notifica o cliente")
-    public ResponseEntity<OrdemDeServicoResponseDTO> enviarOrcamento(@PathVariable int id) {
-        enviarOrcamento.enviarOrcamento(id);
-        return ResponseEntity.ok(new OrdemDeServicoResponseDTO(buscarOrdemDeServico.buscarOrdemDeServico(id)));
-    }
-
-    @PatchMapping("/{id}/aprovar-orcamento")
-    @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Aprovar orçamento", description = "Altera o status da ordem de serviço para Em Execução")
-    public ResponseEntity<Void> aprovarOrcamento(@PathVariable int id) {
-        aprovarOrcamento.aprovarOrcamento(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}/finalizar-reparo")
-    @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Finalizar reparo", description = "Altera o status da ordem de serviço para Finalizada")
-    public ResponseEntity<Void> finalizarReparo(@PathVariable int id) {
-        finalizarReparo.finalizarReparo(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}/entregar-veiculo")
-    @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Entregar veículo", description = "Altera o status da ordem de serviço para Entregue")
-    public ResponseEntity<Void> entregarVeiculo(@PathVariable int id) {
-        entregarVeiculo.entregarVeiculo(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/metricas/{dias}")
-    @Operation(summary = "Buscar tempo médio de execução de OS", description = "Buscar tempo médio de execução de OS dos úlimos x dias")
-    @ApiResponse(responseCode = "200", description = "Média de tempo de execução calculada")
-    @ApiResponse(responseCode = "404", description = "Sem registros de Ordem de Serviço finalizada no período indicado")
-    public ResponseEntity<RelatorioTempoMedioResponseDTO> calcularMetricaExecucao(@Parameter(description = "Dias para cálculo") @PathVariable int dias) {
-
-        return ResponseEntity.ok(new RelatorioTempoMedioResponseDTO(dias, calcularMetricaExecucao.calcularMetricaExecucao(dias).getTempoMs()));
     }
 }

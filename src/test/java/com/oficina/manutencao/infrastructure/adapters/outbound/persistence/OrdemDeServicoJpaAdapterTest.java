@@ -52,9 +52,11 @@ class OrdemDeServicoJpaAdapterTest {
         ordem.registrarAtualizacaoDeItens(List.of(new PecasNecessarias(peca, 1)), List.of(servico));
 
         OrdemDeServicoEntity entity = mock(OrdemDeServicoEntity.class);
+        PecaEntity pecaEntity = mock(PecaEntity.class);
+        ServicoEntity servicoEntity = mock(ServicoEntity.class);
         
-        when(pecaRepository.getReferenceById(1)).thenReturn(mock(PecaEntity.class));
-        when(servicoRepository.getReferenceById(1)).thenReturn(mock(ServicoEntity.class));
+        when(pecaRepository.getReferenceById(1)).thenReturn(pecaEntity);
+        when(servicoRepository.getReferenceById(1)).thenReturn(servicoEntity);
         when(mapper.toEntity(eq(ordem), anyMap(), anyMap())).thenReturn(entity);
         when(repository.save(entity)).thenReturn(entity);
         when(mapper.toDomain(entity)).thenReturn(ordem);

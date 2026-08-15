@@ -14,6 +14,7 @@ public class OrdemDeServicoServicosId implements Serializable {
     private int servicoId;
 
     protected OrdemDeServicoServicosId() {
+        // Construtor padrão exigido pelo JPA
     }
 
     public OrdemDeServicoServicosId(int ordemDeServicoId, int servicoId) {

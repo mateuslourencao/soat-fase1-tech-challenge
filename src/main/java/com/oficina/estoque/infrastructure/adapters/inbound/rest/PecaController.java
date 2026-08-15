@@ -67,7 +67,7 @@ public class PecaController {
     @Operation(summary = "Dar baixa em peça", description = "Retira uma quantidade de peças do estoque")
     @ApiResponse(responseCode = "200", description = "Baixa realizada com sucesso")
     @ApiResponse(responseCode = "400", description = "Quantidade insuficiente em estoque")
-    public ResponseEntity<Object> ObterPeca(@Valid @RequestBody ObterPecaRequestDTO request) {
+    public ResponseEntity<Object> obterPeca(@Valid @RequestBody ObterPecaRequestDTO request) {
         obterPeca.obterPeca(request.id(), request.quantidade());
         return ResponseEntity.ok().build();
     }
@@ -75,7 +75,7 @@ public class PecaController {
     @PutMapping("/repor")
     @Operation(summary = "Repor estoque de peça", description = "Adiciona uma quantidade de peças ao estoque existente")
     @ApiResponse(responseCode = "200", description = "Reposição realizada com sucesso")
-    public ResponseEntity<Object> ReporPeca(@Valid @RequestBody ReporPecaRequestDTO request) {
+    public ResponseEntity<Object> reporPeca(@Valid @RequestBody ReporPecaRequestDTO request) {
         reporPeca.reporEstoque(request.id(), request.quantidade());
         return ResponseEntity.ok().build();
     }

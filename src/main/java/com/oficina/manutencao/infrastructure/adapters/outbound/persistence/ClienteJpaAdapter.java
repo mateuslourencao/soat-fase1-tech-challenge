@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class ClienteJpaAdapter implements ClienteRepositoryPort {
@@ -31,7 +30,7 @@ public class ClienteJpaAdapter implements ClienteRepositoryPort {
     }
 
     @Override
-    public List<Cliente> listarTodos() { return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList()); }
+    public List<Cliente> listarTodos() { return repository.findAll().stream().map(mapper::toDomain).toList(); }
 
     @Override
     public void remover(String documento) {repository.deleteById(documento);}

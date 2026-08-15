@@ -1,5 +1,6 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.StatusOS;
@@ -12,7 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class TransicaoStatusServicesTest {
@@ -112,11 +114,23 @@ class TransicaoStatusServicesTest {
         IniciarDiagnosticoService service = new IniciarDiagnosticoService(repository);
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         
-        assertThrows(IllegalArgumentException.class, () -> service.iniciarDiagnostico(1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.iniciarDiagnostico(1));
     }
 
     private OrdemDeServico criarOrdem(StatusOS status) {
         LocalDateTime agora = LocalDateTime.now();
-        return new OrdemDeServico(1, "123", "ABC1234", List.of(), List.of(), 0, status, agora, agora, "Queixa", null);
+        return OrdemDeServico.builder()
+                .id(1)
+                .documentoCliente("123")
+                .placaVeiculo("ABC1234")
+                .servicos(List.of())
+                .pecasNecessarias(List.of())
+                .orcamento(0)
+                .status(status)
+                .dataCriacao(agora)
+                .dataAtualizacao(agora)
+                .descricaoQueixas("Queixa")
+                .diagnosticos(null)
+                .build();
     }
 }

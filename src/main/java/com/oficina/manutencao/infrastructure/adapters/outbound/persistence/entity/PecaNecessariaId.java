@@ -14,6 +14,7 @@ public class PecaNecessariaId implements Serializable {
     private int pecaId;
 
     protected PecaNecessariaId() {
+        // Construtor padrão exigido pelo JPA
     }
 
     public PecaNecessariaId(int ordemDeServicoId, int pecaId) {

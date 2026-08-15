@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Service
@@ -22,14 +24,17 @@ public class CalcularMetricaExecucaoService implements CalcularMetricaExecucaoUs
 
     @Override
     public MetricaExecucao calcularMetricaExecucao(int diasAvaliados) {
-        LocalDateTime dataInicio = LocalDateTime.now().minusDays(diasAvaliados);
-        LocalDateTime dataFim = LocalDateTime.now();
+        LocalDateTime dataInicio = LocalDateTime.now(ZoneId.of("UTC")).minusDays(diasAvaliados);
+        LocalDateTime dataFim = LocalDateTime.now(ZoneId.of("UTC"));
         
         List<OrdemDeServico> oss = ordemDeServicoRepository.buscarOrdensdeServicoPeriodo(dataInicio, dataFim);
         
         List<Long> temposMs = oss.stream()
                 .filter(os -> os.getStatus() == StatusOS.FINALIZADA)
-                .map(os -> Duration.between(os.getDataCriacao(), os.getDataAtualizacao()).toMillis())
+                .map(os -> Duration.between(
+                        os.getDataCriacao().atZone(ZoneOffset.UTC),
+                        os.getDataAtualizacao().atZone(ZoneOffset.UTC)
+                ).toMillis())
                 .toList();
 
         long tempoMedio = calcularMedia(temposMs);
@@ -39,7 +44,7 @@ public class CalcularMetricaExecucaoService implements CalcularMetricaExecucaoUs
 
     private long calcularMedia(List<Long> temposMs) {
         if (temposMs.isEmpty()) {
-            return  (long) 0;
+            return  0;
         }
         return (long)temposMs.stream()
                 .mapToLong(Long::longValue)

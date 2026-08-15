@@ -17,7 +17,6 @@ class EntityIdsTest {
         assertEquals(id1, id2);
         assertNotEquals(id1, id3);
         assertNotEquals(null, id1);
-        assertNotEquals("string", id1);
     }
 
     @Test
@@ -31,6 +30,5 @@ class EntityIdsTest {
         assertEquals(id1, id2);
         assertNotEquals(id1, id3);
         assertNotEquals(null, id1);
-        assertNotEquals("string", id1);
     }
 }

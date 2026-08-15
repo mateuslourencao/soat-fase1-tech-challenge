@@ -1,5 +1,6 @@
 package com.oficina.estoque.application.service;
     
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
 import org.junit.jupiter.api.Test;
@@ -61,7 +62,7 @@ class PecaServiceTest {
 
     @Test void deveLancarExcecaoAoObterPecaNaoEncontrada() {
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
-        assertThrows(IllegalArgumentException.class, () -> service.obterPeca(1, 1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.obterPeca(1, 1));
     }
 
     @Test void deveCadastrarPeca() {
@@ -103,6 +104,6 @@ class PecaServiceTest {
 
     @Test void deveLancarExcecaoAoRemoverPecaNaoEncontrada() {
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
-        assertThrows(IllegalArgumentException.class, () -> service.removerPeca(1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.removerPeca(1));
     }
 }

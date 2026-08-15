@@ -1,5 +1,6 @@
 package com.oficina.manutencao.infrastructure.adapters.outbound.persistence;
 
+import com.oficina.estoque.domain.model.Servico;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.PecaEntity;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.ServicoEntity;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.PecaJpaRepository;
@@ -47,7 +48,7 @@ public class OrdemDeServicoJpaAdapter implements OrdemDeServicoRepositoryPort {
 
         Map<Integer, ServicoEntity> servicosRef = ordem.getServicos().stream()
                 .collect(Collectors.toMap(
-                        s -> s.getId(),
+                        Servico::getId,
                         s -> servicoRepository.getReferenceById(s.getId())
                 ));
 
@@ -63,17 +64,15 @@ public class OrdemDeServicoJpaAdapter implements OrdemDeServicoRepositoryPort {
 
     @Override
     public List<OrdemDeServico> listarTodos() {
-        List<OrdemDeServico> ordemDeServicos = repository.findAll().stream().map(mapper::toDomain).toList();
-        return ordemDeServicos;
+        return repository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public List<OrdemDeServico> buscarOrdensdeServicoPeriodo(LocalDateTime inicio, LocalDateTime fim) {
-        List<OrdemDeServico> ordensDeServicos = repository.findAll().stream()
+        return repository.findAll().stream()
                 .filter(os->os.getStatus() == StatusOS.FINALIZADA)
                 .filter(os->os.getDataAtualizacao().isAfter(inicio))
                 .filter(os->os.getDataAtualizacao().isBefore(fim))
-                .map(mapper::toDomain).collect(Collectors.toList());
-        return ordensDeServicos;
+                .map(mapper::toDomain).toList();
     }
 }

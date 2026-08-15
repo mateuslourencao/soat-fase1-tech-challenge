@@ -12,7 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class AutenticacaoFuncionarioControllerTest {
     private final AutenticarFuncionarioUseCase autenticarFuncionario = mock(AutenticarFuncionarioUseCase.class);

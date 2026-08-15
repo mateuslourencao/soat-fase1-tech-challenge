@@ -11,10 +11,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CalcularMetricaServiceTest {
@@ -53,13 +55,13 @@ class CalcularMetricaServiceTest {
         OrdemDeServico ordem1 = ordem(StatusOS.FINALIZADA, inicio, agora);
         OrdemDeServico ordem2 = ordem(StatusOS.EM_DIAGNOSTICO, inicio, agora);
         OrdemDeServico ordem3 = ordem(StatusOS.EM_EXECUCAO, inicio, agora);
-        Long ResultadoEsperado = Duration.between(inicio, agora).toMillis();
+        Long resultadoEsperado = Duration.between(inicio.atZone(ZoneOffset.UTC), agora.atZone(ZoneOffset.UTC)).toMillis();
 
         when(repository.buscarOrdensdeServicoPeriodo(any(), any())).thenReturn(List.of(ordem1, ordem2, ordem3));
         
         MetricaExecucao resultado = new CalcularMetricaExecucaoService(repository).calcularMetricaExecucao(1);
 
-        assertEquals(resultado.getTempoMs(), ResultadoEsperado);
+        assertEquals(resultado.getTempoMs(), resultadoEsperado);
     }
 
     @Test void deveCalcularMediaCorretaParaMultiplasOrdensFinalizadas() {
@@ -72,13 +74,25 @@ class CalcularMetricaServiceTest {
         
         MetricaExecucao resultado = new CalcularMetricaExecucaoService(repository).calcularMetricaExecucao(1);
 
-        var diferenca1 = Duration.between(agora.minusHours(2), agora.minusHours(0));
-        var diferenca2 = Duration.between(agora.minusHours(4), agora.minusHours(2));
+        var diferenca1 = Duration.between(agora.minusHours(2).atZone(ZoneOffset.UTC), agora.minusHours(0).atZone(ZoneOffset.UTC));
+        var diferenca2 = Duration.between(agora.minusHours(4).atZone(ZoneOffset.UTC), agora.minusHours(2).atZone(ZoneOffset.UTC));
         long duracaoEsperada = (diferenca1.toMillis()+diferenca2.toMillis())/2;
         assertEquals(duracaoEsperada, resultado.getTempoMs());
     }
 
     private OrdemDeServico ordem(StatusOS status, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
-        return new OrdemDeServico(1, "123", "ABC1234", List.of(), List.of(), 0, status, dataCriacao, dataAtualizacao, "Teste", null);
+        return OrdemDeServico.builder()
+                .id(1)
+                .documentoCliente("123")
+                .placaVeiculo("ABC1234")
+                .servicos(List.of())
+                .pecasNecessarias(List.of())
+                .orcamento(0)
+                .status(status)
+                .dataCriacao(dataCriacao)
+                .dataAtualizacao(dataAtualizacao)
+                .descricaoQueixas("Teste")
+                .diagnosticos(null)
+                .build();
     }
 }

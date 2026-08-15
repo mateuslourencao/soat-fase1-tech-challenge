@@ -1,5 +1,6 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.StatusOS;
@@ -23,15 +24,17 @@ public class EnviarOrcamentoService extends TransicionarStatusOrdemDeServicoServ
         this.notificarCliente = notificarCliente;
     }
 
-    public void enviarOrcamento(int id) {
+    public OrdemDeServico enviarOrcamento(int id) {
         transicionar(id, StatusOS.EM_DIAGNOSTICO, StatusOS.AGUARDANDO_APROVACAO);
 
         OrdemDeServico os = ordemDeServicoRepository.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ordem de serviço não encontrada após transição"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Ordem de serviço não encontrada após transição"));
 
         Cliente cliente = clienteRepository.buscarPorId(os.getDocumentoCliente())
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado para a ordem de serviço"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não encontrado para a ordem de serviço"));
 
         notificarCliente.notificarOrcamentoAguardandoAprovacao(cliente, os);
+
+        return os;
     }
 }

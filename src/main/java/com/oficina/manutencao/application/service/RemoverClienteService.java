@@ -1,5 +1,6 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.ports.inbound.RemoverClienteUseCase;
 import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
 
@@ -12,7 +13,7 @@ public class RemoverClienteService implements RemoverClienteUseCase {
 
     @Override
     public void removerCliente(String documento){
-        clienteRepositoryPort.buscarPorId(documento).orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+        clienteRepositoryPort.buscarPorId(documento).orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não encontrado."));
         clienteRepositoryPort.remover(documento);
     }
 }

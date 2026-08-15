@@ -1,11 +1,11 @@
 package com.oficina.manutencao.integration;
 
+import com.jayway.jsonpath.JsonPath;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.PecaEntity;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity.ServicoEntity;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.PecaJpaRepository;
 import com.oficina.estoque.infrastructure.adapters.outbound.persistence.repository.ServicoJpaRepository;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.repository.ClienteJpaRepository;
-import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.repository.OrdemDeServicoJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +20,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.jayway.jsonpath.JsonPath;
 
 @SpringBootTest
 @ActiveProfiles("test")

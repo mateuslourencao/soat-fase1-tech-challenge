@@ -28,7 +28,9 @@ public class PecaNecessariaEntity {
     @Column(name = "valor_unitario", nullable = false, precision = 10, scale = 2)
     private BigDecimal valorUnitario;
 
-    protected PecaNecessariaEntity() {}
+    protected PecaNecessariaEntity() {
+        // Construtor padrão exigido pelo JPA
+    }
 
     public PecaNecessariaEntity(
             int ordemDeServicoId,

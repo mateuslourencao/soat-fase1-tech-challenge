@@ -29,10 +29,11 @@ class JwtTokenAdapterTest {
         assertThrows(IllegalArgumentException.class, () -> new JwtTokenAdapter("curta", 1));
         assertThrows(IllegalArgumentException.class, () -> new JwtTokenAdapter(SECRET, 0));
         JwtTokenAdapter adapter = new JwtTokenAdapter(SECRET, 1);
+        String payloadToken = tokenComPayload("{\"sub\":15,\"perfil\":\"ADMIN\",\"exp\":1");
         assertAll(
                 () -> assertTrue(adapter.validar("invalido").isEmpty()),
                 () -> assertTrue(adapter.validar("a.b.c").isEmpty()),
-                () -> assertTrue(adapter.validar(tokenComPayload("{\"sub\":15,\"perfil\":\"ADMIN\",\"exp\":1")).isEmpty()));
+                () -> assertTrue(adapter.validar(payloadToken).isEmpty()));
     }
 
 

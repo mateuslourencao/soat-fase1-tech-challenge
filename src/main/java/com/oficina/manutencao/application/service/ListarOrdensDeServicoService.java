@@ -16,8 +16,7 @@ public class ListarOrdensDeServicoService implements ListarOrdensDeServicoUseCas
 
     @Override
     public List<OrdemDeServico> listarOrdensDeServico() {
-        List<OrdemDeServico> ordensDeServico = ordemDeServicoRepository.listarTodos();
-        return ordensDeServico;
+        return ordemDeServicoRepository.listarTodos();
     }
 
 }

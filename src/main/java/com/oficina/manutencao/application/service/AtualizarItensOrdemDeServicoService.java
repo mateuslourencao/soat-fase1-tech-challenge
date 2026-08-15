@@ -1,5 +1,6 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.model.Servico;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
@@ -31,7 +32,7 @@ public class AtualizarItensOrdemDeServicoService implements AtualizarItensOrdemD
             throw new IllegalArgumentException("Informe ao menos uma peça necessária ou um serviço");
         }
 
-        OrdemDeServico ordem = repositorio.buscarPorId(id).orElseThrow(() -> new IllegalArgumentException("Ordem de serviço não encontrada"));
+        OrdemDeServico ordem = repositorio.buscarPorId(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Ordem de serviço não encontrada"));
         if (ordem.getStatus() != StatusOS.EM_DIAGNOSTICO) {
             throw new IllegalStateException("Itens só podem ser atualizados durante o diagnóstico");
         }
@@ -39,13 +40,13 @@ public class AtualizarItensOrdemDeServicoService implements AtualizarItensOrdemD
         List<PecasNecessarias> pecas = pecasInput == null ? List.of() : pecasInput.stream()
                 .map(input -> {
                     Peca peca = pecaRepositorio.buscarPorId(input.pecaId())
-                            .orElseThrow(() -> new IllegalArgumentException("Peça não encontrada: " + input.pecaId()));
+                            .orElseThrow(() -> new EntidadeNaoEncontradaException("Peça não encontrada: " + input.pecaId()));
                     return new PecasNecessarias(peca, input.quantidade());
                 }).toList();
 
         List<Servico> servicos = servicosIds == null ? List.of() : servicosIds.stream()
                 .map(servicoId -> servicoRepositorio.buscarPorId(servicoId)
-                        .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado: " + servicoId)))
+                        .orElseThrow(() -> new EntidadeNaoEncontradaException("Serviço não encontrado: " + servicoId)))
                 .toList();
 
         ordem.registrarAtualizacaoDeItens(pecas, servicos);

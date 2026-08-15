@@ -37,10 +37,9 @@ class ClienteJpaAdapterTest {
     void deveBuscarPorIdComSucesso() {
         String documento = "123";
         ClienteEntity entity = new ClienteEntity(documento, "Nome", "email@test.com", "1234");
-        Cliente cliente = new Cliente(documento, "Nome", "email@test.com", "1234");
 
         when(repository.findById(documento)).thenReturn(Optional.of(entity));
-        when(mapper.toDomain(entity)).thenReturn(cliente);
+        when(mapper.toDomain(entity)).thenReturn(new Cliente(documento, "Nome", "email@test.com", "1234"));
 
         Optional<Cliente> resultado = adapter.buscarPorId(documento);
 
@@ -51,10 +50,9 @@ class ClienteJpaAdapterTest {
     @Test
     void deveListarTodosComSucesso() {
         ClienteEntity entity = new ClienteEntity("123", "Nome", "email@test.com", "1234");
-        Cliente cliente = new Cliente("123", "Nome", "email@test.com", "1234");
 
         when(repository.findAll()).thenReturn(List.of(entity));
-        when(mapper.toDomain(entity)).thenReturn(cliente);
+        when(mapper.toDomain(entity)).thenReturn(new Cliente("123", "Nome", "email@test.com", "1234"));
 
         List<Cliente> resultado = adapter.listarTodos();
 

@@ -4,6 +4,7 @@ import com.oficina.administrativo.domain.model.Funcionario;
 import com.oficina.administrativo.domain.model.PerfilFuncionario;
 import com.oficina.administrativo.domain.ports.outbound.FuncionarioRepositoryPort;
 import com.oficina.administrativo.domain.ports.outbound.SenhaCriptografadaPort;
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -47,11 +48,16 @@ class FuncionarioServicesTest {
     void deveLancarExcecaoAoCadastrarComDadosInvalidos() {
         CadastrarFuncionarioService service = new CadastrarFuncionarioService(repository, senhaPort);
 
+        Funcionario func1 = new Funcionario(0, "", "email@email.com", null, PerfilFuncionario.MECANICO, true);
+        Funcionario func2 = new Funcionario(0, "Nome", "", null, PerfilFuncionario.MECANICO, true);
+        Funcionario func3 = new Funcionario(0, "Nome", "email@email.com", null, null, true);
+        Funcionario func4 = new Funcionario(0, "Nome", "email@email.com", null, PerfilFuncionario.MECANICO, true);
+
         assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(null, "senha"));
-        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "", "email@email.com", null, PerfilFuncionario.MECANICO, true), "senha"));
-        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "Nome", "", null, PerfilFuncionario.MECANICO, true), "senha"));
-        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "Nome", "email@email.com", null, null, true), "senha"));
-        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(new Funcionario(0, "Nome", "email@email.com", null, PerfilFuncionario.MECANICO, true), ""));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(func1, "senha"));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(func2, "senha"));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(func3, "senha"));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarFuncionario(func4, ""));
     }
 
     @Test
@@ -107,9 +113,10 @@ class FuncionarioServicesTest {
     @Test
     void deveLancarExcecaoAoAtualizarDadosInvalidos() {
         AtualizarFuncionarioService service = new AtualizarFuncionarioService(repository);
+        Funcionario func1 = new Funcionario(0, "", "e@e.com", null, PerfilFuncionario.MECANICO, true);
 
         assertThrows(IllegalArgumentException.class, () -> service.atualizarFuncionario(1, null));
-        assertThrows(IllegalArgumentException.class, () -> service.atualizarFuncionario(1, new Funcionario(0, "", "e@e.com", null, PerfilFuncionario.MECANICO, true)));
+        assertThrows(IllegalArgumentException.class, () -> service.atualizarFuncionario(1, func1));
     }
 
     @Test
@@ -118,7 +125,7 @@ class FuncionarioServicesTest {
         AtualizarFuncionarioService service = new AtualizarFuncionarioService(repository);
         Funcionario novosDados = new Funcionario(0, "Ana Silva", "novo@oficina.com", null, PerfilFuncionario.ADMIN, false);
 
-        assertThrows(RuntimeException.class, () -> service.atualizarFuncionario(1, novosDados));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.atualizarFuncionario(1, novosDados));
     }
 
     @Test
@@ -149,7 +156,7 @@ class FuncionarioServicesTest {
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         
         AtivarFuncionarioService service = new AtivarFuncionarioService(repository);
-        assertThrows(RuntimeException.class, () -> service.ativarFuncionario(1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.ativarFuncionario(1));
     }
 
     @Test
@@ -167,6 +174,6 @@ class FuncionarioServicesTest {
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         
         InativarFuncionarioService service = new InativarFuncionarioService(repository);
-        assertThrows(RuntimeException.class, () -> service.inativarFuncionario(1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.inativarFuncionario(1));
     }
 }

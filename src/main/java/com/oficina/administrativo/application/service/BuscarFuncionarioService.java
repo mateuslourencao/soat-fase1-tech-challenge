@@ -3,6 +3,7 @@ package com.oficina.administrativo.application.service;
 import com.oficina.administrativo.domain.model.Funcionario;
 import com.oficina.administrativo.domain.ports.inbound.BuscarFuncionarioUseCase;
 import com.oficina.administrativo.domain.ports.outbound.FuncionarioRepositoryPort;
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 
 public class BuscarFuncionarioService implements BuscarFuncionarioUseCase {
     private final FuncionarioRepositoryPort funcionarioRepository;
@@ -14,6 +15,6 @@ public class BuscarFuncionarioService implements BuscarFuncionarioUseCase {
     @Override
     public Funcionario buscarFuncionario(int id) {
         return funcionarioRepository.buscarPorId(id)
-                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Funcionário não encontrado"));
     }
 }

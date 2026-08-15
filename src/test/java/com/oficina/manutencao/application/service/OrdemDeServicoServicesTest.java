@@ -1,5 +1,6 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.estoque.domain.model.Peca;
 import com.oficina.estoque.domain.model.Servico;
 import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
@@ -74,23 +75,26 @@ class OrdemDeServicoServicesTest {
     @Test void deveLancarExcecaoQuandoOrdemNaoEncontrada() {
         when(repository.buscarPorId(1)).thenReturn(Optional.empty());
         AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
-        assertThrows(IllegalArgumentException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
+        List<AtualizarItensOrdemDeServicoUseCase.PecaItemInput> pecas = List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.atualizarItensOrdemDeServico(1, pecas, null));
     }
 
     @Test void deveLancarExcecaoQuandoStatusInvalidoParaAtualizarItens() {
         OrdemDeServico ordem = ordem(StatusOS.RECEBIDA);
         when(repository.buscarPorId(1)).thenReturn(Optional.of(ordem));
         AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
-        assertThrows(IllegalStateException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
+        List<AtualizarItensOrdemDeServicoUseCase.PecaItemInput> pecas = List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1));
+        assertThrows(IllegalStateException.class, () -> service.atualizarItensOrdemDeServico(1, pecas, null));
     }
 
     @Test void deveLancarExcecaoQuandoPecaNaoEncontrada() {
         OrdemDeServico ordem = ordem(StatusOS.EM_DIAGNOSTICO);
         when(repository.buscarPorId(1)).thenReturn(Optional.of(ordem));
         when(pecaRepository.buscarPorId(1)).thenReturn(Optional.empty());
-        
+
         AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
-        assertThrows(IllegalArgumentException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1)), null));
+        List<AtualizarItensOrdemDeServicoUseCase.PecaItemInput> pecas = List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.atualizarItensOrdemDeServico(1, pecas, null));
     }
 
     @Test void deveIniciarDiagnostico() { assertTransicao(StatusOS.RECEBIDA, StatusOS.EM_DIAGNOSTICO, ordem -> new IniciarDiagnosticoService(repository).iniciarDiagnostico(1)); }
@@ -115,7 +119,19 @@ class OrdemDeServicoServicesTest {
 
     private OrdemDeServico ordem(StatusOS status) {
         LocalDateTime agora = LocalDateTime.now();
-        return new OrdemDeServico(1, "123", "ABC1234", List.of(), List.of(), 0, status, agora, agora, "Barulho", null);
+        return OrdemDeServico.builder()
+                .id(1)
+                .documentoCliente("123")
+                .placaVeiculo("ABC1234")
+                .servicos(List.of())
+                .pecasNecessarias(List.of())
+                .orcamento(0) // ou 0.0
+                .status(status)
+                .dataCriacao(agora)
+                .dataAtualizacao(agora)
+                .descricaoQueixas("Barulho")
+                .diagnosticos(null)
+                .build();
     }
 
     @FunctionalInterface

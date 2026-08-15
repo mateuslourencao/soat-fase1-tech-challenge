@@ -19,6 +19,11 @@ public class ServicoEntity {
 
     protected ServicoEntity() {}
 
+    public ServicoEntity(String descricao, BigDecimal valor) {
+        this.descricao = descricao;
+        this.valor = valor;
+    }
+
     public ServicoEntity(int id, String descricao, BigDecimal valor) {
         this.id = id;
         this.descricao = descricao;

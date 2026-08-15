@@ -2,162 +2,174 @@
 
 [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=mateuslourencao_soat-fase1-tech-challenge&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mateuslourencao_soat-fase1-tech-challenge)
 
+## Sobre o Projeto
 
 Este projeto é um MVP de um Sistema de Oficina Mecânica, desenvolvido como parte do Tech Challenge da Pós-Graduação em Arquitetura de Software (SOAT). A aplicação gerencia o fluxo administrativo, de estoque e de manutenção de uma oficina.
 
-## 🛠 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
-- **Java 21**: Linguagem principal.
-- **Spring Boot 4.1.0**: Framework para construção da aplicação.
-- **Spring Data JPA**: Abstração de persistência de dados.
-- **Spring Security & JWT**: Autenticação e autorização.
-- **MySQL 8.0**: Banco de dados relacional.
-- **Maven**: Gerenciador de dependências e build.
-- **Docker & Docker Compose**: Conteinerização da aplicação e banco de dados.
-- **SpringDoc OpenAPI**: Documentação da API.
-- **Jacoco**: Relatórios de cobertura de testes.
+- **Java 21** - Linguagem principal
+- **Spring Boot 4.1.0** - Framework para construção da aplicação
+- **Spring Data JPA** - Abstração de persistência de dados
+- **Spring Security & JWT** - Autenticação e autorização
+- **MySQL 8.0** - Banco de dados relacional
+- **Maven** - Gerenciador de dependências e build
+- **Docker & Docker Compose** - Conteinerização da aplicação e banco de dados
+- **SpringDoc OpenAPI** - Documentação da API
+- **JaCoCo** - Relatórios de cobertura de testes
+- **SonarQube** - Análise de qualidade e segurança
 
-## 🏗 Arquitetura
+## Arquitetura
 
-O projeto segue os princípios da **Arquitetura Hexagonal (Ports and Adapters)**, organizado em módulos de domínio para garantir a separação de responsabilidades e facilitar a testabilidade.
+O projeto segue os princípios da **Arquitetura Hexagonal (Ports and Adapters)**, organizado em módulos de domínio para garantir separação de responsabilidades e facilitar a testabilidade.
 
-### Módulos Principais:
-- **Administrativo**: Gestão de funcionários e autenticação.
-- **Estoque**: Controle de peças e serviços.
-- **Manutenção**: Gestão de clientes, veículos e ordens de serviço.
+### Módulos Principais
 
-## 🚀 Como Executar o Projeto
+- **Administrativo** - Gestão de funcionários e autenticação
+- **Estoque** - Controle de peças e serviços
+- **Manutenção** - Gestão de clientes, veículos e ordens de serviço
+
+## Configurações iniciais
 
 ### Pré-requisitos
-- Docker e Docker Compose instalados.
-- Java 21 e Maven (caso deseje rodar localmente sem Docker).
 
-### Usando Docker (Recomendado)
+- Docker e Docker Compose instalados
+- Java 21 e Maven (opcional, para execução local)
 
-Na raiz do projeto, execute o comando:
+### Instalação com Docker (Recomendado)
+
+Na raiz do projeto, execute:
 
 ```bash
 docker-compose up --build
 ```
 
 Isso iniciará:
-1. Um container MySQL (`oficina-mysql`) na porta `3306` (inicializado com o `schema.sql`).
-2. O container da aplicação (`oficina-app`) na porta `8080`.
+1. Container MySQL (`oficina-mysql`) na porta `3306` (inicializado com `schema.sql`)
+2. Container da aplicação (`oficina-app`) na porta `8080`
 
-A aplicação aguardará o banco de dados estar pronto antes de iniciar (via `restart: on-failure`).
+A aplicação aguardará o banco de dados estar pronto antes de iniciar.
 
-### 🗄️ Estrutura do Banco de Dados
-Embora o Hibernate esteja configurado para criar as tabelas automaticamente (`ddl-auto: update`), fornecemos um script SQL completo para referência ou criação manual.
-- **Arquivo**: `schema.sql` (na raiz do projeto).
-- **Conteúdo**: Definição de tabelas, índices e restrições.
+### Instalação Local
 
-### Executando Localmente
+1. Certifique-se de ter um banco MySQL rodando
+2. Configure as variáveis de ambiente ou edite `src/main/resources/application.properties`:
+   - `DB_URL` - URL de conexão (ex: `jdbc:mysql://localhost:3306/oficina`)
+   - `DB_USERNAME` - Usuário do banco
+   - `DB_PASSWORD` - Senha do banco
 
-1. Certifique-se de ter um banco MySQL rodando.
-2. Configure as variáveis de ambiente necessárias ou altere o `src/main/resources/application.properties`.
-   - `DB_URL`: URL de conexão (Ex: `jdbc:mysql://localhost:3306/oficina`)
-   - `DB_USERNAME`: Usuário do banco.
-   - `DB_PASSWORD`: Senha do banco.
 3. Execute via Maven:
 
 ```bash
 mvn clean spring-boot:run
 ```
 
-### 📥 Insomnia Collection
-Para facilitar os testes dos endpoints, incluímos uma collection do Insomnia na raiz do projeto:
-- **Arquivo**: `oficina-insomnia-collection.json`
-- **Como usar**:
-  1. Abra o Insomnia.
-  2. Clique em **Import** e selecione o arquivo.
-  3. No ambiente (Environment), a variável `base_url` já está configurada para `http://localhost:8080/api/v1`.
-  4. Realize o login no endpoint de **Autenticação** para obter o token.
-  5. Copie o token para a variável `jwt_token` no Environment para habilitar a autenticação automática nos demais requests.
+### Banco de Dados
 
-## 📖 Documentação da API (Swagger)
+O Hibernate está configurado para criar tabelas automaticamente (`ddl-auto: update`). Um script SQL completo está disponível para referência:
 
-Com a aplicação rodando, você pode acessar a documentação interativa e realizar testes nas rotas através do Swagger UI:
+- **Arquivo**: `schema.sql` (na raiz do projeto)
+- **Conteúdo**: Definição de tabelas, índices e restrições
 
-🔗 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+## Documentação da API
 
-### Principais Endpoints:
-- `/api/v1/administrativo/autenticacao`: Login de funcionários.
-- `/api/v1/administrativo/funcionarios`: Gestão de funcionários.
-- `/api/v1/pecas`: Gestão de peças em estoque.
-- `/api/v1/servicos`: Gestão de serviços oferecidos.
-- `/api/v1/clientes`: Gestão de clientes.
-- `/api/v1/veiculos`: Gestão de veículos.
-- `/api/v1/ordensdeservico`: Abertura e acompanhamento de ordens de serviço.
+Com a aplicação rodando, acesse a documentação interativa do Swagger:
 
-## 🧪 Testes e Cobertura
+**[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
 
-Para executar os testes unitários e integrados:
+### Principais Endpoints
+
+- `/api/v1/administrativo/autenticacao` - Login de funcionários
+- `/api/v1/administrativo/funcionarios` - Gestão de funcionários
+- `/api/v1/pecas` - Gestão de peças em estoque
+- `/api/v1/servicos` - Gestão de serviços oferecidos
+- `/api/v1/clientes` - Gestão de clientes
+- `/api/v1/veiculos` - Gestão de veículos
+- `/api/v1/ordensdeservico` - Abertura e acompanhamento de ordens de serviço
+
+### Testando com Insomnia
+
+Uma collection do Insomnia está disponível para facilitar os testes:
+
+1. Abra o Insomnia
+2. Clique em **Import** e selecione `oficina-insomnia-collection.json`
+3. Configure a variável `base_url` para `http://localhost:8080/api/v1` (já pré-configurada)
+4. Faça login no endpoint de **Autenticação** para obter o token JWT
+5. Copie o token para a variável `jwt_token` no Environment
+
+## Testes e Qualidade
+
+### Executar Testes
 
 ```bash
 mvn test
 ```
 
-Para gerar o relatório de cobertura do Jacoco:
+### Relatório de Cobertura (JaCoCo)
 
 ```bash
 mvn verify
 ```
+
 O relatório será gerado em `target/site/jacoco/index.html`.
 
-### 🔍 Análise de Qualidade e Segurança (SonarQube)
+A configuração do JaCoCo no `pom.xml` exclui classes de configuração, DTOs, entidades e classes geradas, focando na lógica de negócio (Use Cases e Modelos).
 
-Este projeto utiliza o **SonarQube** integrado ao **Jacoco** para garantir a cobertura dos testes de unidade/integração e proteger o código contra vulnerabilidades (OWASP Top 10).
+### Análise com SonarQube
 
-Siga os passos abaixo para rodar a análise localmente na sua máquina:
+Este projeto integra SonarQube para garantir cobertura de testes e segurança.
 
-**1. Subir o servidor do SonarQube via Docker**
+#### Setup Localmente
 
-Certifique-se de que o Docker Desktop está rodando e execute o comando abaixo no terminal:
+**1. Subir o servidor SonarQube via Docker**
+
 ```bash
 docker run -d --name sonarqube -p 9000:9000 sonarqube:latest
 ```
-(Aguarde cerca de 1 a 2 minutos para o container iniciar completamente).
 
-**2. Primeiro acesso e configuração**
+(Aguarde 1-2 minutos para inicialização)
 
-Acesse o painel em: http://localhost:9000
+**2. Primeiro Acesso**
 
-Faça o login com as credenciais padrão:
+- Acesse: **http://localhost:9000**
+- Login padrão: `admin` / `admin`
+- O sistema pedirá para criar uma nova senha
 
-Login: admin
+**3. Criar Projeto e Token**
 
-Senha: admin
+- Clique em **Create Project > Local (Manually)**
+- Project name: `oficina-api`
+- Escolha análise **Locally**
+- Crie um token (começa com `sqp_`) e copie-o
 
-O sistema pedirá para você criar uma nova senha imediatamente.
+**4. Executar Análise**
 
-**3. Criar o Projeto e Gerar o Token**
-
-Na tela inicial, clique em Create Project > Local (Manually).
-
-Preencha o Project display name como 'oficina-api' e avance.
-
-Escolha a opção de análise Locally.
-
-Crie um token de acesso clicando em Generate e copie o código gerado (começa com sqp_).
-
-**4. Executar a análise no projeto**
-Com o servidor rodando e o token em mãos, abra o terminal na raiz do projeto clonado e rode o comando do Maven abaixo.
-
-Substitua COLE_SEU_TOKEN_AQUI pelo token que você gerou no passo anterior:
+Na raiz do projeto, execute:
 
 ```bash
-./mvnw clean verify sonar:sonar -Dsonar.projectKey=oficina-api -Dsonar.host.url=http://localhost:9000 -Dsonar.login=COLE_SEU_TOKEN_AQUI
+./mvnw clean verify sonar:sonar \
+  -Dsonar.projectKey=oficina-api \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.token=SEU_TOKEN_AQUI
 ```
-Nota: Este comando irá recompilar o projeto, executar toda a suíte de testes (gerando o relatório de cobertura) e enviar os dados para o SonarQube.
 
-**5. Visualizar o Relatório**
-Após aparecer BUILD SUCCESS no terminal, volte ao navegador em http://localhost:9000 para visualizar o dashboard completo com os Security Hotspots, Code Smells e a cobertura de testes da arquitetura.
+**5. Visualizar Resultados**
 
-Você também pode conferir o relatório completo, detalhado e atualizado ao vivo acessando o painel público do nosso projeto no SonarCloud:
+Volte a **http://localhost:9000** para ver o dashboard com Security Hotspots, Code Smells e cobertura de testes.
 
-📊 **[Acessar o Dashboard do SonarCloud](https://sonarcloud.io/summary/overall?id=mateuslourencao_soat-fase1-tech-challenge&branch=main)**
+### Dashboard Público
 
+Acesse o relatório completo no SonarCloud:
 
+**[Dashboard SonarCloud](https://sonarcloud.io/summary/overall?id=mateuslourencao_soat-fase1-tech-challenge&branch=main)**
 
-A configuração do Jacoco no `pom.xml` inclui exclusões para classes de configuração, DTOs, entidades e classes geradas, focando a métrica na lógica de negócio (Use Cases e Modelos).
+## Licença
+
+Este projeto foi desenvolvido como parte do SOAT Tech Challenge.
+
+## Contribuidores
+
+Mateus Lourenção - [GitHub](https://github.com/mateuslourencao)
+
+Pedro Ruiz - [GitHub](https://github.com/opedro)
 

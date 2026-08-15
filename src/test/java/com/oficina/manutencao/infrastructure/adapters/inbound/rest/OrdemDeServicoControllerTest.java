@@ -16,14 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 class OrdemDeServicoControllerTest {
 
     private final CadastrarOrdemDeServicoUseCase cadastrarUseCase = mock(CadastrarOrdemDeServicoUseCase.class);
     private final ListarOrdensDeServicoUseCase listarUseCase = mock(ListarOrdensDeServicoUseCase.class);
     private final BuscarOrdemDeServicoUseCase buscarUseCase = mock(BuscarOrdemDeServicoUseCase.class);
-    private final AtualizarItensOrdemDeServicoUseCase atualizarItensUseCase = mock(AtualizarItensOrdemDeServicoUseCase.class);
     private final IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase = mock(IniciarDiagnosticoUseCase.class);
     private final EnviarOrcamentoUseCase enviarOrcamentoUseCase = mock(EnviarOrcamentoUseCase.class);
     private final AprovarOrcamentoUseCase aprovarOrcamentoUseCase = mock(AprovarOrcamentoUseCase.class);
@@ -33,10 +31,9 @@ class OrdemDeServicoControllerTest {
     private final CalcularMetricaExecucaoUseCase calcularMetricaExecucao = mock(CalcularMetricaExecucaoUseCase.class);
 
     private final OrdemDeServicoController controller = new OrdemDeServicoController(
-            cadastrarUseCase, listarUseCase, buscarUseCase, atualizarItensUseCase,
+            cadastrarUseCase, listarUseCase, buscarUseCase, atualizarItens,
             iniciarDiagnosticoUseCase, enviarOrcamentoUseCase, aprovarOrcamentoUseCase,
-            finalizarReparoUseCase, entregarVeiculoUseCase
-            cadastrarUseCase, listarUseCase, buscarUseCase, atualizarItens, calcularMetricaExecucao
+            finalizarReparoUseCase, entregarVeiculoUseCase, calcularMetricaExecucao
     );
 
     @Test

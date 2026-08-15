@@ -42,8 +42,8 @@ class OrdemDeServicoController {
                              EnviarOrcamentoUseCase enviarOrcamento,
                              AprovarOrcamentoUseCase aprovarOrcamento,
                              FinalizarReparoUseCase finalizarReparo,
-                             EntregarVeiculoUseCase entregarVeiculo) {
-                             AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico, CalcularMetricaExecucaoUseCase calcularMetricaExecucao) {
+                             EntregarVeiculoUseCase entregarVeiculo,
+                             CalcularMetricaExecucaoUseCase calcularMetricaExecucao) {
         this.cadastrarOrdemDeServico = cadastrarOrdemDeServico;
         this.listarOrdensDeServico = listarOrdensDeServico;
         this.buscarOrdemDeServico = buscarOrdemDeServico;

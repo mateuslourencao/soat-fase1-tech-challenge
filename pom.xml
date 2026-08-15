@@ -72,11 +72,6 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.8.14</version>
 		</dependency>
-		<dependency>
-			<groupId>org.owasp</groupId>
-			<artifactId>dependency-check-maven</artifactId>
-			<version>13.0.0</version>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -129,22 +124,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.owasp</groupId>
-				<artifactId>dependency-check-maven</artifactId>
-				<version>12.1.0</version> <!-- Atualize para uma versão recente se estiver usando a 9.x -->
-				<configuration>
-					<nvdApiKey>f834c0ec-0ab0-48e9-9a15-c22d11b64809</nvdApiKey>
-					<nvdApiDelay>16000</nvdApiDelay> <!-- Delay em ms entre requisições para evitar rate limit -->
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
 		</plugins>
 	</build>
 

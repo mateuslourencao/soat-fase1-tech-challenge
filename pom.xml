@@ -99,17 +99,26 @@
 						</goals>
 						<configuration>
 							<excludes>
-								<exclude>com/oficina/SoatTechChallengeApplication.class</exclude>
-								<exclude>**/domain/ports/**/*.class</exclude>
 
+								<!--aplicacao-->
+								<exclude>com/oficina/SoatTechChallengeApplication.class</exclude>
+								<!--ports-->
+								<exclude>**/domain/ports/**/*.class</exclude>
+								<!--dtos-->
 								<exclude>**/infrastructure/adapters/inbound/rest/dto/**/*.class</exclude>
+								<!--enuns-->
 								<exclude>**/domain/model/*Status*.class</exclude>
 								<exclude>**/domain/model/*Perfil*.class</exclude>
-
+								<!--entidades e mappers-->
 								<exclude>**/infrastructure/adapters/outbound/persistence/entity/**/*.class</exclude>
-
+								<exclude>**/infrastructure/adapters/outbound/persistence/mapper/**/*.class</exclude>
+								<!--configs-->
 								<exclude>**/infrastructure/config/**/*.class</exclude>
+								<!--exceptions-->
 								<exclude>**/common/infrastructure/rest/GlobalExceptionHandler.class</exclude>
+								<!--seguranca-->
+								<exclude>**/infrastructure/adapters/inbound/security/**/*.class</exclude>
+								<exclude>**/infrastructure/adapters/outbound/security/JwtTokenAdapter.class</exclude>
 							</excludes>
 						</configuration>
 					</execution>

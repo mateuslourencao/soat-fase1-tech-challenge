@@ -18,8 +18,7 @@ public class ServicoService implements ListarServicoUseCase, AtualizarServicoUse
 
     @Override
     public List<Servico> listarServico() {
-        List<Servico> servicos = servicoRepository.listarServicos();
-        return servicos;
+        return servicoRepository.listarServicos();
     }
 
     public Servico cadastrarServico(String descricao, Double valor) {

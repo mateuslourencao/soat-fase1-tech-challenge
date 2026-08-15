@@ -15,7 +15,8 @@ import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CalcularMetricaServiceTest {
@@ -54,13 +55,13 @@ class CalcularMetricaServiceTest {
         OrdemDeServico ordem1 = ordem(StatusOS.FINALIZADA, inicio, agora);
         OrdemDeServico ordem2 = ordem(StatusOS.EM_DIAGNOSTICO, inicio, agora);
         OrdemDeServico ordem3 = ordem(StatusOS.EM_EXECUCAO, inicio, agora);
-        Long ResultadoEsperado = Duration.between(inicio.atZone(ZoneOffset.UTC), agora.atZone(ZoneOffset.UTC)).toMillis();
+        Long resultadoEsperado = Duration.between(inicio.atZone(ZoneOffset.UTC), agora.atZone(ZoneOffset.UTC)).toMillis();
 
         when(repository.buscarOrdensdeServicoPeriodo(any(), any())).thenReturn(List.of(ordem1, ordem2, ordem3));
         
         MetricaExecucao resultado = new CalcularMetricaExecucaoService(repository).calcularMetricaExecucao(1);
 
-        assertEquals(resultado.getTempoMs(), ResultadoEsperado);
+        assertEquals(resultado.getTempoMs(), resultadoEsperado);
     }
 
     @Test void deveCalcularMediaCorretaParaMultiplasOrdensFinalizadas() {

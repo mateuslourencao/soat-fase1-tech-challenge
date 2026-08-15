@@ -5,8 +5,6 @@ import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.OrdemDeSe
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/ordensdeservico")
 @Tag(name = "Ordens de Serviço", description = "Gestão de aberturas e acompanhamento de ordens de serviço")
 class OrdemDeServicoStatusController {
-    private static final Logger logger = LoggerFactory.getLogger(OrdemDeServicoStatusController.class);
-
     private final IniciarDiagnosticoUseCase iniciarDiagnostico;
     private final EnviarOrcamentoUseCase enviarOrcamento;
     private final AprovarOrcamentoUseCase aprovarOrcamento;

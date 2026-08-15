@@ -32,8 +32,7 @@ public class ServicoJpaAdapter implements ServicoRepositoryPort {
 
     @Override
     public List<Servico> listarServicos() {
-        List<Servico> servicos = repository.findAll().stream().map(mapper::toDomain).toList();
-        return servicos;
+        return repository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     @Override

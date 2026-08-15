@@ -1,10 +1,10 @@
 package com.oficina.administrativo.application.service;
 
-import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.administrativo.domain.model.Funcionario;
 import com.oficina.administrativo.domain.model.PerfilFuncionario;
 import com.oficina.administrativo.domain.ports.outbound.FuncionarioRepositoryPort;
 import com.oficina.administrativo.domain.ports.outbound.SenhaCriptografadaPort;
+import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

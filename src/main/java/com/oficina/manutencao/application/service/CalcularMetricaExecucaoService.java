@@ -44,7 +44,7 @@ public class CalcularMetricaExecucaoService implements CalcularMetricaExecucaoUs
 
     private long calcularMedia(List<Long> temposMs) {
         if (temposMs.isEmpty()) {
-            return  (long) 0;
+            return  0;
         }
         return (long)temposMs.stream()
                 .mapToLong(Long::longValue)

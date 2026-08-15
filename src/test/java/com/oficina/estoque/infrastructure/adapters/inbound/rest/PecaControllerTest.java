@@ -56,7 +56,7 @@ class PecaControllerTest {
         ObterPecaRequestDTO request = new ObterPecaRequestDTO(1, 2);
         when(obterUseCase.obterPeca(1, 2)).thenReturn(peca);
 
-        ResponseEntity<?> response = controller.ObterPeca(request);
+        ResponseEntity<?> response = controller.obterPeca(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(obterUseCase).obterPeca(1, 2);
@@ -68,7 +68,7 @@ class PecaControllerTest {
         ReporPecaRequestDTO request = new ReporPecaRequestDTO(1, 5);
         when(reporUseCase.reporEstoque(1, 5)).thenReturn(peca);
 
-        ResponseEntity<?> response = controller.ReporPeca(request);
+        ResponseEntity<?> response = controller.reporPeca(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(reporUseCase).reporEstoque(1, 5);

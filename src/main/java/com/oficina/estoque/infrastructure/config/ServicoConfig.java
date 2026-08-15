@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class ServicoConfig {
     @Bean
-    ServicoService ServicoService(ServicoRepositoryPort servicoRepository) {
+    ServicoService servicoService(ServicoRepositoryPort servicoRepository) {
         return new ServicoService(servicoRepository);
     }
 }

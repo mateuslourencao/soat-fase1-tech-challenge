@@ -73,3 +73,6 @@ CREATE TABLE funcionarios (
     PRIMARY KEY (id),
     UNIQUE KEY uk_funcionarios_email (email)
 ) ENGINE=InnoDB;
+
+INSERT INTO funcionarios (nome, email, senha_hash, perfil, ativo)
+VALUES ('Admin', 'admin@oficina.com', '$2a$10$MpYWLD6kAO1V/qHRCkmuBOgk408NjP.kaanBWXUc82DXimgUx7WFe', 'ADMIN', 1);

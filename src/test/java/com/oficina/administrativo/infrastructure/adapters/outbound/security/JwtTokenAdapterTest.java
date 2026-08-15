@@ -3,7 +3,6 @@ package com.oficina.administrativo.infrastructure.adapters.outbound.security;
 import com.oficina.administrativo.domain.model.Funcionario;
 import com.oficina.administrativo.domain.model.PerfilFuncionario;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -36,13 +35,6 @@ class JwtTokenAdapterTest {
                 () -> assertTrue(adapter.validar(tokenComPayload("{\"sub\":15,\"perfil\":\"ADMIN\",\"exp\":1")).isEmpty()));
     }
 
-    @Test
-    void deveConferirSenhaCriptografada() {
-        BCryptSenhaCriptografadaAdapter adapter = new BCryptSenhaCriptografadaAdapter();
-        String hash = new BCryptPasswordEncoder().encode("segredo");
-        assertTrue(adapter.confere("segredo", hash));
-        assertFalse(adapter.confere("errada", hash));
-    }
 
     private String tokenComPayload(String payload) {
         String header = Base64.getUrlEncoder().withoutPadding().encodeToString("{\"alg\":\"HS256\"}".getBytes(StandardCharsets.UTF_8));

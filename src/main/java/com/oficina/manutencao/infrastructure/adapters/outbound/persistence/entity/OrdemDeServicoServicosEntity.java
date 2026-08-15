@@ -18,7 +18,7 @@ public class OrdemDeServicoServicosEntity {
     private OrdemDeServicoEntity ordemDeServico;
 
     @MapsId("servicoId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "servico_id")
     private ServicoEntity servico;
 

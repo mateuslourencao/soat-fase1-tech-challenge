@@ -44,7 +44,8 @@ public class ClienteController {
     @Operation(summary = "Cadastrar cliente", description = "Cadastra um novo cliente no sistema")
     @ApiResponse(responseCode = "201", description = "Cliente cadastrado com sucesso")
     public ResponseEntity<ClienteResponseDTO> criar(@RequestBody @Valid ClienteRequestDTO request) {
-        Cliente cliente = new Cliente(request.documento(), request.nome(), request.email(), request.telefone());
+        String documentoLimpo = request.documento().replaceAll("[^a-zA-Z0-9]", "");
+        Cliente cliente = new Cliente(documentoLimpo, request.nome(), request.email(), request.telefone());
         Cliente salvo = cadastrarCliente.cadastrarCliente(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(salvo));
     }
@@ -64,7 +65,8 @@ public class ClienteController {
     @ApiResponse(responseCode = "200", description = "Cliente encontrado")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     public ResponseEntity<ClienteResponseDTO> buscarPorId(@Parameter(description = "Documento do cliente (CPF/CNPJ)") @PathVariable @CpfCnpj String documento) {
-        Cliente cliente = buscarCliente.buscarCliente(documento);
+        String documentoLimpo = documento.replaceAll("[^a-zA-Z0-9]", "");
+        Cliente cliente = buscarCliente.buscarCliente(documentoLimpo);
         return ResponseEntity.ok(converterParaDTO(cliente));
     }
 
@@ -72,8 +74,9 @@ public class ClienteController {
     @Operation(summary = "Atualizar cliente", description = "Atualiza os dados de um cliente existente")
     @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso")
     public ResponseEntity<ClienteResponseDTO> atualizar(@Parameter(description = "Documento do cliente (CPF/CNPJ)") @PathVariable @CpfCnpj String documento, @RequestBody @Valid ClienteRequestDTO request) {
-        Cliente clienteAtualizado = new Cliente(documento, request.nome(), request.email(), request.telefone());
-        Cliente salvo = atualizarCliente.atualizarCliente(documento, clienteAtualizado);
+        String documentoLimpo = documento.replaceAll("[^a-zA-Z0-9]", "");
+        Cliente clienteAtualizado = new Cliente(documentoLimpo, request.nome(), request.email(), request.telefone());
+        Cliente salvo = atualizarCliente.atualizarCliente(documentoLimpo, clienteAtualizado);
         return ResponseEntity.ok(converterParaDTO(salvo));
     }
 
@@ -81,7 +84,8 @@ public class ClienteController {
     @Operation(summary = "Remover cliente", description = "Remove o cadastro de um cliente do sistema")
     @ApiResponse(responseCode = "204", description = "Cliente removido com sucesso")
     public ResponseEntity<Void> remover(@Parameter(description = "Documento do cliente (CPF/CNPJ)") @PathVariable @CpfCnpj String documento) {
-        removerCliente.removerCliente(documento);
+        String documentoLimpo = documento.replaceAll("[^a-zA-Z0-9]", "");
+        removerCliente.removerCliente(documentoLimpo);
         return ResponseEntity.noContent().build();
     }
 

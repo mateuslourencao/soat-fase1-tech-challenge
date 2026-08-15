@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 4,
-	"__export_date": "2024-05-20T00:00:00.000Z",
+	"__export_date": "2026-08-15T10:46:00.000Z",
 	"__export_source": "insomnia.desktop.app:v2023.5.8",
 	"resources": [
 		{
@@ -40,21 +40,19 @@
 			"parentId": "wrk_1",
 			"modified": 1716163200000,
 			"created": 1716163200000,
-			"name": "1. Administrativo (Autenticação e Funcionários)",
+			"name": "1. Administrativo",
 			"description": "",
 			"environment": {},
 			"environmentPropertyOrder": null,
-			"metaSortKey": -1716163200000,
+			"metaSortKey": -1000,
 			"_type": "request_group"
 		},
 		{
 			"_id": "req_1",
 			"parentId": "fld_1",
-			"modified": 1716163200000,
-			"created": 1716163200000,
 			"url": "{{ _.base_url }}/administrativo/autenticacao",
-			"name": "Login (Gerar Token)",
-			"description": "Autentica um funcionário e retorna o JWT. Copie o token retornado para a variável 'jwt_token' no Environment.",
+			"name": "Login",
+			"description": "Autentica um funcionário e retorna o JWT.",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
@@ -68,22 +66,20 @@
 				}
 			],
 			"authentication": {},
-			"metaSortKey": -1716163200000,
+			"metaSortKey": -1000,
 			"isPrivate": false,
 			"_type": "request"
 		},
 		{
 			"_id": "req_2",
 			"parentId": "fld_1",
-			"modified": 1716163200000,
-			"created": 1716163200000,
 			"url": "{{ _.base_url }}/administrativo/funcionarios",
 			"name": "Cadastrar Funcionário",
-			"description": "",
+			"description": "Endpoint público conforme última alteração de segurança.",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"nome\": \"João Mecânico\",\n  \"email\": \"joao@oficina.com\",\n  \"senha\": \"senha123\",\n  \"perfil\": \"MECANICO\"\n}"
+				"text": "{\n  \"nome\": \"Novo Admin\",\n  \"email\": \"novoadmin@oficina.com\",\n  \"senha\": \"senha123\",\n  \"perfil\": \"ADMIN\"\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -92,22 +88,16 @@
 					"value": "application/json"
 				}
 			],
-			"authentication": {
-				"type": "bearer",
-				"token": "{{ _.jwt_token }}"
-			},
-			"metaSortKey": -1716163200001,
+			"authentication": {},
+			"metaSortKey": -900,
 			"isPrivate": false,
 			"_type": "request"
 		},
 		{
 			"_id": "req_3",
 			"parentId": "fld_1",
-			"modified": 1716163200000,
-			"created": 1716163200000,
 			"url": "{{ _.base_url }}/administrativo/funcionarios",
 			"name": "Listar Funcionários",
-			"description": "",
 			"method": "GET",
 			"body": {},
 			"parameters": [],
@@ -116,36 +106,61 @@
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"
 			},
-			"metaSortKey": -1716163200002,
+			"metaSortKey": -800,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_4",
+			"parentId": "fld_1",
+			"url": "{{ _.base_url }}/administrativo/funcionarios/2/ativar",
+			"name": "Ativar Funcionário",
+			"method": "PATCH",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -700,
+			"isPrivate": false,
+			"_type": "request"
+		},
+		{
+			"_id": "req_5",
+			"parentId": "fld_1",
+			"url": "{{ _.base_url }}/administrativo/funcionarios/2/inativar",
+			"name": "Inativar Funcionário",
+			"method": "PATCH",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -600,
 			"isPrivate": false,
 			"_type": "request"
 		},
 		{
 			"_id": "fld_2",
 			"parentId": "wrk_1",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"name": "2. Clientes e Veículos",
-			"description": "",
-			"environment": {},
-			"environmentPropertyOrder": null,
-			"metaSortKey": -1716163200001,
+			"name": "2. Clientes",
+			"metaSortKey": -900,
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_4",
+			"_id": "req_6",
 			"parentId": "fld_2",
-			"modified": 1716163200000,
-			"created": 1716163200000,
 			"url": "{{ _.base_url }}/clientes",
 			"name": "Cadastrar Cliente",
-			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"nome\": \"Cliente Exemplo\",\n  \"documento\": \"12345678901\",\n  \"email\": \"cliente@gmail.com\",\n  \"telefone\": \"11988887777\"\n}"
+				"text": "{\n  \"nome\": \"Fulano de Tal\",\n  \"documento\": \"559.546.890-40\",\n  \"email\": \"fulano@exemplo.com\",\n  \"telefone\": \"11999998888\"\n}"
 			},
-			"parameters": [],
 			"headers": [
 				{
 					"name": "Content-Type",
@@ -156,24 +171,32 @@
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"
 			},
-			"metaSortKey": -1716163200000,
-			"isPrivate": false,
+			"metaSortKey": -1000,
 			"_type": "request"
 		},
 		{
-			"_id": "req_5",
+			"_id": "req_7",
 			"parentId": "fld_2",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/veiculos",
-			"name": "Cadastrar Veículo",
-			"description": "",
-			"method": "POST",
+			"url": "{{ _.base_url }}/clientes",
+			"name": "Listar Clientes",
+			"method": "GET",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -900,
+			"_type": "request"
+		},
+		{
+			"_id": "req_8",
+			"parentId": "fld_2",
+			"url": "{{ _.base_url }}/clientes/55954689040",
+			"name": "Editar Cliente",
+			"method": "PUT",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"placa\": \"ABC1234\",\n  \"modelo\": \"Civic\",\n  \"marca\": \"Honda\",\n  \"ano\": 2022,\n  \"documentoCliente\": \"12345678901\"\n}"
+				"text": "{\n  \"nome\": \"Fulano da Silva\",\n  \"documento\": \"559.546.890-40\",\n  \"email\": \"fulano.silva@exemplo.com\",\n  \"telefone\": \"11999998888\"\n}"
 			},
-			"parameters": [],
 			"headers": [
 				{
 					"name": "Content-Type",
@@ -184,36 +207,39 @@
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"
 			},
-			"metaSortKey": -1716163200001,
-			"isPrivate": false,
+			"metaSortKey": -800,
+			"_type": "request"
+		},
+		{
+			"_id": "req_9",
+			"parentId": "fld_2",
+			"url": "{{ _.base_url }}/clientes/55954689040",
+			"name": "Buscar Cliente por Documento",
+			"method": "GET",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -700,
 			"_type": "request"
 		},
 		{
 			"_id": "fld_3",
 			"parentId": "wrk_1",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"name": "3. Estoque (Peças e Serviços)",
-			"description": "",
-			"environment": {},
-			"environmentPropertyOrder": null,
-			"metaSortKey": -1716163200002,
+			"name": "3. Veículos",
+			"metaSortKey": -800,
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_6",
+			"_id": "req_10",
 			"parentId": "fld_3",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/pecas",
-			"name": "Cadastrar Peça",
-			"description": "",
+			"url": "{{ _.base_url }}/veiculos",
+			"name": "Cadastrar Veículo",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"nome\": \"Pastilha de Freio\",\n  \"quantidade\": 10,\n  \"precoUnitario\": 150.00\n}"
+				"text": "{\n  \"placa\": \"ABC1234\",\n  \"marca\": \"Fiat\",\n  \"modelo\": \"Uno\",\n  \"ano\": 2015\n}"
 			},
-			"parameters": [],
 			"headers": [
 				{
 					"name": "Content-Type",
@@ -224,261 +250,349 @@
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"
 			},
-			"metaSortKey": -1716163200000,
-			"isPrivate": false,
+			"metaSortKey": -1000,
 			"_type": "request"
 		},
 		{
-			"_id": "req_7",
+			"_id": "req_11",
 			"parentId": "fld_3",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/servicos",
-			"name": "Cadastrar Serviço",
-			"description": "",
-			"method": "POST",
-			"body": {
-				"mimeType": "application/json",
-				"text": "{\n  \"descricao\": \"Troca de Óleo\",\n  \"valor\": 250.00\n}"
-			},
-			"parameters": [],
-			"headers": [
-				{
-					"name": "Content-Type",
-					"value": "application/json"
-				}
-			],
-			"authentication": {
-				"type": "bearer",
-				"token": "{{ _.jwt_token }}"
-			},
-			"metaSortKey": -1716163200001,
-			"isPrivate": false,
-			"_type": "request"
-		},
-		{
-			"_id": "req_8",
-			"parentId": "fld_3",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/servicos",
-			"name": "Listar Serviços",
-			"description": "",
+			"url": "{{ _.base_url }}/veiculos",
+			"name": "Listar Veículos",
 			"method": "GET",
-			"body": {},
-			"parameters": [],
-			"headers": [],
 			"authentication": {
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"
 			},
-			"metaSortKey": -1716163200002,
-			"isPrivate": false,
+			"metaSortKey": -900,
+			"_type": "request"
+		},
+		{
+			"_id": "req_12",
+			"parentId": "fld_3",
+			"url": "{{ _.base_url }}/veiculos/ABC1234",
+			"name": "Editar Veículo",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"placa\": \"ABC1234\",\n  \"marca\": \"Fiat\",\n  \"modelo\": \"Palio\",\n  \"ano\": 2016\n}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -800,
 			"_type": "request"
 		},
 		{
 			"_id": "fld_4",
 			"parentId": "wrk_1",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"name": "4. Manutenção (Ordens de Serviço)",
-			"description": "",
-			"environment": {},
-			"environmentPropertyOrder": null,
-			"metaSortKey": -1716163200003,
+			"name": "4. Peças",
+			"metaSortKey": -700,
 			"_type": "request_group"
-		},
-		{
-			"_id": "req_9",
-			"parentId": "fld_4",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/ordensdeservico",
-			"name": "Abrir Ordem de Serviço",
-			"description": "",
-			"method": "POST",
-			"body": {
-				"mimeType": "application/json",
-				"text": "{\n  \"placaVeiculo\": \"ABC1234\",\n  \"documentoCliente\": \"12345678901\"\n}"
-			},
-			"parameters": [],
-			"headers": [
-				{
-					"name": "Content-Type",
-					"value": "application/json"
-				}
-			],
-			"authentication": {
-				"type": "bearer",
-				"token": "{{ _.jwt_token }}"
-			},
-			"metaSortKey": -1716163200000,
-			"isPrivate": false,
-			"_type": "request"
-		},
-		{
-			"_id": "req_10",
-			"parentId": "fld_4",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/ordensdeservico/1/itens",
-			"name": "Adicionar Itens à OS",
-			"description": "Substitua o '1' na URL pelo ID da OS retornada no passo anterior.",
-			"method": "POST",
-			"body": {
-				"mimeType": "application/json",
-				"text": "{\n  \"servicosIds\": [1],\n  \"pecasIds\": [1]\n}"
-			},
-			"parameters": [],
-			"headers": [
-				{
-					"name": "Content-Type",
-					"value": "application/json"
-				}
-			],
-			"authentication": {
-				"type": "bearer",
-				"token": "{{ _.jwt_token }}"
-			},
-			"metaSortKey": -1716163200001,
-			"isPrivate": false,
-			"_type": "request"
-		},
-		{
-			"_id": "req_11",
-			"parentId": "fld_4",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/ordensdeservico/1",
-			"name": "Buscar OS por ID (Público)",
-			"description": "Endpoint público. Não exige JWT.",
-			"method": "GET",
-			"body": {},
-			"parameters": [],
-			"headers": [],
-			"authentication": {},
-			"metaSortKey": -1716163200002,
-			"isPrivate": false,
-			"_type": "request"
-		},
-		{
-			"_id": "req_12",
-			"parentId": "fld_4",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/ordensdeservico",
-			"name": "Listar todas as OS",
-			"description": "",
-			"method": "GET",
-			"body": {},
-			"parameters": [],
-			"headers": [],
-			"authentication": {
-				"type": "bearer",
-				"token": "{{ _.jwt_token }}"
-			},
-			"metaSortKey": -1716163200003,
-			"isPrivate": false,
-			"_type": "request"
 		},
 		{
 			"_id": "req_13",
 			"parentId": "fld_4",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/ordensdeservico/1/iniciar-diagnostico",
-			"name": "Iniciar Diagnóstico",
-			"description": "",
-			"method": "PATCH",
-			"body": {},
-			"parameters": [],
-			"headers": [],
+			"url": "{{ _.base_url }}/pecas/criar",
+			"name": "Cadastrar Peça",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"descricao\": \"Amortecedor\",\n  \"valor\": 350.00,\n  \"quantidade\": 20\n}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
 			"authentication": {
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"
 			},
-			"metaSortKey": -1716163200004,
-			"isPrivate": false,
+			"metaSortKey": -1000,
 			"_type": "request"
 		},
 		{
 			"_id": "req_14",
 			"parentId": "fld_4",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/ordensdeservico/1/enviar-orcamento",
-			"name": "Enviar Orçamento",
-			"description": "",
-			"method": "PATCH",
-			"body": {},
-			"parameters": [],
-			"headers": [],
+			"url": "{{ _.base_url }}/pecas",
+			"name": "Listar Peças",
+			"method": "GET",
 			"authentication": {
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"
 			},
-			"metaSortKey": -1716163200005,
-			"isPrivate": false,
+			"metaSortKey": -900,
 			"_type": "request"
 		},
 		{
 			"_id": "req_15",
 			"parentId": "fld_4",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/ordensdeservico/1/aprovar-orcamento",
-			"name": "Aprovar Orçamento",
-			"description": "",
-			"method": "PATCH",
-			"body": {},
-			"parameters": [],
-			"headers": [],
+			"url": "{{ _.base_url }}/pecas/1",
+			"name": "Editar Peça",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"descricao\": \"Amortecedor Dianteiro\",\n  \"valor\": 380.00,\n  \"quantidade\": 15\n}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
 			"authentication": {
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"
 			},
-			"metaSortKey": -1716163200006,
-			"isPrivate": false,
+			"metaSortKey": -800,
 			"_type": "request"
 		},
 		{
 			"_id": "req_16",
 			"parentId": "fld_4",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/ordensdeservico/1/finalizar-reparo",
-			"name": "Finalizar Reparo",
-			"description": "",
-			"method": "PATCH",
-			"body": {},
-			"parameters": [],
-			"headers": [],
+			"url": "{{ _.base_url }}/pecas/repor",
+			"name": "Repor Estoque de Peça",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"id\": 1,\n  \"quantidade\": 10\n}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
 			"authentication": {
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"
 			},
-			"metaSortKey": -1716163200007,
-			"isPrivate": false,
+			"metaSortKey": -700,
 			"_type": "request"
 		},
 		{
+			"_id": "fld_5",
+			"parentId": "wrk_1",
+			"name": "5. Serviços",
+			"metaSortKey": -600,
+			"_type": "request_group"
+		},
+		{
 			"_id": "req_17",
-			"parentId": "fld_4",
-			"modified": 1716163200000,
-			"created": 1716163200000,
-			"url": "{{ _.base_url }}/ordensdeservico/1/entregar-veiculo",
-			"name": "Entregar Veículo",
-			"description": "",
-			"method": "PATCH",
-			"body": {},
-			"parameters": [],
-			"headers": [],
+			"parentId": "fld_5",
+			"url": "{{ _.base_url }}/servicos",
+			"name": "Cadastrar Serviço",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"descricao\": \"Alinhamento e Balanceamento\",\n  \"valor\": 120.00\n}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
 			"authentication": {
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"
 			},
-			"metaSortKey": -1716163200008,
-			"isPrivate": false,
+			"metaSortKey": -1000,
+			"_type": "request"
+		},
+		{
+			"_id": "req_18",
+			"parentId": "fld_5",
+			"url": "{{ _.base_url }}/servicos",
+			"name": "Listar Serviços",
+			"method": "GET",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -900,
+			"_type": "request"
+		},
+		{
+			"_id": "req_19",
+			"parentId": "fld_5",
+			"url": "{{ _.base_url }}/servicos/1",
+			"name": "Editar Serviço",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"descricao\": \"Alinhamento e Balanceamento Premium\",\n  \"valor\": 150.00\n}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -800,
+			"_type": "request"
+		},
+		{
+			"_id": "fld_6",
+			"parentId": "wrk_1",
+			"name": "6. Manutenção",
+			"metaSortKey": -500,
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_20",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico",
+			"name": "Abrir Ordem de Serviço",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"documentoCliente\": \"559.546.890-40\",\n  \"placaVeiculo\": \"ABC1234\",\n  \"descricaoQueixas\": \"Barulho na suspensão dianteira\"\n}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1000,
+			"_type": "request"
+		},
+		{
+			"_id": "req_21",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico/1/itens",
+			"name": "Adicionar Itens à OS",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"servicosIds\": [1],\n  \"pecasNecessarias\": [\n    {\n      \"pecaId\": 1,\n      \"quantidade\": 2\n    }\n  ]\n}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -900,
+			"_type": "request"
+		},
+		{
+			"_id": "req_22",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico/1",
+			"name": "Buscar OS por ID",
+			"method": "GET",
+			"authentication": {},
+			"metaSortKey": -850,
+			"_type": "request"
+		},
+		{
+			"_id": "req_23",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico",
+			"name": "Listar todas as OS",
+			"method": "GET",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -800,
+			"_type": "request"
+		},
+		{
+			"_id": "req_24",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico/1/iniciar-diagnostico",
+			"name": "Iniciar Diagnóstico",
+			"method": "PATCH",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -700,
+			"_type": "request"
+		},
+		{
+			"_id": "req_25",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico/1/enviar-orcamento",
+			"name": "Enviar Orçamento",
+			"method": "PATCH",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -600,
+			"_type": "request"
+		},
+		{
+			"_id": "req_26",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico/1/aprovar-orcamento",
+			"name": "Aprovar Orçamento",
+			"method": "PATCH",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -500,
+			"_type": "request"
+		},
+		{
+			"_id": "req_27",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico/1/finalizar-reparo",
+			"name": "Finalizar Reparo",
+			"method": "PATCH",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -400,
+			"_type": "request"
+		},
+		{
+			"_id": "req_28",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico/1/entregar-veiculo",
+			"name": "Entregar Veículo",
+			"method": "PATCH",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -300,
+			"_type": "request"
+		},
+		{
+			"_id": "req_29",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico/metricas/30",
+			"name": "Calcular Métrica de Execução",
+			"method": "GET",
+			"authentication": {},
+			"metaSortKey": -200,
 			"_type": "request"
 		}
 	]

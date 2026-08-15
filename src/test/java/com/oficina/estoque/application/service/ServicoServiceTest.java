@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
@@ -44,5 +45,23 @@ class ServicoServiceTest {
         when(repository.buscarPorId(1)).thenReturn(Optional.of(servico));
         service.removerServico(1);
         verify(repository).removerServico(1);
+    }
+
+    @Test void deveLancarExcecaoAoCadastrarServicoComDadosInvalidos() {
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarServico(null, 100.0));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarServico("", 100.0));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarServico("   ", 100.0));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarServico("Servico", null));
+        assertThrows(IllegalArgumentException.class, () -> service.cadastrarServico("Servico", -1.0));
+    }
+
+    @Test void deveLancarExcecaoAoBuscarServicoNaoEncontrado() {
+        when(repository.buscarPorId(1)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> service.buscarServico(1));
+    }
+
+    @Test void deveLancarExcecaoAoRemoverServicoNaoEncontrado() {
+        when(repository.buscarPorId(1)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> service.removerServico(1));
     }
 }

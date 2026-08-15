@@ -109,10 +109,10 @@ class OrdemDeServicoController {
 
     @PatchMapping("/{id}/enviar-orcamento")
     @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Enviar orçamento", description = "Altera o status da ordem de serviço para Aguardando Aprovação")
-    public ResponseEntity<Void> enviarOrcamento(@PathVariable int id) {
+    @Operation(summary = "Enviar orçamento", description = "Altera o status da ordem de serviço para Aguardando Aprovação e notifica o cliente")
+    public ResponseEntity<OrdemDeServicoResponseDTO> enviarOrcamento(@PathVariable int id) {
         enviarOrcamento.enviarOrcamento(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new OrdemDeServicoResponseDTO(buscarOrdemDeServico.buscarOrdemDeServico(id)));
     }
 
     @PatchMapping("/{id}/aprovar-orcamento")

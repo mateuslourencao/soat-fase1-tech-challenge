@@ -113,9 +113,14 @@ class OrdemDeServicoControllerTest {
     @Test
     void deveEnviarOrcamento() {
         int id = 1;
-        ResponseEntity<Void> response = controller.enviarOrcamento(id);
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        OrdemDeServico os = new OrdemDeServico("123", "ABC", "Queixa");
+        when(buscarUseCase.buscarOrdemDeServico(id)).thenReturn(os);
+        
+        ResponseEntity<?> response = controller.enviarOrcamento(id);
+        
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(enviarOrcamentoUseCase).enviarOrcamento(id);
+        verify(buscarUseCase).buscarOrdemDeServico(id);
     }
 
     @Test

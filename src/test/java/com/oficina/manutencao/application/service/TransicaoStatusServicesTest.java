@@ -1,7 +1,10 @@
 package com.oficina.manutencao.application.service;
 
+import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.StatusOS;
+import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
+import com.oficina.manutencao.domain.ports.outbound.NotificarClientePort;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +17,8 @@ import static org.mockito.Mockito.*;
 
 class TransicaoStatusServicesTest {
     private final OrdemDeServicoRepositoryPort repository = mock(OrdemDeServicoRepositoryPort.class);
+    private final ClienteRepositoryPort clienteRepository = mock(ClienteRepositoryPort.class);
+    private final NotificarClientePort notificarCliente = mock(NotificarClientePort.class);
 
     @Test
     void deveIniciarDiagnosticoComSucesso() {
@@ -38,19 +43,22 @@ class TransicaoStatusServicesTest {
 
     @Test
     void deveEnviarOrcamentoComSucesso() {
-        EnviarOrcamentoService service = new EnviarOrcamentoService(repository);
+        EnviarOrcamentoService service = new EnviarOrcamentoService(repository, clienteRepository, notificarCliente);
         OrdemDeServico ordem = criarOrdem(StatusOS.EM_DIAGNOSTICO);
+        Cliente cliente = new Cliente("123", "Joao", "joao@email.com", "123456789");
         when(repository.buscarPorId(1)).thenReturn(Optional.of(ordem));
+        when(clienteRepository.buscarPorId("123")).thenReturn(Optional.of(cliente));
         
         service.enviarOrcamento(1);
         
         assertEquals(StatusOS.AGUARDANDO_APROVACAO, ordem.getStatus());
         verify(repository).salvar(ordem);
+        verify(notificarCliente).notificarOrcamentoAguardandoAprovacao(cliente, ordem);
     }
 
     @Test
     void deveLancarExcecaoAoEnviarOrcamentoComStatusInvalido() {
-        EnviarOrcamentoService service = new EnviarOrcamentoService(repository);
+        EnviarOrcamentoService service = new EnviarOrcamentoService(repository, clienteRepository, notificarCliente);
         OrdemDeServico ordem = criarOrdem(StatusOS.RECEBIDA);
         when(repository.buscarPorId(1)).thenReturn(Optional.of(ordem));
         

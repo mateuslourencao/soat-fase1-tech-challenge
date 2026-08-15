@@ -1,0 +1,15 @@
+target/
+mvnw
+mvnw.cmd
+.mvn/
+.git/
+.gitignore
+.idea/
+.vscode/
+*.iml
+Dockerfile
+docker-compose.yml
+README.md
+schema.sql
+oficina-insomnia-collection.json
+HELP.md

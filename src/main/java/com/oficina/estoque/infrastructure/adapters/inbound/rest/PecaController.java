@@ -1,10 +1,7 @@
 package com.oficina.estoque.infrastructure.adapters.inbound.rest;
 
 import com.oficina.estoque.domain.model.Peca;
-import com.oficina.estoque.domain.ports.inbound.CadastrarPecaUseCase;
-import com.oficina.estoque.domain.ports.inbound.ListarPecaUseCase;
-import com.oficina.estoque.domain.ports.inbound.ObterPecaUseCase;
-import com.oficina.estoque.domain.ports.inbound.ReporPecaUseCase;
+import com.oficina.estoque.domain.ports.inbound.*;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.ObterPecaRequestDTO;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.PecaRequestDTO;
 import com.oficina.estoque.infrastructure.adapters.inbound.rest.dto.PecaResponseDTO;
@@ -30,12 +27,21 @@ public class PecaController {
     private final ObterPecaUseCase obterPeca;
     private final ListarPecaUseCase listarPeca;
     private final ReporPecaUseCase reporPeca;
+    private final AtualizarPecaUseCase atualizarPeca;
+    private final RemoverPecaUseCase removerPeca;
 
-    PecaController(CadastrarPecaUseCase cadastrarPeca, ObterPecaUseCase obterPeca, ListarPecaUseCase listarPeca, ReporPecaUseCase reporPeca) {
+    PecaController(CadastrarPecaUseCase cadastrarPeca,
+                   ObterPecaUseCase obterPeca,
+                   ListarPecaUseCase listarPeca,
+                   ReporPecaUseCase reporPeca,
+                   AtualizarPecaUseCase atualizarPeca,
+                   RemoverPecaUseCase removerPeca) {
         this.cadastrarPeca = cadastrarPeca;
         this.obterPeca = obterPeca;
         this.listarPeca = listarPeca;
         this.reporPeca = reporPeca;
+        this.atualizarPeca = atualizarPeca;
+        this.removerPeca = removerPeca;
     }
 
     @GetMapping
@@ -74,4 +80,19 @@ public class PecaController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualizar peça", description = "Atualiza os dados de uma peça existente")
+    @ApiResponse(responseCode = "200", description = "Peça atualizada com sucesso")
+    public ResponseEntity<PecaResponseDTO> atualizarPeca(@PathVariable int id, @Valid @RequestBody PecaRequestDTO request) {
+        Peca pecaAtualizada = atualizarPeca.atualizarPeca(new Peca(id, request.descricao(), request.valor(), request.quantidade()));
+        return ResponseEntity.ok(new PecaResponseDTO(pecaAtualizada));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Remover peça", description = "Remove uma peça do estoque")
+    @ApiResponse(responseCode = "204", description = "Peça removida com sucesso")
+    public ResponseEntity<Void> removerPeca(@PathVariable int id) {
+        removerPeca.removerPeca(id);
+        return ResponseEntity.noContent().build();
+    }
 }

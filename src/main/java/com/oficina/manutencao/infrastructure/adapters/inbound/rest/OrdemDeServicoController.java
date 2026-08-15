@@ -27,16 +27,32 @@ class OrdemDeServicoController {
     private final ListarOrdensDeServicoUseCase listarOrdensDeServico;
     private final BuscarOrdemDeServicoUseCase buscarOrdemDeServico;
     private final AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico;
+    private final IniciarDiagnosticoUseCase iniciarDiagnostico;
+    private final EnviarOrcamentoUseCase enviarOrcamento;
+    private final AprovarOrcamentoUseCase aprovarOrcamento;
+    private final FinalizarReparoUseCase finalizarReparo;
+    private final EntregarVeiculoUseCase entregarVeiculo;
     private final CalcularMetricaExecucaoUseCase calcularMetricaExecucao;
 
     OrdemDeServicoController(CadastrarOrdemDeServicoUseCase cadastrarOrdemDeServico,
                              ListarOrdensDeServicoUseCase listarOrdensDeServico,
                              BuscarOrdemDeServicoUseCase buscarOrdemDeServico,
+                             AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico,
+                             IniciarDiagnosticoUseCase iniciarDiagnostico,
+                             EnviarOrcamentoUseCase enviarOrcamento,
+                             AprovarOrcamentoUseCase aprovarOrcamento,
+                             FinalizarReparoUseCase finalizarReparo,
+                             EntregarVeiculoUseCase entregarVeiculo) {
                              AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico, CalcularMetricaExecucaoUseCase calcularMetricaExecucao) {
         this.cadastrarOrdemDeServico = cadastrarOrdemDeServico;
         this.listarOrdensDeServico = listarOrdensDeServico;
         this.buscarOrdemDeServico = buscarOrdemDeServico;
         this.atualizarItensOrdemDeServico = atualizarItensOrdemDeServico;
+        this.iniciarDiagnostico = iniciarDiagnostico;
+        this.enviarOrcamento = enviarOrcamento;
+        this.aprovarOrcamento = aprovarOrcamento;
+        this.finalizarReparo = finalizarReparo;
+        this.entregarVeiculo = entregarVeiculo;
         this.calcularMetricaExecucao = calcularMetricaExecucao;
     }
 
@@ -81,6 +97,46 @@ class OrdemDeServicoController {
 
         OrdemDeServico response = atualizarItensOrdemDeServico.atualizarItensOrdemDeServico(id, pecas, request.servicosIds());
         return ResponseEntity.ok(new OrdemDeServicoResponseDTO(response));
+    }
+
+    @PatchMapping("/{id}/iniciar-diagnostico")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Iniciar diagnóstico", description = "Altera o status da ordem de serviço para Em Diagnóstico")
+    public ResponseEntity<Void> iniciarDiagnostico(@PathVariable int id) {
+        iniciarDiagnostico.iniciarDiagnostico(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/enviar-orcamento")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Enviar orçamento", description = "Altera o status da ordem de serviço para Aguardando Aprovação")
+    public ResponseEntity<Void> enviarOrcamento(@PathVariable int id) {
+        enviarOrcamento.enviarOrcamento(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/aprovar-orcamento")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Aprovar orçamento", description = "Altera o status da ordem de serviço para Em Execução")
+    public ResponseEntity<Void> aprovarOrcamento(@PathVariable int id) {
+        aprovarOrcamento.aprovarOrcamento(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/finalizar-reparo")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Finalizar reparo", description = "Altera o status da ordem de serviço para Finalizada")
+    public ResponseEntity<Void> finalizarReparo(@PathVariable int id) {
+        finalizarReparo.finalizarReparo(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/entregar-veiculo")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Entregar veículo", description = "Altera o status da ordem de serviço para Entregue")
+    public ResponseEntity<Void> entregarVeiculo(@PathVariable int id) {
+        entregarVeiculo.entregarVeiculo(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/metricas/{dias}")

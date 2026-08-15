@@ -38,7 +38,7 @@ public class ServicoService implements ListarServicoUseCase, AtualizarServicoUse
     @Override
     public Void removerServico(int idServico) {
         Servico servico = servicoRepository.buscarPorId(idServico).orElseThrow(() -> new IllegalArgumentException("Servico não encontrado"));
-        servicoRepository.deletarServico(servico.getId());
+        servicoRepository.removerServico(servico.getId());
         return null;
     }
 }

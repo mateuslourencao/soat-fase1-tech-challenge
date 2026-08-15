@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ActiveProfiles("test")
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @Transactional
 class PecaIntegrationTest {
 
@@ -38,7 +38,7 @@ class PecaIntegrationTest {
     @BeforeEach
     void setUp() {
         pecaRepository.deleteAll();
-        PecaEntity peca = new PecaEntity(1, "Pastilha de Freio", BigDecimal.valueOf(120.50), 5);
+        PecaEntity peca = new PecaEntity("Pastilha de Freio", BigDecimal.valueOf(120.50), 5);
         pecaSalva = pecaRepository.save(peca);
     }
 

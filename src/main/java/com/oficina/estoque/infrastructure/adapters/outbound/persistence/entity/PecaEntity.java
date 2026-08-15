@@ -1,9 +1,6 @@
 package com.oficina.estoque.infrastructure.adapters.outbound.persistence.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
@@ -11,6 +8,7 @@ import java.math.BigDecimal;
 @Table(name = "pecas")
 public class PecaEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(nullable = false)
@@ -23,6 +21,12 @@ public class PecaEntity {
     private int quantidade;
 
     protected PecaEntity() {}
+    
+    public PecaEntity(String descricao, BigDecimal valor, int quantidade) {
+        this.descricao = descricao;
+        this.valor = valor;
+        this.quantidade = quantidade;
+    }
 
     public PecaEntity(int id, String descricao, BigDecimal valor, int quantidade) {
         this.id = id;

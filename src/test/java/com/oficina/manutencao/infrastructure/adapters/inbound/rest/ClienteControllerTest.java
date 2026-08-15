@@ -30,7 +30,6 @@ class ClienteControllerTest {
     @Test
     void deveCriarClienteLimpandoDocumento() {
         ClienteRequestDTO request = new ClienteRequestDTO("123.456.789-00", "João", "joao@email.com", "1234");
-        Cliente cliente = new Cliente("12345678900", "João", "joao@email.com", "1234");
         when(cadastrarUseCase.cadastrarCliente(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         ResponseEntity<ClienteResponseDTO> response = controller.criar(request);
@@ -44,8 +43,7 @@ class ClienteControllerTest {
     void deveBuscarClientePorDocumentoFormatado() {
         String docFormatado = "123.456.789-00";
         String docLimpo = "12345678900";
-        Cliente cliente = new Cliente(docLimpo, "João", "joao@email.com", "1234");
-        when(buscarUseCase.buscarCliente(docLimpo)).thenReturn(cliente);
+        when(buscarUseCase.buscarCliente(docLimpo)).thenReturn(new Cliente(docLimpo, "João", "joao@email.com", "1234"));
 
         ResponseEntity<ClienteResponseDTO> response = controller.buscarPorId(docFormatado);
 

@@ -101,4 +101,53 @@ mvn verify
 ```
 O relatório será gerado em `target/site/jacoco/index.html`.
 
+### 🔍 Análise de Qualidade e Segurança (SonarQube)
+
+Este projeto utiliza o **SonarQube** integrado ao **Jacoco** para garantir a cobertura dos testes de unidade/integração e proteger o código contra vulnerabilidades (OWASP Top 10).
+
+Siga os passos abaixo para rodar a análise localmente na sua máquina:
+
+**1. Subir o servidor do SonarQube via Docker**
+
+Certifique-se de que o Docker Desktop está rodando e execute o comando abaixo no terminal:
+```bash
+docker run -d --name sonarqube -p 9000:9000 sonarqube:latest
+```
+(Aguarde cerca de 1 a 2 minutos para o container iniciar completamente).
+
+**2. Primeiro acesso e configuração**
+
+Acesse o painel em: http://localhost:9000
+
+Faça o login com as credenciais padrão:
+
+Login: admin
+
+Senha: admin
+
+O sistema pedirá para você criar uma nova senha imediatamente.
+
+**3. Criar o Projeto e Gerar o Token**
+
+Na tela inicial, clique em Create Project > Local (Manually).
+
+Preencha o Project display name como 'oficina-api' e avance.
+
+Escolha a opção de análise Locally.
+
+Crie um token de acesso clicando em Generate e copie o código gerado (começa com sqp_).
+
+**4. Executar a análise no projeto**
+Com o servidor rodando e o token em mãos, abra o terminal na raiz do projeto clonado e rode o comando do Maven abaixo.
+
+Substitua COLE_SEU_TOKEN_AQUI pelo token que você gerou no passo anterior:
+
+```bash
+./mvnw clean verify sonar:sonar -Dsonar.projectKey=oficina-api -Dsonar.host.url=http://localhost:9000 -Dsonar.login=COLE_SEU_TOKEN_AQUI
+```
+Nota: Este comando irá recompilar o projeto, executar toda a suíte de testes (gerando o relatório de cobertura) e enviar os dados para o SonarQube.
+
+**5. Visualizar o Relatório**
+Após aparecer BUILD SUCCESS no terminal, volte ao navegador em http://localhost:9000 para visualizar o dashboard completo com os Security Hotspots, Code Smells e a cobertura de testes da arquitetura.
+
 A configuração do Jacoco no `pom.xml` inclui exclusões para classes de configuração, DTOs, entidades e classes geradas, focando a métrica na lógica de negócio (Use Cases e Modelos).

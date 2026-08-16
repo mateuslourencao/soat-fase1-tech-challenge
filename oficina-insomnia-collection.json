@@ -591,7 +591,10 @@
 			"url": "{{ _.base_url }}/ordensdeservico/metricas/30",
 			"name": "Calcular Métrica de Execução",
 			"method": "GET",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
 			"metaSortKey": -200,
 			"_type": "request"
 		}

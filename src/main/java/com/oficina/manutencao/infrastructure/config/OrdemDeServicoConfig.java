@@ -66,6 +66,11 @@ class OrdemDeServicoConfig {
     }
 
     @Bean
+    AprovarOrcamentoClienteUseCase aprovarOrcamentoClienteUseCase(OrdemDeServicoRepositoryPort repositorio) {
+        return new AprovarOrcamentoClienteService(repositorio);
+    }
+
+    @Bean
     FinalizarReparoUseCase finalizarReparoUseCase(OrdemDeServicoRepositoryPort repositorio) {
         return new FinalizarReparoService(repositorio);
     }

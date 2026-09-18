@@ -16,7 +16,7 @@ services:
     container_name: oficina-app
     restart: on-failure
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/oficina?createDatabaseIfNotExist=true&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root

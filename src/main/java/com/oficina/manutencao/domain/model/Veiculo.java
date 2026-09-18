@@ -8,10 +8,24 @@ public class Veiculo {
     private final int ano;
 
     public Veiculo(String placa, String marca, String modelo, int ano) {
-        this.placa = placa;
-        this.marca = marca;
-        this.modelo = modelo;
+        this.placa = textoObrigatorio(placa, "Placa").toUpperCase();
+        this.marca = textoObrigatorio(marca, "Marca");
+        this.modelo = textoObrigatorio(modelo, "Modelo");
+        if (ano <= 0) {
+            throw new IllegalArgumentException("Ano deve ser positivo");
+        }
         this.ano = ano;
+    }
+
+    public Veiculo atualizarDados(String marca, String modelo, int ano) {
+        return new Veiculo(placa, marca, modelo, ano);
+    }
+
+    private static String textoObrigatorio(String valor, String campo) {
+        if (valor == null || valor.isBlank()) {
+            throw new IllegalArgumentException(campo + " é obrigatório");
+        }
+        return valor.trim();
     }
 
     public String getPlaca() { return placa; }

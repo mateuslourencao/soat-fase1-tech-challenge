@@ -7,7 +7,6 @@ import com.oficina.estoque.domain.ports.outbound.PecaRepositoryPort;
 import com.oficina.estoque.domain.ports.outbound.ServicoRepositoryPort;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.PecasNecessarias;
-import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
 
@@ -28,14 +27,8 @@ public class AtualizarItensOrdemDeServicoService implements AtualizarItensOrdemD
 
     @Override
     public OrdemDeServico atualizarItensOrdemDeServico(int id, List<PecaItemInput> pecasInput, List<Integer> servicosIds) {
-        if ((pecasInput == null || pecasInput.isEmpty()) && (servicosIds == null || servicosIds.isEmpty())) {
-            throw new IllegalArgumentException("Informe ao menos uma peça necessária ou um serviço");
-        }
-
         OrdemDeServico ordem = repositorio.buscarPorId(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Ordem de serviço não encontrada"));
-        if (ordem.getStatus() != StatusOS.EM_DIAGNOSTICO) {
-            throw new IllegalStateException("Itens só podem ser atualizados durante o diagnóstico");
-        }
+        ordem.validarPodeAtualizarItens();
 
         List<PecasNecessarias> pecas = pecasInput == null ? List.of() : pecasInput.stream()
                 .map(input -> {

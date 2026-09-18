@@ -12,13 +12,10 @@ abstract class TransicionarStatusOrdemDeServicoService {
         this.repositorio = repositorio;
     }
 
-    protected void transicionar(int id, StatusOS origem, StatusOS destino) {
+    protected void transicionar(int id, StatusOS destino) {
         OrdemDeServico ordem = repositorio.buscarPorId(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Ordem de serviço não encontrada"));
-        if (ordem.getStatus() != origem) {
-            throw new IllegalStateException("Transição inválida: status atual " + ordem.getStatus());
-        }
-        ordem.alterarStatus(destino);
+        ordem.transicionarPara(destino);
         repositorio.salvar(ordem);
     }
 }

@@ -1,5 +1,5 @@
 package com.oficina.manutencao.domain.ports.inbound;
 
 public interface AprovarOrcamentoUseCase {
-        void aprovarOrcamento(int ordemDeServicoID);
+        void aprovarOrcamento(int ordemDeServicoID, boolean aprovado);
 }

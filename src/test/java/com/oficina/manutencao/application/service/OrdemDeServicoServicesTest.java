@@ -31,7 +31,7 @@ class OrdemDeServicoServicesTest {
     @Test void deveCadastrarOrdemDeServico() {
         OrdemDeServico ordem = ordem(StatusOS.RECEBIDA);
         when(repository.salvar(ordem)).thenReturn(ordem);
-        assertSame(ordem, new CadastrarOrdemDeServicoService(repository).cadastrarOrdemDeServico(ordem));
+        assertEquals(ordem.getId(), new CadastrarOrdemDeServicoService(repository).cadastrarOrdemDeServico(ordem));
     }
 
     @Test void deveBuscarOrdemDeServico() {
@@ -107,7 +107,7 @@ class OrdemDeServicoServicesTest {
             new EnviarOrcamentoService(repository, clienteRepository, notificarCliente).enviarOrcamento(1));
         verify(notificarCliente).notificarOrcamentoAguardandoAprovacao(any(), any());
     }
-    @Test void deveAprovarOrcamento() { assertTransicao(StatusOS.AGUARDANDO_APROVACAO, StatusOS.EM_EXECUCAO, ordem -> new AprovarOrcamentoService(repository).aprovarOrcamento(1)); }
+    @Test void deveAprovarOrcamento() { assertTransicao(StatusOS.AGUARDANDO_APROVACAO, StatusOS.EM_EXECUCAO, ordem -> new AprovarOrcamentoService(repository).aprovarOrcamento(1, true)); }
     @Test void deveFinalizarReparo() { assertTransicao(StatusOS.EM_EXECUCAO, StatusOS.FINALIZADA, ordem -> new FinalizarReparoService(repository).finalizarReparo(1)); }
     @Test void deveEntregarVeiculo() { assertTransicao(StatusOS.FINALIZADA, StatusOS.ENTREGUE, ordem -> new EntregarVeiculoService(repository).entregarVeiculo(1)); }
 

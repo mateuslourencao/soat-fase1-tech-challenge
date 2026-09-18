@@ -6,5 +6,10 @@ import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort
 
 public class AprovarOrcamentoService extends TransicionarStatusOrdemDeServicoService implements AprovarOrcamentoUseCase {
     public AprovarOrcamentoService(OrdemDeServicoRepositoryPort repositorio) { super(repositorio); }
-    public void aprovarOrcamento(int id) { transicionar(id, StatusOS.EM_EXECUCAO); }
+
+    @Override
+    public void aprovarOrcamento(int id, boolean aprovado) {
+        transicionar(id, StatusOS.AGUARDANDO_APROVACAO,
+                aprovado ? StatusOS.EM_EXECUCAO : StatusOS.FINALIZADA);
+    }
 }

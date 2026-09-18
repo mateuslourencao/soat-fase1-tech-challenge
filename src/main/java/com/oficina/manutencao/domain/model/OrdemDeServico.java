@@ -182,6 +182,7 @@ public class OrdemDeServico {
         return (origem == StatusOS.RECEBIDA && destino == StatusOS.EM_DIAGNOSTICO)
                 || (origem == StatusOS.EM_DIAGNOSTICO && destino == StatusOS.AGUARDANDO_APROVACAO)
                 || (origem == StatusOS.AGUARDANDO_APROVACAO && destino == StatusOS.EM_EXECUCAO)
+                || (origem == StatusOS.AGUARDANDO_APROVACAO && destino == StatusOS.FINALIZADA)
                 || (origem == StatusOS.EM_EXECUCAO && destino == StatusOS.FINALIZADA)
                 || (origem == StatusOS.FINALIZADA && destino == StatusOS.ENTREGUE);
     }

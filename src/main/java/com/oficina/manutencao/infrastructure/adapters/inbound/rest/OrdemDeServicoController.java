@@ -70,6 +70,7 @@ class OrdemDeServicoController {
     }
 
     @GetMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Buscar ordem de serviço por ID", description = "Retorna os detalhes de uma ordem de serviço específica")
     @ApiResponse(responseCode = "200", description = "Ordem de serviço encontrada")
     @ApiResponse(responseCode = "404", description = "Ordem de serviço não encontrada")

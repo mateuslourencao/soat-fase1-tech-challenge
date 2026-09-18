@@ -42,7 +42,8 @@ public class SecurityConfig {
                                     "/swagger-ui.html",
                                     "/error").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/v1/administrativo/autenticacao").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/api/v1/ordensdeservico/{id}").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/v1/publico/ordensdeservico/{id}").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/v1/publico/ordensdeservico/{id}/aprovar-orcamento").permitAll()
                             .anyRequest().authenticated())
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                     .build();

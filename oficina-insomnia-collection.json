@@ -22,11 +22,13 @@
 			"name": "Base Environment",
 			"data": {
 				"base_url": "http://localhost:8081/api/v1",
+				"public_base_url": "http://localhost:8081/v1",
 				"jwt_token": ""
 			},
 			"dataPropertyOrder": {
 				"&": [
 					"base_url",
+					"public_base_url",
 					"jwt_token"
 				]
 			},
@@ -68,6 +70,9 @@
 			"authentication": {},
 			"metaSortKey": -1000,
 			"isPrivate": false,
+			"scripts": {
+				"afterResponse": "const response = insomnia.response.json();\nif (response.token) {\n  insomnia.environment.set('jwt_token', response.token);\n}"
+			},
 			"_type": "request"
 		},
 		{
@@ -333,6 +338,29 @@
 			"_type": "request"
 		},
 		{
+			"_id": "req_14_obter",
+			"parentId": "fld_4",
+			"url": "{{ _.base_url }}/pecas/obter",
+			"name": "Obter Peça do Estoque",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"id\": 1,\n  \"quantidade\": 1\n}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -850,
+			"_type": "request"
+		},
+		{
 			"_id": "req_15",
 			"parentId": "fld_4",
 			"url": "{{ _.base_url }}/pecas/1",
@@ -503,7 +531,10 @@
 			"url": "{{ _.base_url }}/ordensdeservico/1",
 			"name": "Buscar OS por ID",
 			"method": "GET",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
 			"metaSortKey": -850,
 			"_type": "request"
 		},
@@ -606,6 +637,36 @@
 				"token": "{{ _.jwt_token }}"
 			},
 			"metaSortKey": -200,
+			"_type": "request"
+		},
+		{
+			"_id": "req_30",
+			"parentId": "fld_6",
+			"url": "{{ _.public_base_url }}/publico/ordensdeservico/1",
+			"name": "Buscar OS Pública por ID",
+			"method": "GET",
+			"authentication": {},
+			"metaSortKey": -100,
+			"_type": "request"
+		},
+		{
+			"_id": "req_31",
+			"parentId": "fld_6",
+			"url": "{{ _.public_base_url }}/publico/ordensdeservico/1/aprovar-orcamento",
+			"name": "Aprovar ou Rejeitar Orçamento - Cliente",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"documentoCliente\": \"559.546.890-40\",\n  \"aprovado\": true\n}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -50,
 			"_type": "request"
 		}
 	]

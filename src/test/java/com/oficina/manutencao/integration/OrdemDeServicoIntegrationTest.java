@@ -120,7 +120,11 @@ class OrdemDeServicoIntegrationTest {
                 .andExpect(jsonPath("$.status").value("AGUARDANDO_APROVACAO"));
 
         // 5. Aprovar Orçamento
-        mockMvc.perform(patch("/api/v1/ordensdeservico/" + osId + "/aprovar-orcamento"))
+        mockMvc.perform(patch("/api/v1/ordensdeservico/" + osId + "/aprovar-orcamento")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"aprovado": true}
+                                """))
                 .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/api/v1/ordensdeservico/" + osId))

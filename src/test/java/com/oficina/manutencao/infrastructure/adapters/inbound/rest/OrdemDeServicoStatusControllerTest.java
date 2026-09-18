@@ -2,6 +2,7 @@ package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.ports.inbound.*;
+import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.AprovarOrcamentoRequestDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,9 +49,17 @@ class OrdemDeServicoStatusControllerTest {
     @Test
     void deveAprovarOrcamento() {
         int id = 1;
-        ResponseEntity<Void> response = controller.aprovarOrcamento(id);
+        ResponseEntity<Void> response = controller.aprovarOrcamento(id, new AprovarOrcamentoRequestDTO(true));
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(aprovarOrcamentoUseCase).aprovarOrcamento(id);
+        verify(aprovarOrcamentoUseCase).aprovarOrcamento(id, true);
+    }
+
+    @Test
+    void deveRejeitarOrcamento() {
+        int id = 1;
+        ResponseEntity<Void> response = controller.aprovarOrcamento(id, new AprovarOrcamentoRequestDTO(false));
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(aprovarOrcamentoUseCase).aprovarOrcamento(id, false);
     }
 
     @Test

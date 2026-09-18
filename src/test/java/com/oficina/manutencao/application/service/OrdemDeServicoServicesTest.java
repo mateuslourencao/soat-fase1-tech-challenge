@@ -68,6 +68,7 @@ class OrdemDeServicoServicesTest {
 
     @Test void deveLancarExcecaoQuandoAtualizarItensSemDados() {
         AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
+        when(repository.buscarPorId(1)).thenReturn(Optional.of(ordem(StatusOS.EM_DIAGNOSTICO)));
         assertThrows(IllegalArgumentException.class, () -> service.atualizarItensOrdemDeServico(1, null, null));
         assertThrows(IllegalArgumentException.class, () -> service.atualizarItensOrdemDeServico(1, List.of(), List.of()));
     }
@@ -85,6 +86,7 @@ class OrdemDeServicoServicesTest {
         AtualizarItensOrdemDeServicoService service = new AtualizarItensOrdemDeServicoService(repository, pecaRepository, servicoRepository);
         List<AtualizarItensOrdemDeServicoUseCase.PecaItemInput> pecas = List.of(new AtualizarItensOrdemDeServicoUseCase.PecaItemInput(1, 1));
         assertThrows(IllegalStateException.class, () -> service.atualizarItensOrdemDeServico(1, pecas, null));
+        verifyNoInteractions(pecaRepository, servicoRepository);
     }
 
     @Test void deveLancarExcecaoQuandoPecaNaoEncontrada() {

@@ -31,7 +31,7 @@ public class AutenticarFuncionarioService implements AutenticarFuncionarioUseCas
         Funcionario funcionario = funcionarioRepository.buscarPorEmail(email.trim().toLowerCase())
                 .orElseThrow(() -> new IllegalArgumentException(CREDENCIAIS_INVALIDAS));
 
-        if (!funcionario.isAtivo() || !senhaCriptografada.confere(senha, funcionario.getSenhaHash())) {
+        if (!funcionario.podeAutenticar() || !senhaCriptografada.confere(senha, funcionario.getSenhaHash())) {
             throw new IllegalArgumentException(CREDENCIAIS_INVALIDAS);
         }
         return new FuncionarioAutenticado(funcionario, tokenJwt.gerar(funcionario));

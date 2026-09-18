@@ -17,13 +17,8 @@ public class AtualizarVeiculoService implements AtualizarVeiculoUseCase {
         Veiculo existente = veiculoRepositoryPort.buscarPorId(placa)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Veiculo não encontrado."));
 
-        Veiculo veiculoParaSalvar = new Veiculo(
-                existente.getPlaca(),
-                veiculo.getMarca(),
-                veiculo.getModelo(),
-                veiculo.getAno()
+        return veiculoRepositoryPort.salvar(
+                existente.atualizarDados(veiculo.getMarca(), veiculo.getModelo(), veiculo.getAno())
         );
-
-        return veiculoRepositoryPort.salvar(veiculoParaSalvar);
     }
 }

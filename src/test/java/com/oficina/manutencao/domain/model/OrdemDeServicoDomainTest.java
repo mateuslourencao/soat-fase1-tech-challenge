@@ -24,6 +24,7 @@ class OrdemDeServicoDomainTest {
 
     @Test void deveRegistrarAtualizacaoDeItensECalcularOrcamento() {
         OrdemDeServico os = new OrdemDeServico("123", "ABC1234", "Revisao");
+        os.transicionarPara(StatusOS.EM_DIAGNOSTICO);
         var dataCriacaoAntes = os.getDataCriacao();
         
         Peca peca = new Peca(1, "Oleo", 50.0, 10);
@@ -40,11 +41,25 @@ class OrdemDeServicoDomainTest {
                    os.getDataAtualizacao().isEqual(dataCriacaoAntes));
     }
 
-    @Test void deveAlterarStatus() {
+    @Test void deveTransicionarStatus() {
         OrdemDeServico os = new OrdemDeServico("123", "ABC1234", "Revisao");
-        os.alterarStatus(StatusOS.EM_DIAGNOSTICO);
+        os.transicionarPara(StatusOS.EM_DIAGNOSTICO);
         
         assertEquals(StatusOS.EM_DIAGNOSTICO, os.getStatus());
+    }
+
+    @Test void deveRejeitarTransicaoInvalidaEAtualizacaoDeItensForaDoDiagnostico() {
+        OrdemDeServico os = new OrdemDeServico("123", "ABC1234", "Revisao");
+
+        assertThrows(IllegalStateException.class, () -> os.transicionarPara(StatusOS.FINALIZADA));
+        assertThrows(IllegalStateException.class, () -> os.registrarAtualizacaoDeItens(List.of(), List.of()));
+    }
+
+    @Test void deveExigirAoMenosUmItemNoDiagnostico() {
+        OrdemDeServico os = new OrdemDeServico("123", "ABC1234", "Revisao");
+        os.transicionarPara(StatusOS.EM_DIAGNOSTICO);
+
+        assertThrows(IllegalArgumentException.class, () -> os.registrarAtualizacaoDeItens(List.of(), List.of()));
     }
 
     @Test void deveLancarExcecaoAoCriarPecaNecessariaInvalida() {

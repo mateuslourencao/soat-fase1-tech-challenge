@@ -17,15 +17,6 @@ public class AtivarFuncionarioService implements AtivarFuncionarioUseCase {
         Funcionario existente = funcionarioRepository.buscarPorId(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Funcionário não encontrado"));
         
-        Funcionario ativado = new Funcionario(
-                existente.getId(), 
-                existente.getNome(), 
-                existente.getEmail(),
-                existente.getSenhaHash(), 
-                existente.getPerfil(), 
-                true
-        );
-        
-        funcionarioRepository.salvar(ativado);
+        funcionarioRepository.salvar(existente.ativar());
     }
 }

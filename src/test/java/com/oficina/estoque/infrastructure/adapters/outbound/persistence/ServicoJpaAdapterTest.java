@@ -22,14 +22,14 @@ class ServicoJpaAdapterTest {
     void deveSalvarServico() {
         String desc = "Troca de óleo";
         Double valor = 50.0;
-        Servico servico = new Servico(desc, valor);
+        Servico servico = new Servico("Troca", 50.0);
         ServicoEntity entity = mock(ServicoEntity.class);
 
         when(mapper.toEntity(any(Servico.class))).thenReturn(entity);
         when(repository.save(entity)).thenReturn(entity);
         when(mapper.toDomain(entity)).thenReturn(servico);
 
-        Servico resultado = adapter.salvar(desc, valor);
+        Servico resultado = adapter.salvar(servico);
 
         assertNotNull(resultado);
         verify(repository).save(entity);

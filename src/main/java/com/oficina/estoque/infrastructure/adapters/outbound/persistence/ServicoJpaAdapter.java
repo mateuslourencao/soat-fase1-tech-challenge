@@ -20,8 +20,7 @@ public class ServicoJpaAdapter implements ServicoRepositoryPort {
     }
 
     @Override
-    public Servico salvar(String descricao, Double valor) {
-        Servico servico = new Servico(descricao, valor);
+    public Servico salvar(Servico servico) {
         return mapper.toDomain(repository.save(mapper.toEntity(servico)));
     }
 

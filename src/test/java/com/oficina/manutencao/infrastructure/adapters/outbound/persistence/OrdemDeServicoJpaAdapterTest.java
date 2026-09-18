@@ -49,6 +49,7 @@ class OrdemDeServicoJpaAdapterTest {
         Peca peca = new Peca(1, "Peca 1", 10.0, 10);
         Servico servico = new Servico(1, "Servico 1", 50.0);
         OrdemDeServico ordem = new OrdemDeServico(1, "123", "ABC1234", "Queixa");
+        ordem.transicionarPara(StatusOS.EM_DIAGNOSTICO);
         ordem.registrarAtualizacaoDeItens(List.of(new PecasNecessarias(peca, 1)), List.of(servico));
 
         OrdemDeServicoEntity entity = mock(OrdemDeServicoEntity.class);

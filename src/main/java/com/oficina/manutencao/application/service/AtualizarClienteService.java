@@ -17,13 +17,8 @@ public class AtualizarClienteService implements AtualizarClienteUseCase {
         Cliente existente = clienteRepositoryPort.buscarPorId(documento)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não encontrado."));
 
-        Cliente clienteParaSalvar = new Cliente(
-                existente.getDocumento(),
-                cliente.getNome(),
-                cliente.getEmail(),
-                cliente.getTelefone()
+        return clienteRepositoryPort.salvar(
+                existente.atualizarDados(cliente.getNome(), cliente.getEmail(), cliente.getTelefone())
         );
-
-        return clienteRepositoryPort.salvar(clienteParaSalvar);
     }
 }

@@ -25,7 +25,7 @@ public class EnviarOrcamentoService extends TransicionarStatusOrdemDeServicoServ
     }
 
     public OrdemDeServico enviarOrcamento(int id) {
-        transicionar(id, StatusOS.EM_DIAGNOSTICO, StatusOS.AGUARDANDO_APROVACAO);
+        transicionar(id, StatusOS.AGUARDANDO_APROVACAO);
 
         OrdemDeServico os = ordemDeServicoRepository.buscarPorId(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Ordem de serviço não encontrada após transição"));

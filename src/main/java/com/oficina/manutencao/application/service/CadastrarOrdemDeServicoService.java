@@ -12,11 +12,11 @@ public class CadastrarOrdemDeServicoService implements CadastrarOrdemDeServicoUs
     }
 
     @Override
-    public OrdemDeServico cadastrarOrdemDeServico(OrdemDeServico ordemDeServico) {
+    public int cadastrarOrdemDeServico(OrdemDeServico ordemDeServico) {
         if (ordemDeServico == null) {
             throw new IllegalArgumentException("Ordem de serviço inválida");
         }
-        return ordemDeServicoRepositoryPort.salvar(ordemDeServico);
+        return ordemDeServicoRepositoryPort.salvar(ordemDeServico).getId();
     }
 
 }

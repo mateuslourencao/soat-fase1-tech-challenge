@@ -4,5 +4,5 @@ import com.oficina.manutencao.domain.model.OrdemDeServico;
 
 public interface CadastrarOrdemDeServicoUseCase {
 
-    OrdemDeServico cadastrarOrdemDeServico(OrdemDeServico ordemDeServico);
+    int cadastrarOrdemDeServico(OrdemDeServico ordemDeServico);
 }

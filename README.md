@@ -47,7 +47,7 @@ docker-compose up --build
 
 Isso iniciará:
 1. Container MySQL (`oficina-mysql`) na porta `3306` (inicializado com `schema.sql`)
-2. Container da aplicação (`oficina-app`) na porta `8080`
+2. Container da aplicação (`oficina-app`) na porta `8081`
 
 A aplicação aguardará o banco de dados estar pronto antes de iniciar.
 
@@ -76,7 +76,7 @@ O Hibernate está configurado para criar tabelas automaticamente (`ddl-auto: upd
 
 Com a aplicação rodando, acesse a documentação interativa do Swagger:
 
-**[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
+**[http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)**
 
 ### Principais Endpoints
 
@@ -94,7 +94,7 @@ Uma collection do Insomnia está disponível para facilitar os testes:
 
 1. Abra o Insomnia
 2. Clique em **Import** e selecione `oficina-insomnia-collection.json`
-3. Configure a variável `base_url` para `http://localhost:8080/api/v1` (já pré-configurada)
+3. Configure a variável `base_url` para `http://localhost:8081/api/v1` (já pré-configurada)
 4. Faça login no endpoint de **Autenticação** para obter o token JWT
 5. Copie o token para a variável `jwt_token` no Environment
 

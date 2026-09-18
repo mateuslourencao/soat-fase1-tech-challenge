@@ -24,7 +24,6 @@ public class PecaService implements CadastrarPecaUseCase,
     public Peca obterPeca(int id, int quantidadeBaixar) {
         if (quantidadeBaixar <= 0) throw new IllegalArgumentException("Quantidade para baixa deve ser positiva");
         Peca peca = buscaPeca(id);
-        if (peca.getQuantidade() < quantidadeBaixar) throw new IllegalStateException("Estoque insuficiente");
         peca.atualizarQuantidade(peca.getQuantidade() - quantidadeBaixar);
         return pecaRepository.salvar(peca);
     }
@@ -35,7 +34,6 @@ public class PecaService implements CadastrarPecaUseCase,
     private void validarCadastro(String descricao, Double valor, int quantidade) {
         if (descricao == null || descricao.isBlank() || valor == null || valor < 0 || quantidade < 0) throw new IllegalArgumentException("Dados da peça inválidos");
     }
-
     public Peca reporEstoque(int pecaID, int quantidadeRepor) {
         if (quantidadeRepor <= 0) throw new IllegalArgumentException("Quantidade para repor deve ser positiva");
         Peca peca = buscaPeca(pecaID);

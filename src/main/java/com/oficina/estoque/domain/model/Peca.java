@@ -26,6 +26,12 @@ public class Peca {
     public int getQuantidade() { return quantidade; }
 
     public void atualizarQuantidade(int quantidade) {
+        if (quantidade <= 0) {
+            throw new IllegalArgumentException("Quantidade para baixa deve ser positiva");
+        }
+        if (this.quantidade < quantidade) {
+            throw new IllegalStateException("Estoque insuficiente");
+        }
         this.quantidade = quantidade;
     }
 }

@@ -552,6 +552,16 @@
 			"url": "{{ _.base_url }}/ordensdeservico/1/aprovar-orcamento",
 			"name": "Aprovar Orçamento",
 			"method": "PATCH",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\"aprovado\": true}"
+			},
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
 			"authentication": {
 				"type": "bearer",
 				"token": "{{ _.jwt_token }}"

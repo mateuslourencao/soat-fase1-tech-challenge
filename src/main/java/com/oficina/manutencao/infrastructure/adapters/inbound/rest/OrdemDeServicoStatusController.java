@@ -1,15 +1,14 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
 import com.oficina.manutencao.domain.ports.inbound.*;
+import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.AprovarOrcamentoRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.OrdemDeServicoResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/ordensdeservico")
@@ -50,9 +49,10 @@ class OrdemDeServicoStatusController {
 
     @PatchMapping("/{id}/aprovar-orcamento")
     @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Aprovar orçamento", description = "Altera o status da ordem de serviço para Em Execução")
-    public ResponseEntity<Void> aprovarOrcamento(@PathVariable int id) {
-        aprovarOrcamento.aprovarOrcamento(id);
+    @Operation(summary = "Aprovar orçamento", description = "Aprova ou rejeita o orçamento da ordem de serviço")
+    public ResponseEntity<Void> aprovarOrcamento(@PathVariable int id,
+                                                  @Valid @RequestBody AprovarOrcamentoRequestDTO request) {
+        aprovarOrcamento.aprovarOrcamento(id, request.aprovado());
         return ResponseEntity.noContent().build();
     }
 

@@ -27,7 +27,7 @@ class AprovarOrcamentoServiceTest {
         when(repository.salvar(any())).thenReturn(ordem);
 
         // Act
-        service.aprovarOrcamento(id);
+        service.aprovarOrcamento(id, true);
 
         // Assert
         assertEquals(StatusOS.EM_EXECUCAO, ordem.getStatus());
@@ -42,7 +42,7 @@ class AprovarOrcamentoServiceTest {
         when(repository.buscarPorId(id)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(EntidadeNaoEncontradaException.class, () -> service.aprovarOrcamento(id));
+        assertThrows(EntidadeNaoEncontradaException.class, () -> service.aprovarOrcamento(id, true));
         verify(repository).buscarPorId(id);
         verify(repository, never()).salvar(any());
     }
@@ -55,9 +55,22 @@ class AprovarOrcamentoServiceTest {
         when(repository.buscarPorId(id)).thenReturn(Optional.of(ordem));
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> service.aprovarOrcamento(id));
+        assertThrows(IllegalStateException.class, () -> service.aprovarOrcamento(id, true));
         verify(repository).buscarPorId(id);
         verify(repository, never()).salvar(any());
+    }
+
+    @Test
+    void deveRejeitarOrcamentoComSucesso() {
+        int id = 1;
+        OrdemDeServico ordem = criarOrdem(StatusOS.AGUARDANDO_APROVACAO);
+        when(repository.buscarPorId(id)).thenReturn(Optional.of(ordem));
+        when(repository.salvar(any())).thenReturn(ordem);
+
+        service.aprovarOrcamento(id, false);
+
+        assertEquals(StatusOS.FINALIZADA, ordem.getStatus());
+        verify(repository).salvar(ordem);
     }
 
     private OrdemDeServico criarOrdem(StatusOS status) {

@@ -17,15 +17,6 @@ public class InativarFuncionarioService implements InativarFuncionarioUseCase {
         Funcionario existente = funcionarioRepository.buscarPorId(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Funcionário não encontrado"));
         
-        Funcionario inativado = new Funcionario(
-                existente.getId(), 
-                existente.getNome(), 
-                existente.getEmail(),
-                existente.getSenhaHash(), 
-                existente.getPerfil(), 
-                false
-        );
-        
-        funcionarioRepository.salvar(inativado);
+        funcionarioRepository.salvar(existente.inativar());
     }
 }

@@ -22,8 +22,7 @@ public class ServicoService implements ListarServicoUseCase, AtualizarServicoUse
     }
 
     public Servico cadastrarServico(String descricao, Double valor) {
-        if (descricao == null || descricao.isBlank() || valor == null || valor < 0) throw new IllegalArgumentException("Dados do serviço inválidos");
-        return servicoRepository.salvar(descricao, valor);
+        return servicoRepository.salvar(new Servico(descricao, valor));
     }
 
     @Override

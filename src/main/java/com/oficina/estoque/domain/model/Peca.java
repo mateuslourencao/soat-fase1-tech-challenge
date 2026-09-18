@@ -25,13 +25,28 @@ public class Peca {
     public double getValor() { return valor; }
     public int getQuantidade() { return quantidade; }
 
-    public void atualizarQuantidade(int quantidade) {
-        if (quantidade <= 0) {
-            throw new IllegalArgumentException("Quantidade para baixa deve ser positiva");
-        }
+    public void baixarEstoque(int quantidade) {
+        validarQuantidadeParaBaixa(quantidade);
         if (this.quantidade < quantidade) {
             throw new IllegalStateException("Estoque insuficiente");
         }
-        this.quantidade = quantidade;
+        this.quantidade -= quantidade;
+    }
+
+    public void reporEstoque(int quantidade) {
+        validarQuantidadeParaReposicao(quantidade);
+        this.quantidade += quantidade;
+    }
+
+    public static void validarQuantidadeParaBaixa(int quantidade) {
+        if (quantidade <= 0) {
+            throw new IllegalArgumentException("Quantidade para baixa deve ser positiva");
+        }
+    }
+
+    public static void validarQuantidadeParaReposicao(int quantidade) {
+        if (quantidade <= 0) {
+            throw new IllegalArgumentException("Quantidade para repor deve ser positiva");
+        }
     }
 }

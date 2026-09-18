@@ -31,7 +31,7 @@ class OrdemDeServicoServicesTest {
     @Test void deveCadastrarOrdemDeServico() {
         OrdemDeServico ordem = ordem(StatusOS.RECEBIDA);
         when(repository.salvar(ordem)).thenReturn(ordem);
-        assertSame(ordem, new CadastrarOrdemDeServicoService(repository).cadastrarOrdemDeServico(ordem));
+        assertEquals(ordem.getId(), new CadastrarOrdemDeServicoService(repository).cadastrarOrdemDeServico(ordem));
     }
 
     @Test void deveBuscarOrdemDeServico() {

@@ -6,6 +6,7 @@ import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
+import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoResponseDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ItensOSRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.OrdemDeServicoResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,7 @@ import jakarta.validation.Valid;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,15 +48,14 @@ class OrdemDeServicoController {
     @PostMapping
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Criar ordem de serviço", description = "Abre uma nova ordem de serviço para um cliente e veículo")
-    @ApiResponse(responseCode = "200", description = "Ordem de serviço criada com sucesso")
-    public ResponseEntity<OrdemDeServicoResponseDTO> criar(@Valid @RequestBody @NonNull CriarOrdemDeServicoRequestDTO request) {
+    @ApiResponse(responseCode = "201", description = "Ordem de serviço criada com sucesso")
+    public ResponseEntity<CriarOrdemDeServicoResponseDTO> criar(@Valid @RequestBody @NonNull CriarOrdemDeServicoRequestDTO request) {
         String documentoLimpo = request.documentoCliente().replaceAll("[^a-zA-Z0-9]", "");
-        logger.info("Recebida requisição para criar Ordem de Serviço: Cliente={}, Veículo={}", documentoLimpo, request.placaVeiculo());
-        OrdemDeServico salvo = cadastrarOrdemDeServico.cadastrarOrdemDeServico(
+        int codigo = cadastrarOrdemDeServico.cadastrarOrdemDeServico(
                 new OrdemDeServico(documentoLimpo, request.placaVeiculo(), request.descricaoQueixas())
         );
-        logger.info("Ordem de Serviço criada com sucesso. ID: {}", salvo.getId());
-        return ResponseEntity.ok(new OrdemDeServicoResponseDTO(salvo));
+        logger.info("Ordem de Serviço criada com sucesso. ID: {}", codigo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CriarOrdemDeServicoResponseDTO(codigo));
     }
 
     @GetMapping

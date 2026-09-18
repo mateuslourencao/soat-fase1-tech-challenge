@@ -6,6 +6,7 @@ import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
+import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoResponseDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ItensOSRequestDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -33,14 +34,12 @@ class OrdemDeServicoControllerTest {
     @Test
     void deveCriarOrdemDeServicoComSucesso() {
         CriarOrdemDeServicoRequestDTO request = new CriarOrdemDeServicoRequestDTO("12345678900", "ABC1234", "Troca de óleo");
-        OrdemDeServico os = new OrdemDeServico("12345678900", "ABC1234", "Troca de óleo");
-
-        when(cadastrarUseCase.cadastrarOrdemDeServico(any(OrdemDeServico.class))).thenReturn(os);
+        when(cadastrarUseCase.cadastrarOrdemDeServico(any(OrdemDeServico.class))).thenReturn(1);
 
         ResponseEntity<?> response = controller.criar(request);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(1, ((CriarOrdemDeServicoResponseDTO) response.getBody()).codigo());
         verify(cadastrarUseCase).cadastrarOrdemDeServico(any(OrdemDeServico.class));
     }
 

@@ -77,14 +77,13 @@ class OrdemDeServicoIntegrationTest {
         MvcResult result = mockMvc.perform(post("/api/v1/ordensdeservico")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(criarJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.status").value("RECEBIDA"))
-                .andExpect(jsonPath("$.documentoCliente").value("12345678901"))
-                .andExpect(jsonPath("$.placaVeiculo").value("ABC1234"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.codigo").exists())
+                .andExpect(jsonPath("$.id").doesNotExist())
+                .andExpect(jsonPath("$.status").doesNotExist())
                 .andReturn();
 
-        int osId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+        int osId = JsonPath.read(result.getResponse().getContentAsString(), "$.codigo");
 
         // 2. Iniciar Diagnóstico
         mockMvc.perform(patch("/api/v1/ordensdeservico/" + osId + "/iniciar-diagnostico"))

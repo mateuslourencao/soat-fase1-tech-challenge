@@ -2,7 +2,7 @@ services:
   db:
     image: mysql:8.0
     container_name: oficina-mysql
-    restart: always
+    restart: no
     environment:
       MYSQL_DATABASE: oficina
       MYSQL_ROOT_PASSWORD: root

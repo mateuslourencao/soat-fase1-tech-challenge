@@ -10,5 +10,6 @@ public interface OrdemDeServicoRepositoryPort {
     OrdemDeServico salvar(OrdemDeServico ordemDeServico);
     Optional<OrdemDeServico> buscarPorId(int id);
     List<OrdemDeServico> listarTodos();
+    List<OrdemDeServico> listarOrdenadoEmAberto();
     List<OrdemDeServico> buscarOrdensdeServicoPeriodo(LocalDateTime inicio, LocalDateTime fim);
 }

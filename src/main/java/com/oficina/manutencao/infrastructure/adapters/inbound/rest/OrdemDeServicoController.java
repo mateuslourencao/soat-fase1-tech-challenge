@@ -1,10 +1,7 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
 import com.oficina.manutencao.domain.model.OrdemDeServico;
-import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
+import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoResponseDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ItensOSRequestDTO;
@@ -32,15 +29,18 @@ class OrdemDeServicoController {
 
     private final CadastrarOrdemDeServicoUseCase cadastrarOrdemDeServico;
     private final ListarOrdensDeServicoUseCase listarOrdensDeServico;
+    private final ListarOrdensDeServicoAbertasUseCase listarOrdensDeServicoAbertas;
     private final BuscarOrdemDeServicoUseCase buscarOrdemDeServico;
     private final AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico;
 
     OrdemDeServicoController(CadastrarOrdemDeServicoUseCase cadastrarOrdemDeServico,
                              ListarOrdensDeServicoUseCase listarOrdensDeServico,
+                             ListarOrdensDeServicoAbertasUseCase  listarOrdensDeServicoAbertas,
                              BuscarOrdemDeServicoUseCase buscarOrdemDeServico,
                              AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico) {
         this.cadastrarOrdemDeServico = cadastrarOrdemDeServico;
         this.listarOrdensDeServico = listarOrdensDeServico;
+        this.listarOrdensDeServicoAbertas = listarOrdensDeServicoAbertas;
         this.buscarOrdemDeServico = buscarOrdemDeServico;
         this.atualizarItensOrdemDeServico = atualizarItensOrdemDeServico;
     }
@@ -64,6 +64,17 @@ class OrdemDeServicoController {
     @ApiResponse(responseCode = "200", description = "Lista de ordens de serviço retornada com sucesso")
     public ResponseEntity<List<OrdemDeServicoResponseDTO>> listar() {
         List<OrdemDeServicoResponseDTO> lista = listarOrdensDeServico.listarOrdensDeServico().stream()
+                .map(OrdemDeServicoResponseDTO::new)
+                .toList();
+        return ResponseEntity.ok(lista);
+    }
+
+    @GetMapping("/abertas")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Listar ordens de serviço abertas", description = "Retorna uma lista de todas as ordens de serviço abertas por ordem de criacao")
+    @ApiResponse(responseCode = "200", description = "Lista de ordens de serviço abertas retornada com sucesso")
+    public ResponseEntity<List<OrdemDeServicoResponseDTO>> listarAbertas() {
+        List<OrdemDeServicoResponseDTO> lista = listarOrdensDeServicoAbertas.listarOrdensDeServicoAbertas().stream()
                 .map(OrdemDeServicoResponseDTO::new)
                 .toList();
         return ResponseEntity.ok(lista);

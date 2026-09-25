@@ -36,6 +36,11 @@ class OrdemDeServicoConfig {
     }
 
     @Bean
+    ListarOrdensDeServicoAbertasUseCase listarOrdensDeServicoAbertas(OrdemDeServicoRepositoryPort repositorio) {
+        return new ListarOrdensDeServicoAbertasService(repositorio);
+    }
+
+    @Bean
     BuscarOrdemDeServicoUseCase buscarOrdemDeServico(OrdemDeServicoRepositoryPort repositorio) {
         return new BuscarOrdemDeServicoService(repositorio);
     }

@@ -55,7 +55,7 @@ class TransicaoStatusServicesTest {
         
         assertEquals(StatusOS.AGUARDANDO_APROVACAO, ordem.getStatus());
         verify(repository).salvar(ordem);
-        verify(notificarCliente).notificarOrcamentoAguardandoAprovacao(cliente, ordem);
+        verify(notificarCliente).notificarAtualizacaoStatus(cliente, ordem);
     }
 
     @Test

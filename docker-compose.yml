@@ -11,6 +11,13 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+  mailhog:
+    image: mailhog/mailhog
+    container_name: oficina-mailhog
+    restart: no
+    ports:
+      - "1025:1025"
+      - "8025:8025"
   app:
     build: .
     container_name: oficina-app
@@ -22,8 +29,13 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - MAIL_HOST=mailhog
+      - MAIL_PORT=1025
+      - MAIL_SMTP_AUTH=false
+      - MAIL_SMTP_STARTTLS=false
     depends_on:
       - db
+      - mailhog
 
 networks:
   sonarnet:

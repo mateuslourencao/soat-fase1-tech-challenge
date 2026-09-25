@@ -85,6 +85,18 @@ class OrdemDeServicoJpaAdapterTest {
     }
 
     @Test
+    void deveBuscarSomenteStatusPorId() {
+        when(repository.buscarStatusPorId(1)).thenReturn(Optional.of(StatusOS.EM_DIAGNOSTICO));
+
+        Optional<StatusOS> resultado = adapter.buscarStatusPorId(1);
+
+        assertEquals(Optional.of(StatusOS.EM_DIAGNOSTICO), resultado);
+        verify(repository).buscarStatusPorId(1);
+        verify(repository, never()).findById(anyInt());
+        verifyNoInteractions(mapper);
+    }
+
+    @Test
     void deveListarTodos() {
         OrdemDeServicoEntity entity = mock(OrdemDeServicoEntity.class);
         OrdemDeServico domain = new OrdemDeServico(1, "123", "ABC1234", "Queixa");

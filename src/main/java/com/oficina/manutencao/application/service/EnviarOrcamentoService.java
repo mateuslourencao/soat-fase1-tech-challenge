@@ -1,7 +1,6 @@
 package com.oficina.manutencao.application.service;
 
 import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
-import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.inbound.EnviarOrcamentoUseCase;
@@ -12,16 +11,11 @@ import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort
 public class EnviarOrcamentoService extends TransicionarStatusOrdemDeServicoService implements EnviarOrcamentoUseCase {
 
     private final OrdemDeServicoRepositoryPort ordemDeServicoRepository;
-    private final ClienteRepositoryPort clienteRepository;
-    private final NotificarClientePort notificarCliente;
-
     public EnviarOrcamentoService(OrdemDeServicoRepositoryPort ordemDeServicoRepository,
                                   ClienteRepositoryPort clienteRepository,
                                   NotificarClientePort notificarCliente) {
-        super(ordemDeServicoRepository);
+        super(ordemDeServicoRepository, clienteRepository, notificarCliente);
         this.ordemDeServicoRepository = ordemDeServicoRepository;
-        this.clienteRepository = clienteRepository;
-        this.notificarCliente = notificarCliente;
     }
 
     public OrdemDeServico enviarOrcamento(int id) {
@@ -29,11 +23,6 @@ public class EnviarOrcamentoService extends TransicionarStatusOrdemDeServicoServ
 
         OrdemDeServico os = ordemDeServicoRepository.buscarPorId(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Ordem de serviço não encontrada após transição"));
-
-        Cliente cliente = clienteRepository.buscarPorId(os.getDocumentoCliente())
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não encontrado para a ordem de serviço"));
-
-        notificarCliente.notificarOrcamentoAguardandoAprovacao(cliente, os);
 
         return os;
     }

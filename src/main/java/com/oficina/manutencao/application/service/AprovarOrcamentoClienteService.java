@@ -4,6 +4,8 @@ import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.inbound.AprovarOrcamentoClienteUseCase;
+import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
+import com.oficina.manutencao.domain.ports.outbound.NotificarClientePort;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
 
 public class AprovarOrcamentoClienteService extends TransicionarStatusOrdemDeServicoService
@@ -13,6 +15,13 @@ public class AprovarOrcamentoClienteService extends TransicionarStatusOrdemDeSer
 
     public AprovarOrcamentoClienteService(OrdemDeServicoRepositoryPort repositorio) {
         super(repositorio);
+        this.repositorio = repositorio;
+    }
+
+    public AprovarOrcamentoClienteService(OrdemDeServicoRepositoryPort repositorio,
+                                          ClienteRepositoryPort clienteRepositorio,
+                                          NotificarClientePort notificarCliente) {
+        super(repositorio, clienteRepositorio, notificarCliente);
         this.repositorio = repositorio;
     }
 

@@ -7,24 +7,12 @@ import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
 import com.oficina.manutencao.domain.ports.outbound.NotificarClientePort;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 class OrdemDeServicoConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrdemDeServicoConfig.class);
-
-    @Bean
-    NotificarClientePort notificarClientePort() {
-        return (cliente, os) -> {
-            logger.info("SIMULAÇÃO: Enviando notificação para o cliente {} (Email: {})", cliente.getNome(), cliente.getEmail());
-            logger.info("SIMULAÇÃO: Orçamento da OS #{} no valor de R$ {} aguarda sua aprovação.", os.getId(), os.getOrcamento());
-            logger.info("SIMULAÇÃO: Link para aprovação: http://oficina.com/aprovar/{}", os.getId());
-        };
-    }
     @Bean
     CadastrarOrdemDeServicoUseCase criarOrdemDeServico(OrdemDeServicoRepositoryPort repositorio) {
         return new CadastrarOrdemDeServicoService(repositorio);
@@ -59,8 +47,10 @@ class OrdemDeServicoConfig {
     }
 
     @Bean
-    IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase(OrdemDeServicoRepositoryPort repositorio) {
-        return new IniciarDiagnosticoService(repositorio);
+    IniciarDiagnosticoUseCase iniciarDiagnosticoUseCase(OrdemDeServicoRepositoryPort repositorio,
+                                                        ClienteRepositoryPort clienteRepositorio,
+                                                        NotificarClientePort notificarCliente) {
+        return new IniciarDiagnosticoService(repositorio, clienteRepositorio, notificarCliente);
     }
 
     @Bean
@@ -71,22 +61,30 @@ class OrdemDeServicoConfig {
     }
 
     @Bean
-    AprovarOrcamentoUseCase aprovarOrcamentoUseCase(OrdemDeServicoRepositoryPort repositorio) {
-        return new AprovarOrcamentoService(repositorio);
+    AprovarOrcamentoUseCase aprovarOrcamentoUseCase(OrdemDeServicoRepositoryPort repositorio,
+                                                    ClienteRepositoryPort clienteRepositorio,
+                                                    NotificarClientePort notificarCliente) {
+        return new AprovarOrcamentoService(repositorio, clienteRepositorio, notificarCliente);
     }
 
     @Bean
-    AprovarOrcamentoClienteUseCase aprovarOrcamentoClienteUseCase(OrdemDeServicoRepositoryPort repositorio) {
-        return new AprovarOrcamentoClienteService(repositorio);
+    AprovarOrcamentoClienteUseCase aprovarOrcamentoClienteUseCase(OrdemDeServicoRepositoryPort repositorio,
+                                                                  ClienteRepositoryPort clienteRepositorio,
+                                                                  NotificarClientePort notificarCliente) {
+        return new AprovarOrcamentoClienteService(repositorio, clienteRepositorio, notificarCliente);
     }
 
     @Bean
-    FinalizarReparoUseCase finalizarReparoUseCase(OrdemDeServicoRepositoryPort repositorio) {
-        return new FinalizarReparoService(repositorio);
+    FinalizarReparoUseCase finalizarReparoUseCase(OrdemDeServicoRepositoryPort repositorio,
+                                                  ClienteRepositoryPort clienteRepositorio,
+                                                  NotificarClientePort notificarCliente) {
+        return new FinalizarReparoService(repositorio, clienteRepositorio, notificarCliente);
     }
 
     @Bean
-    EntregarVeiculoUseCase entregarVeiculoUseCase(OrdemDeServicoRepositoryPort repositorio) {
-        return new EntregarVeiculoService(repositorio);
+    EntregarVeiculoUseCase entregarVeiculoUseCase(OrdemDeServicoRepositoryPort repositorio,
+                                                  ClienteRepositoryPort clienteRepositorio,
+                                                  NotificarClientePort notificarCliente) {
+        return new EntregarVeiculoService(repositorio, clienteRepositorio, notificarCliente);
     }
 }

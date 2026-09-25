@@ -47,9 +47,14 @@ docker-compose up --build
 
 Isso iniciará:
 1. Container MySQL (`oficina-mysql`) na porta `3306` (inicializado com `schema.sql`)
-2. Container da aplicação (`oficina-app`) na porta `8081`
+2. Container MailHog (`oficina-mailhog`) com SMTP na porta `1025` e interface web na porta `8025`
+3. Container da aplicação (`oficina-app`) na porta `8081`
 
 A aplicação aguardará o banco de dados estar pronto antes de iniciar.
+
+Os e-mails enviados pela aplicação ficam disponíveis para consulta em:
+
+**[http://localhost:8025](http://localhost:8025)**
 
 ### Instalação Local
 
@@ -173,4 +178,3 @@ Este projeto foi desenvolvido como parte do SOAT Tech Challenge.
 Mateus Lourenção - [GitHub](https://github.com/mateuslourencao)
 
 Pedro Ruiz - [GitHub](https://github.com/opedro)
-

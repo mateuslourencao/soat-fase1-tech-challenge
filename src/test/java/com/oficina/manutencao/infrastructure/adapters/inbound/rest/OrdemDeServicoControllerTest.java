@@ -1,8 +1,10 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
 import com.oficina.manutencao.domain.model.OrdemDeServico;
+import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
+import com.oficina.manutencao.domain.ports.inbound.BuscarStatusOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
@@ -25,10 +27,11 @@ class OrdemDeServicoControllerTest {
     private final CadastrarOrdemDeServicoUseCase cadastrarUseCase = mock(CadastrarOrdemDeServicoUseCase.class);
     private final ListarOrdensDeServicoUseCase listarUseCase = mock(ListarOrdensDeServicoUseCase.class);
     private final BuscarOrdemDeServicoUseCase buscarUseCase = mock(BuscarOrdemDeServicoUseCase.class);
+    private final BuscarStatusOrdemDeServicoUseCase buscarStatusUseCase = mock(BuscarStatusOrdemDeServicoUseCase.class);
     private final AtualizarItensOrdemDeServicoUseCase atualizarItens = mock(AtualizarItensOrdemDeServicoUseCase.class);
 
     private final OrdemDeServicoController controller = new OrdemDeServicoController(
-            cadastrarUseCase, listarUseCase, buscarUseCase, atualizarItens
+            cadastrarUseCase, listarUseCase, buscarUseCase, buscarStatusUseCase, atualizarItens
     );
 
     @Test
@@ -66,6 +69,18 @@ class OrdemDeServicoControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(buscarUseCase).buscarOrdemDeServico(id);
+    }
+
+    @Test
+    void deveConsultarStatusDaOrdemDeServicoPorId() {
+        int id = 1;
+        when(buscarStatusUseCase.buscarStatusOrdemDeServico(id)).thenReturn(StatusOS.EM_DIAGNOSTICO);
+
+        ResponseEntity<StatusOS> response = controller.consultarStatus(id);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(StatusOS.EM_DIAGNOSTICO, response.getBody());
+        verify(buscarStatusUseCase).buscarStatusOrdemDeServico(id);
     }
 
     @Test

@@ -1,8 +1,10 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
 import com.oficina.manutencao.domain.model.OrdemDeServico;
+import com.oficina.manutencao.domain.model.StatusOS;
 import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
+import com.oficina.manutencao.domain.ports.inbound.BuscarStatusOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
 import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
@@ -25,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/ordensdeservico")
+@RequestMapping("/api/v1/ordensdeservico")
 @Tag(name = "Ordens de Serviço", description = "Gestão de aberturas e acompanhamento de ordens de serviço")
 class OrdemDeServicoController {
     private static final Logger logger = LoggerFactory.getLogger(OrdemDeServicoController.class);
@@ -33,15 +35,18 @@ class OrdemDeServicoController {
     private final CadastrarOrdemDeServicoUseCase cadastrarOrdemDeServico;
     private final ListarOrdensDeServicoUseCase listarOrdensDeServico;
     private final BuscarOrdemDeServicoUseCase buscarOrdemDeServico;
+    private final BuscarStatusOrdemDeServicoUseCase buscarStatusOrdemDeServico;
     private final AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico;
 
     OrdemDeServicoController(CadastrarOrdemDeServicoUseCase cadastrarOrdemDeServico,
                              ListarOrdensDeServicoUseCase listarOrdensDeServico,
                              BuscarOrdemDeServicoUseCase buscarOrdemDeServico,
+                             BuscarStatusOrdemDeServicoUseCase buscarStatusOrdemDeServico,
                              AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServico) {
         this.cadastrarOrdemDeServico = cadastrarOrdemDeServico;
         this.listarOrdensDeServico = listarOrdensDeServico;
         this.buscarOrdemDeServico = buscarOrdemDeServico;
+        this.buscarStatusOrdemDeServico = buscarStatusOrdemDeServico;
         this.atualizarItensOrdemDeServico = atualizarItensOrdemDeServico;
     }
 
@@ -76,6 +81,15 @@ class OrdemDeServicoController {
     @ApiResponse(responseCode = "404", description = "Ordem de serviço não encontrada")
     public ResponseEntity<OrdemDeServicoResponseDTO> buscarPorId(@Parameter(description = "ID da ordem de serviço") @PathVariable int id) {
         return ResponseEntity.ok(new OrdemDeServicoResponseDTO(buscarOrdemDeServico.buscarOrdemDeServico(id)));
+    }
+
+    @GetMapping("/{id}/status")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Consultar status da ordem de serviço", description = "Retorna a situação atual de uma ordem de serviço")
+    @ApiResponse(responseCode = "200", description = "Status da ordem de serviço retornado com sucesso")
+    @ApiResponse(responseCode = "404", description = "Ordem de serviço não encontrada")
+    public ResponseEntity<StatusOS> consultarStatus(@Parameter(description = "ID da ordem de serviço") @PathVariable int id) {
+        return ResponseEntity.ok(buscarStatusOrdemDeServico.buscarStatusOrdemDeServico(id));
     }
 
     @PostMapping("/{id}/itens")

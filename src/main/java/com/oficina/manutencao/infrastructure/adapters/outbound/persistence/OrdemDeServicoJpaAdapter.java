@@ -63,6 +63,11 @@ public class OrdemDeServicoJpaAdapter implements OrdemDeServicoRepositoryPort {
     }
 
     @Override
+    public Optional<StatusOS> buscarStatusPorId(int id) {
+        return repository.buscarStatusPorId(id);
+    }
+
+    @Override
     public List<OrdemDeServico> listarTodos() {
         return repository.findAll().stream().map(mapper::toDomain).toList();
     }

@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/ordensdeservico")
+@RequestMapping("/api/v1/ordensdeservico")
 @Tag(name = "Ordens de Serviço", description = "Gestão de aberturas e acompanhamento de ordens de serviço")
 class OrdemDeServicoStatusController {
     private final IniciarDiagnosticoUseCase iniciarDiagnostico;

@@ -1,12 +1,8 @@
 package com.oficina.manutencao.infrastructure.adapters.inbound.rest;
 
 import com.oficina.manutencao.domain.model.OrdemDeServico;
-import com.oficina.manutencao.domain.model.StatusOS;
-import com.oficina.manutencao.domain.ports.inbound.AtualizarItensOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.BuscarOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.BuscarStatusOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.CadastrarOrdemDeServicoUseCase;
-import com.oficina.manutencao.domain.ports.inbound.ListarOrdensDeServicoUseCase;
+
+import com.oficina.manutencao.domain.ports.inbound.*;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoRequestDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.CriarOrdemDeServicoResponseDTO;
 import com.oficina.manutencao.infrastructure.adapters.inbound.rest.dto.ItensOSRequestDTO;
@@ -26,12 +22,13 @@ class OrdemDeServicoControllerTest {
 
     private final CadastrarOrdemDeServicoUseCase cadastrarUseCase = mock(CadastrarOrdemDeServicoUseCase.class);
     private final ListarOrdensDeServicoUseCase listarUseCase = mock(ListarOrdensDeServicoUseCase.class);
+    private final ListarOrdensDeServicoAbertasUseCase listarAbertasUseCase = mock(ListarOrdensDeServicoAbertasUseCase.class);
     private final BuscarOrdemDeServicoUseCase buscarUseCase = mock(BuscarOrdemDeServicoUseCase.class);
     private final BuscarStatusOrdemDeServicoUseCase buscarStatusUseCase = mock(BuscarStatusOrdemDeServicoUseCase.class);
     private final AtualizarItensOrdemDeServicoUseCase atualizarItens = mock(AtualizarItensOrdemDeServicoUseCase.class);
 
     private final OrdemDeServicoController controller = new OrdemDeServicoController(
-            cadastrarUseCase, listarUseCase, buscarUseCase, buscarStatusUseCase, atualizarItens
+            cadastrarUseCase, listarUseCase, listarAbertasUseCase,  buscarUseCase, buscarStatusUseCase, atualizarItens
     );
 
     @Test
@@ -56,6 +53,18 @@ class OrdemDeServicoControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(listarUseCase).listarOrdensDeServico();
+    }
+
+    @Test
+    void deveListarOrdensDeServicoAbertas() {
+        OrdemDeServico os = new OrdemDeServico("123", "ABC", "Queixa");
+        when(listarAbertasUseCase.listarOrdensDeServicoAbertas()).thenReturn(List.of(os));
+
+        ResponseEntity<?> response = controller.listarAbertas();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(listarAbertasUseCase).listarOrdensDeServicoAbertas();
     }
 
     @Test

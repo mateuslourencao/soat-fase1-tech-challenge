@@ -11,9 +11,12 @@ import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.entity.OrdemDeServicoEntity;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.mapper.OrdemDeServicoPersistenceMapper;
 import com.oficina.manutencao.infrastructure.adapters.outbound.persistence.repository.OrdemDeServicoJpaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class OrdemDeServicoJpaAdapter implements OrdemDeServicoRepositoryPort {
+
+    private static final Logger logger = LoggerFactory.getLogger(OrdemDeServicoJpaAdapter.class);
 
     private final OrdemDeServicoJpaRepository repository;
     private final OrdemDeServicoPersistenceMapper mapper;
@@ -72,6 +77,23 @@ public class OrdemDeServicoJpaAdapter implements OrdemDeServicoRepositoryPort {
         return repository.findAll().stream().map(mapper::toDomain).toList();
     }
 
+    public List<OrdemDeServico> listarOrdenadoEmAberto() {
+        return repository.findAll().stream()
+                .filter(this::possuiDadosObrigatoriosParaListagem)
+                .filter(entity -> entity.getStatus() != StatusOS.FINALIZADA)
+                .filter(entity -> entity.getStatus() != StatusOS.ENTREGUE)
+                .map(mapper::toDomain)
+                .sorted(Comparator.comparing(OrdemDeServico::getDataCriacao))
+                .toList();
+    }
+
+    private boolean possuiDadosObrigatoriosParaListagem(OrdemDeServicoEntity entity) {
+        if (entity.getStatus() == null || entity.getDataCriacao() == null) {
+            logger.warn("Ignorando ordem de serviço inconsistente na listagem de abertas: status ou data de criação ausente");
+            return false;
+        }
+        return true;
+    }
     @Override
     public List<OrdemDeServico> buscarOrdensdeServicoPeriodo(LocalDateTime inicio, LocalDateTime fim) {
         return repository.findAll().stream()

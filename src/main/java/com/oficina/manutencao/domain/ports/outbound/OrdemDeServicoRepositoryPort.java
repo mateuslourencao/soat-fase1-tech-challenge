@@ -12,5 +12,6 @@ public interface OrdemDeServicoRepositoryPort {
     Optional<OrdemDeServico> buscarPorId(int id);
     Optional<StatusOS> buscarStatusPorId(int id);
     List<OrdemDeServico> listarTodos();
+    List<OrdemDeServico> listarOrdenadoEmAberto();
     List<OrdemDeServico> buscarOrdensdeServicoPeriodo(LocalDateTime inicio, LocalDateTime fim);
 }

@@ -40,6 +40,23 @@ class OrdemDeServicoServicesTest {
         assertSame(ordem, new BuscarOrdemDeServicoService(repository).buscarOrdemDeServico(1));
     }
 
+    @Test void deveBuscarSomenteStatusDaOrdemDeServico() {
+        when(repository.buscarStatusPorId(1)).thenReturn(Optional.of(StatusOS.EM_DIAGNOSTICO));
+
+        StatusOS resultado = new BuscarStatusOrdemDeServicoService(repository).buscarStatusOrdemDeServico(1);
+
+        assertEquals(StatusOS.EM_DIAGNOSTICO, resultado);
+        verify(repository).buscarStatusPorId(1);
+        verify(repository, never()).buscarPorId(anyInt());
+    }
+
+    @Test void deveLancarExcecaoQuandoStatusDaOrdemNaoEncontrado() {
+        when(repository.buscarStatusPorId(1)).thenReturn(Optional.empty());
+
+        assertThrows(EntidadeNaoEncontradaException.class,
+                () -> new BuscarStatusOrdemDeServicoService(repository).buscarStatusOrdemDeServico(1));
+    }
+
     @Test void deveListarOrdensDeServico() {
         List<OrdemDeServico> ordens = List.of(ordem(StatusOS.RECEBIDA));
         when(repository.listarTodos()).thenReturn(ordens);

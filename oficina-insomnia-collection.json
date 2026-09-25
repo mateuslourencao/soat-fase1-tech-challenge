@@ -539,6 +539,19 @@
 			"_type": "request"
 		},
 		{
+			"_id": "req_68",
+			"parentId": "fld_6",
+			"url": "{{ _.base_url }}/ordensdeservico/1/status",
+			"name": "Consultar status da OS por ID",
+			"method": "GET",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -825,
+			"_type": "request"
+		},
+		{
 			"_id": "req_23",
 			"parentId": "fld_6",
 			"url": "{{ _.base_url }}/ordensdeservico",

@@ -2,7 +2,7 @@ services:
   db:
     image: mysql:8.0
     container_name: oficina-mysql
-    restart: always
+    restart: no
     environment:
       MYSQL_DATABASE: oficina
       MYSQL_ROOT_PASSWORD: root
@@ -14,7 +14,7 @@ services:
   app:
     build: .
     container_name: oficina-app
-    restart: on-failure
+    restart: no
     ports:
       - "8081:8081"
     environment:

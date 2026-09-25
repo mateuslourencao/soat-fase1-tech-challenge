@@ -41,6 +41,11 @@ class OrdemDeServicoConfig {
     }
 
     @Bean
+    BuscarStatusOrdemDeServicoUseCase buscarStatusOrdemDeServico(OrdemDeServicoRepositoryPort repositorio) {
+        return new BuscarStatusOrdemDeServicoService(repositorio);
+    }
+
+    @Bean
     AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServicoUseCase(
             OrdemDeServicoRepositoryPort repositorio,
             PecaRepositoryPort pecaRepositorio,

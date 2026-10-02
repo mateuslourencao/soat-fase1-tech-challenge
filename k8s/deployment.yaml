@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oficina-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: oficina-api
+  template:
+    metadata:
+      labels:
+        app: oficina-api
+    spec:
+      containers:
+        - name: oficina-api-k8s
+          image: caminho_imagem:versao
+          ports:
+            - name: http
+              containerPort: 8081
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: oficina-configmap
+            - secretRef:
+                name: oficina-secret
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oficina-db
+spec:
+  selector:
+    matchLabels:
+      app: oficina-db
+  template:
+    metadata:
+      labels:
+        app: oficina-db
+    spec:
+      containers:
+        - image: mysql:8.0
+          name: mysql
+          env:
+            - name: MYSQL_DATABASE
+              value: oficina
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: oficina-configmap
+                  key: DB_USERNAME
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: oficina-secret
+                  key: DB_PASSWORD
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc

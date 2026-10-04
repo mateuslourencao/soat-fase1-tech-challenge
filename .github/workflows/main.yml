@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - feature/add_tests_step_on_pipeline
   pull_request:
     types: [opened, synchronize, reopened]
 

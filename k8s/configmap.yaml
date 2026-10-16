@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oficina-configmap
+data:
+  MAIL_HOST: "mailhog"
+  MAIL_PORT: "1025"
+  MAIL_SMTP_AUTH: "false"
+  MAIL_SMTP_STARTTLS: "false"
+  MAIL_FROM: "no-reply@oficina.com"
+
+  DB_URL: "jdbc:mysql://oficina-db-svc:3306/oficina?serverTimezone=UTC"
+  DB_USERNAME: "root"
+
+  SPRING_JPA_OPEN_IN_VIEW: "false"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "validate"

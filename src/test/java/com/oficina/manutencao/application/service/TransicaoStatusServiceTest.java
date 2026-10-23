@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class TransicaoStatusServicesTest {
+class TransicaoStatusServiceTest {
     private final OrdemDeServicoRepositoryPort repository = mock(OrdemDeServicoRepositoryPort.class);
     private final ClienteRepositoryPort clienteRepository = mock(ClienteRepositoryPort.class);
     private final NotificarClientePort notificarCliente = mock(NotificarClientePort.class);

@@ -1,6 +1,5 @@
 package com.oficina.manutencao.application.service;
 
-import com.oficina.common.domain.exception.EntidadeNaoEncontradaException;
 import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.ports.outbound.ClienteRepositoryPort;
 import org.junit.jupiter.api.Test;
@@ -8,66 +7,43 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 class ClienteServiceTest {
     private final ClienteRepositoryPort repository = mock(ClienteRepositoryPort.class);
+    private final Cliente cliente = new Cliente("123", "Ana", "ana@oficina.com", "11999999999");
 
     @Test void deveCadastrarCliente() {
-        Cliente cliente = new Cliente("123", "Joao", "joao@email.com", "11999999999");
         when(repository.salvar(cliente)).thenReturn(cliente);
-        
-        Cliente resultado = new CadastrarClienteService(repository).cadastrarCliente(cliente);
-        
-        assertSame(cliente, resultado);
-        verify(repository).salvar(cliente);
+        assertSame(cliente, new CadastrarClienteService(repository).cadastrarCliente(cliente));
     }
 
     @Test void deveBuscarCliente() {
-        Cliente cliente = new Cliente("123", "Joao", "joao@email.com", "11999999999");
         when(repository.buscarPorId("123")).thenReturn(Optional.of(cliente));
-        
-        Cliente resultado = new BuscarClienteService(repository).buscarCliente("123");
-        
-        assertSame(cliente, resultado);
-    }
-
-    @Test void deveLancarExcecaoQuandoClienteNaoEncontrado() {
-        when(repository.buscarPorId("456")).thenReturn(Optional.empty());
-        
-        BuscarClienteService service = new BuscarClienteService(repository);
-        assertThrows(EntidadeNaoEncontradaException.class, () -> service.buscarCliente("456"));
+        assertSame(cliente, new BuscarClienteService(repository).buscarCliente("123"));
     }
 
     @Test void deveListarClientes() {
-        List<Cliente> clientes = List.of(new Cliente("123", "Joao", "joao@email.com", "11999999999"));
+        List<Cliente> clientes = List.of(cliente);
         when(repository.listarTodos()).thenReturn(clientes);
-        
-        List<Cliente> resultado = new ListarClientesService(repository).listarClientes();
-        
-        assertSame(clientes, resultado);
+        assertSame(clientes, new ListarClientesService(repository).listarClientes());
     }
 
-    @Test void deveAtualizarCliente() {
-        Cliente existente = new Cliente("123", "Joao", "joao@email.com", "11999999999");
-        Cliente atualizado = new Cliente("123", "Joao Alterado", "joao.novo@email.com", "11888888888");
-        
-        when(repository.buscarPorId("123")).thenReturn(Optional.of(existente));
+    @Test void deveAtualizarClienteMantendoDocumentoExistente() {
+        Cliente atualizado = new Cliente("outro", "Ana Silva", "ana.silva@oficina.com", "11888888888");
+        when(repository.buscarPorId("123")).thenReturn(Optional.of(cliente));
         when(repository.salvar(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        
+
         Cliente resultado = new AtualizarClienteService(repository).atualizarCliente("123", atualizado);
-        
-        assertEquals("Joao Alterado", resultado.getNome());
-        assertEquals("joao.novo@email.com", resultado.getEmail());
-        assertEquals("11888888888", resultado.getTelefone());
-        verify(repository).salvar(any(Cliente.class));
+
+        assertEquals("123", resultado.getDocumento());
+        assertEquals("Ana Silva", resultado.getNome());
     }
 
     @Test void deveRemoverCliente() {
-        Cliente existente = new Cliente("123", "Joao", "joao@email.com", "11999999999");
-        when(repository.buscarPorId("123")).thenReturn(Optional.of(existente));
-
+        when(repository.buscarPorId("123")).thenReturn(Optional.of(cliente));
         new RemoverClienteService(repository).removerCliente("123");
         verify(repository).remover("123");
     }

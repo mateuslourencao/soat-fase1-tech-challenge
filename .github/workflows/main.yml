@@ -51,9 +51,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
-    name: Build project
+    name: Build and deploy to temporary Kubernetes cluster
     needs: sonarcloud
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Set up JDK 21
@@ -69,3 +70,32 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build
         run: mvn -B package -DskipTests
+      - name: Build Docker image
+        run: |
+          docker build \
+            --tag soat-fase1-tech-challenge-app:dev \
+            --tag soat-fase1-tech-challenge-app:${GITHUB_SHA} .
+          docker image inspect soat-fase1-tech-challenge-app:${GITHUB_SHA}
+      - name: Install Kind
+        run: |
+          curl -fsSLo kind https://kind.sigs.k8s.io/dl/v0.33.0/kind-linux-amd64
+          chmod +x kind
+          sudo mv kind /usr/local/bin/kind
+          kind version
+      - name: Create temporary Kind cluster
+        run: kind create cluster --name oficina-ci --wait 120s
+      - name: Load application image into Kind
+        run: kind load docker-image soat-fase1-tech-challenge-app:dev --name oficina-ci
+      - name: Apply Kubernetes manifests
+        run: kubectl --context kind-oficina-ci apply -k .
+      - name: Wait for database deployment
+        run: kubectl --context kind-oficina-ci rollout status deployment/oficina-db --timeout=180s
+      - name: Wait for application deployment
+        run: kubectl --context kind-oficina-ci rollout status deployment/oficina-api --timeout=240s
+      - name: Wait for MailHog deployment
+        run: kubectl --context kind-oficina-ci rollout status deployment/mailhog --timeout=120s
+      - name: Confirm HPA was applied
+        run: kubectl --context kind-oficina-ci get hpa oficina-api
+      - name: Delete temporary Kind cluster
+        if: always()
+        run: kind delete cluster --name oficina-ci || true

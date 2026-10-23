@@ -3,11 +3,11 @@ package com.oficina.manutencao.infrastructure.adapters.outbound.notification;
 import com.oficina.manutencao.domain.model.Cliente;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.ports.outbound.NotificarClientePort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component

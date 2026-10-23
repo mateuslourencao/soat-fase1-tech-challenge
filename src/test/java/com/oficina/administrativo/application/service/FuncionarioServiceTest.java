@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class FuncionarioServicesTest {
+class FuncionarioServiceTest {
 
     @Mock
     private FuncionarioRepositoryPort repository;

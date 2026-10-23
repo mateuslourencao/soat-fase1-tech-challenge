@@ -4,13 +4,11 @@ import com.oficina.manutencao.domain.model.MetricaExecucao;
 import com.oficina.manutencao.domain.model.OrdemDeServico;
 import com.oficina.manutencao.domain.ports.inbound.CalcularMetricaExecucaoUseCase;
 import com.oficina.manutencao.domain.ports.outbound.OrdemDeServicoRepositoryPort;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
-@Service
 public class CalcularMetricaExecucaoService implements CalcularMetricaExecucaoUseCase {
 
     private final OrdemDeServicoRepositoryPort ordemDeServicoRepository;

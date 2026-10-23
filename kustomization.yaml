@@ -8,6 +8,7 @@ resources:
   - k8s/mailhog.yaml
   - k8s/secret.yaml
   - k8s/service.yaml
+  - k8s/hpa.yaml
 
 configMapGenerator:
   - name: oficina-db-schema

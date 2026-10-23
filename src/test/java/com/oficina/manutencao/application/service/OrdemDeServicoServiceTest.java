@@ -21,7 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class OrdemDeServicoServicesTest {
+class OrdemDeServicoServiceTest {
     private final OrdemDeServicoRepositoryPort repository = mock(OrdemDeServicoRepositoryPort.class);
     private final PecaRepositoryPort pecaRepository = mock(PecaRepositoryPort.class);
     private final ServicoRepositoryPort servicoRepository = mock(ServicoRepositoryPort.class);

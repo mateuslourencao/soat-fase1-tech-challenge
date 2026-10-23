@@ -83,8 +83,20 @@ public class OrdemDeServicoJpaAdapter implements OrdemDeServicoRepositoryPort {
                 .filter(entity -> entity.getStatus() != StatusOS.FINALIZADA)
                 .filter(entity -> entity.getStatus() != StatusOS.ENTREGUE)
                 .map(mapper::toDomain)
-                .sorted(Comparator.comparing(OrdemDeServico::getDataCriacao))
+                .sorted(Comparator
+                        .comparingInt((OrdemDeServico ordem) -> prioridadeStatus(ordem.getStatus()))
+                        .thenComparing(OrdemDeServico::getDataCriacao))
                 .toList();
+    }
+
+    private int prioridadeStatus(StatusOS status) {
+        return switch (status) {
+            case EM_EXECUCAO -> 0;
+            case AGUARDANDO_APROVACAO -> 1;
+            case EM_DIAGNOSTICO -> 2;
+            case RECEBIDA -> 3;
+            case FINALIZADA, ENTREGUE -> Integer.MAX_VALUE;
+        };
     }
 
     private boolean possuiDadosObrigatoriosParaListagem(OrdemDeServicoEntity entity) {

@@ -84,6 +84,27 @@ jobs:
           kind version
       - name: Create temporary Kind cluster
         run: kind create cluster --name oficina-ci --wait 120s
+      - name: Install Metrics Server for Kind
+        run: |
+          kubectl --context kind-oficina-ci apply \
+            -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+          kubectl --context kind-oficina-ci patch deployment metrics-server \
+            -n kube-system \
+            --type=json \
+            --patch='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+          kubectl --context kind-oficina-ci rollout status deployment/metrics-server \
+            -n kube-system \
+            --timeout=180s
+          for attempt in $(seq 1 18); do
+            if kubectl --context kind-oficina-ci top nodes; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 18 ]; then
+              echo "Metrics Server did not provide node metrics within 3 minutes" >&2
+              exit 1
+            fi
+            sleep 10
+          done
       - name: Load application image into Kind
         run: kind load docker-image soat-fase1-tech-challenge-app:dev --name oficina-ci
       - name: Apply Kubernetes manifests

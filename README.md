@@ -73,8 +73,6 @@ Além do cluster, o Terraform constrói a imagem da API, carrega essa imagem no 
 winget install Kubernetes.kind
 ```
 
-O HPA precisa do `metrics-server` para obter métricas de CPU e memória. Instale-o no cluster depois de provisioná-lo, conforme os passos abaixo.
-
 Após instalar, abra um novo PowerShell e confirme as ferramentas e o contexto Docker:
 
 ```powershell
@@ -96,7 +94,7 @@ terraform -chdir=infra/kind plan
 terraform -chdir=infra/kind apply
 ```
 
-Durante a aplicação, o Terraform cria o cluster, constrói a imagem `soat-fase1-tech-challenge-app:dev`, carrega-a no Kind e aplica os manifests Kubernetes. O provisionamento aguarda os deployments do banco, da API e do MailHog ficarem prontos.
+Durante a aplicação, o Terraform cria o cluster, instala e configura o Metrics Server, constrói a imagem `soat-fase1-tech-challenge-app:dev`, carrega-a no Kind e aplica os manifests Kubernetes. O provisionamento aguarda as métricas do cluster e os deployments do banco, da API e do MailHog ficarem prontos.
 
 Para reaplicar os manifestos manualmente em um cluster já provisionado:
 
@@ -107,22 +105,17 @@ kubectl --context kind-oficina-local rollout status deployment/oficina-api --tim
 kubectl --context kind-oficina-local rollout status deployment/mailhog --timeout=120s
 ```
 
-#### Instalar o Metrics Server
+#### Métricas e HPA
 
-O manifesto do HPA é aplicado junto com os demais recursos, mas ele só consegue calcular o uso de CPU e memória depois que o Metrics Server estiver disponível. Após o `terraform apply`, instale a versão oficial no cluster Kind:
+O Terraform instala o Metrics Server no Kind, configura a opção necessária para os certificados do kubelet locais e aguarda as métricas ficarem disponíveis antes de aplicar o HPA. A pipeline de CI também instala o Metrics Server no cluster temporário.
 
-```powershell
-kubectl --context kind-oficina-local apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-```
-
-No Kind local, o certificado do kubelet pode não incluir o IP usado pelo Metrics Server. Se os logs indicarem erro de validação do certificado (`x509`), aplique a opção abaixo, que ignora essa validação somente neste ambiente local:
+Se você já tiver criado o cluster sem o Terraform ou precisar reaplicar a configuração, execute o script na raiz do repositório:
 
 ```powershell
-$patchFile = Join-Path $env:TEMP 'metrics-server-patch.json'
-Set-Content -Path $patchFile -Encoding Ascii -Value '[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
-kubectl --context kind-oficina-local patch deployment metrics-server -n kube-system --type=json --patch-file $patchFile
-kubectl --context kind-oficina-local rollout status deployment/metrics-server -n kube-system --timeout=120s
+.\scripts\install-metrics-server.ps1 -Context kind-oficina-local
 ```
+
+O script busca o manifesto oficial do Metrics Server na internet; por isso, precisa de acesso à rede durante a instalação.
 
 Confirme que o cluster está fornecendo métricas e que o HPA consegue consultá-las:
 

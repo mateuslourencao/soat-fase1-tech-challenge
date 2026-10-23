@@ -32,6 +32,73 @@ O projeto segue os princípios da **Arquitetura Hexagonal (Ports and Adapters)**
 
 ## Configurações iniciais
 
+### Kubernetes local provisionado com Terraform
+
+O Terraform provisiona um cluster Kubernetes local chamado `oficina-local` usando [Kind](https://kind.sigs.k8s.io/). O Kind executa os nós Kubernetes como contêineres Docker; neste projeto, o Docker Desktop fornece o runtime. Portanto, **o contexto do cluster usado pelo projeto é `kind-oficina-local`**, e não `docker-desktop` (que identifica o cluster Kubernetes gerenciado diretamente pelo Docker Desktop).
+
+Além do cluster, o Terraform constrói a imagem da API, carrega essa imagem no cluster Kind e aplica o `kustomization.yaml` da raiz. Os manifests criam:
+
+- API da oficina, com três réplicas e Service NodePort;
+- MySQL, com Service interno e volume persistente de 2 GiB;
+- MailHog, com interface web e SMTP;
+- ConfigMap do banco de dados e das configurações da aplicação, Secret de desenvolvimento e ConfigMap com o `schema.sql`.
+
+#### Pré-requisitos
+
+- Windows com Docker Desktop iniciado e configurado para **Linux containers**;
+- Terraform `>= 1.5.0`;
+- `kubectl`;
+- Kind instalado e disponível no `PATH`. No Windows, pode ser instalado com [WinGet](https://kind.sigs.k8s.io/docs/user/quick-start/):
+
+```powershell
+winget install Kubernetes.kind
+```
+
+Após instalar, abra um novo PowerShell e confirme as ferramentas e o contexto Docker:
+
+```powershell
+docker context show
+kind version
+kubectl version --client
+terraform version
+```
+
+O contexto Docker deve apontar para o Docker Desktop (normalmente `desktop-linux`). Se necessário, selecione-o com `docker context use desktop-linux`.
+
+#### Provisionar e iniciar
+
+Na raiz do repositório, inicialize o Terraform e aplique a configuração. O `apply` apresenta o plano e pede confirmação antes de criar os recursos:
+
+```powershell
+terraform -chdir=infra/kind init
+terraform -chdir=infra/kind plan
+terraform -chdir=infra/kind apply
+```
+
+Durante a aplicação, o Terraform cria o cluster, constrói a imagem `soat-fase1-tech-challenge-app:dev`, carrega-a no Kind e aplica os manifests Kubernetes. O provisionamento aguarda os deployments do banco, da API e do MailHog ficarem prontos.
+
+#### Conferir o ambiente
+
+```powershell
+kubectl --context kind-oficina-local get nodes
+kubectl --context kind-oficina-local get deployments,services,pods
+```
+
+- API e Swagger: [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)
+- Interface do MailHog: [http://localhost:8025](http://localhost:8025)
+
+O MySQL fica acessível dentro do cluster pelo Service `oficina-db-svc:3306`. A senha e o segredo JWT presentes nos manifests são valores de desenvolvimento; não os reutilize em produção.
+
+#### Remover o ambiente
+
+Para destruir os recursos gerenciados pelo Terraform, incluindo o cluster Kind:
+
+```powershell
+terraform -chdir=infra/kind destroy
+```
+
+Ao destruir o cluster, os recursos e os dados persistidos no volume local do MySQL também são removidos.
+
 ### Pré-requisitos
 
 - Docker e Docker Compose instalados

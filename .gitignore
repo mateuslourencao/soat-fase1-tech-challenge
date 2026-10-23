@@ -1,5 +1,8 @@
 HELP.md
 target/
+infra/kind/.terraform/
+infra/kind/terraform.tfstate
+infra/kind/terraform.tfstate.*
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

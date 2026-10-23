@@ -39,6 +39,11 @@ class OrdemDeServicoConfig {
     }
 
     @Bean
+    CalcularMetricaExecucaoUseCase calcularMetricaExecucaoUseCase(OrdemDeServicoRepositoryPort repositorio) {
+        return new CalcularMetricaExecucaoService(repositorio);
+    }
+
+    @Bean
     AtualizarItensOrdemDeServicoUseCase atualizarItensOrdemDeServicoUseCase(
             OrdemDeServicoRepositoryPort repositorio,
             PecaRepositoryPort pecaRepositorio,

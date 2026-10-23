@@ -39,6 +39,7 @@ O Terraform provisiona um cluster Kubernetes local chamado `oficina-local` usand
 Além do cluster, o Terraform constrói a imagem da API, carrega essa imagem no cluster Kind e aplica o `kustomization.yaml` da raiz. Os manifests criam:
 
 - API da oficina, com três réplicas e Service NodePort;
+- HPA da API, escalando de 3 a 10 réplicas quando o uso médio atingir 70% de CPU ou 80% de memória;
 - MySQL, com Service interno e volume persistente de 2 GiB;
 - MailHog, com interface web e SMTP;
 - ConfigMap do banco de dados e das configurações da aplicação, Secret de desenvolvimento e ConfigMap com o `schema.sql`.
@@ -53,6 +54,8 @@ Além do cluster, o Terraform constrói a imagem da API, carrega essa imagem no 
 ```powershell
 winget install Kubernetes.kind
 ```
+
+O HPA precisa do `metrics-server` para obter métricas de CPU e memória. Instale-o no cluster depois de provisioná-lo, conforme os passos abaixo.
 
 Após instalar, abra um novo PowerShell e confirme as ferramentas e o contexto Docker:
 
@@ -76,6 +79,42 @@ terraform -chdir=infra/kind apply
 ```
 
 Durante a aplicação, o Terraform cria o cluster, constrói a imagem `soat-fase1-tech-challenge-app:dev`, carrega-a no Kind e aplica os manifests Kubernetes. O provisionamento aguarda os deployments do banco, da API e do MailHog ficarem prontos.
+
+#### Instalar o Metrics Server
+
+O manifesto do HPA é aplicado junto com os demais recursos, mas ele só consegue calcular o uso de CPU e memória depois que o Metrics Server estiver disponível. Após o `terraform apply`, instale a versão oficial no cluster Kind:
+
+```powershell
+kubectl --context kind-oficina-local apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl --context kind-oficina-local rollout status deployment/metrics-server -n kube-system --timeout=120s
+```
+
+Confirme que o cluster está fornecendo métricas e que o HPA consegue consultá-las:
+
+```powershell
+kubectl --context kind-oficina-local top nodes
+kubectl --context kind-oficina-local top pods -l app=oficina-api
+kubectl --context kind-oficina-local get hpa oficina-api
+```
+
+Pode levar alguns minutos até as primeiras métricas aparecerem. Se `kubectl top` retornar erro, consulte a [documentação de troubleshooting do Metrics Server](https://github.com/kubernetes-sigs/metrics-server/blob/master/FAQ.md).
+
+#### Testar o escalonamento do HPA
+
+Com as métricas disponíveis, execute na raiz do repositório o script que gera requisições concorrentes para a API e acompanha o HPA. Se o PowerShell bloquear a execução de scripts, habilite-a somente para a janela atual; essa configuração não altera a política permanente do computador. O script cria um Deployment temporário de carga e o remove ao terminar:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+.\scripts\test-hpa.ps1
+```
+
+Por padrão, o script roda por 180 segundos com 12 pods de carga e 8 requisições concorrentes por pod. Ajuste a duração e a intensidade conforme necessário:
+
+```powershell
+.\scripts\test-hpa.ps1 -DurationSeconds 240 -WorkerReplicas 16 -ConcurrentRequestsPerPod 10
+```
+
+O teste consulta um endpoint público da API. Observe as métricas de CPU e memória e o número de réplicas exibidos pelo HPA; o escalonamento ocorre quando o uso médio ultrapassa os alvos configurados. Ao remover a carga, o HPA pode levar alguns minutos para reduzir as réplicas.
 
 #### Conferir o ambiente
 

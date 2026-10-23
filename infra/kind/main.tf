@@ -34,7 +34,6 @@ resource "kind_cluster" "oficina" {
     node {
       role = "control-plane"
 
-      # Em Kind, a porta do nó deve ser igual ao NodePort do Service.
       extra_port_mappings {
         container_port = 30081
         host_port      = 8081

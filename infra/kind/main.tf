@@ -15,6 +15,7 @@ locals {
     [
       "${local.project_root}/kustomization.yaml",
       "${local.project_root}/schema.sql",
+      "${local.project_root}/scripts/install-metrics-server.ps1",
     ],
     [for file in fileset(local.project_root, "k8s/**") : "${local.project_root}/${file}"],
   )
@@ -59,6 +60,21 @@ resource "terraform_data" "build_and_load_image" {
   }
 }
 
+resource "terraform_data" "install_metrics_server" {
+  triggers_replace = [
+    kind_cluster.oficina.id,
+    filesha256("${local.project_root}/scripts/install-metrics-server.ps1"),
+  ]
+
+  depends_on = [kind_cluster.oficina]
+
+  provisioner "local-exec" {
+    working_dir = local.project_root
+    interpreter = ["PowerShell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command"]
+    command     = "& \"${local.project_root}/scripts/install-metrics-server.ps1\" -Context \"kind-${var.cluster_name}\"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }"
+  }
+}
+
 resource "terraform_data" "deploy_kustomization" {
   triggers_replace = [
     local.image_fingerprint,
@@ -66,7 +82,10 @@ resource "terraform_data" "deploy_kustomization" {
     kind_cluster.oficina.id,
   ]
 
-  depends_on = [terraform_data.build_and_load_image]
+  depends_on = [
+    terraform_data.build_and_load_image,
+    terraform_data.install_metrics_server,
+  ]
 
   provisioner "local-exec" {
     working_dir = local.project_root

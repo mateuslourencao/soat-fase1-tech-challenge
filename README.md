@@ -7,6 +7,20 @@
 
 Este projeto é um MVP de um Sistema de Oficina Mecânica, desenvolvido como parte do Tech Challenge da Pós-Graduação em Arquitetura de Software (SOAT). A aplicação gerencia o fluxo administrativo, de estoque e de manutenção de uma oficina.
 
+### Objetivos desta fase
+
+Evoluir a aplicação desenvolvida na Fase 1 para garantir qualidade, resiliência e escalabilidade, incorporando práticas modernas de infraestrutura e automação.
+
+### Como executar o projeto
+
+Escolha um dos caminhos abaixo. Eles são alternativas independentes; siga as instruções da opção escolhida.
+
+| Caminho | Quando usar | O que inicia | Instruções |
+|---|---|---|---|
+| Docker Compose | Desenvolver localmente sem Kubernetes | API, MySQL e MailHog em containers | [Execução com Docker Compose](#execução-local-com-docker-compose-recomendado) |
+| Maven | Executar a API diretamente no computador | API; requer MySQL já instalado e configurado | [Execução local com Maven](#instalação-local) |
+| Terraform + Kind | Provisionar Kubernetes local e validar o deploy da aplicação | Cluster Kind, API, MySQL, MailHog e recursos Kubernetes | [Provisionamento e deploy com Terraform](#kubernetes-local-provisionado-com-terraform) |
+
 ## Tecnologias Utilizadas
 
 - **Java 21** - Linguagem principal
@@ -29,6 +43,10 @@ O projeto segue os princípios da **Arquitetura Hexagonal (Ports and Adapters)**
 - **Administrativo** - Gestão de funcionários e autenticação
 - **Estoque** - Controle de peças e serviços
 - **Manutenção** - Gestão de clientes, veículos e ordens de serviço
+
+### Desenho da arquitetura
+
+> TODO: Incluir posteriormente o desenho da arquitetura da aplicação, da infraestrutura provisionada e do fluxo de deploy.
 
 ## Configurações iniciais
 
@@ -55,8 +73,6 @@ Além do cluster, o Terraform constrói a imagem da API, carrega essa imagem no 
 winget install Kubernetes.kind
 ```
 
-O HPA precisa do `metrics-server` para obter métricas de CPU e memória. Instale-o no cluster depois de provisioná-lo, conforme os passos abaixo.
-
 Após instalar, abra um novo PowerShell e confirme as ferramentas e o contexto Docker:
 
 ```powershell
@@ -78,16 +94,28 @@ terraform -chdir=infra/kind plan
 terraform -chdir=infra/kind apply
 ```
 
-Durante a aplicação, o Terraform cria o cluster, constrói a imagem `soat-fase1-tech-challenge-app:dev`, carrega-a no Kind e aplica os manifests Kubernetes. O provisionamento aguarda os deployments do banco, da API e do MailHog ficarem prontos.
+Durante a aplicação, o Terraform cria o cluster, instala e configura o Metrics Server, constrói a imagem `soat-fase1-tech-challenge-app:dev`, carrega-a no Kind e aplica os manifests Kubernetes. O provisionamento aguarda as métricas do cluster e os deployments do banco, da API e do MailHog ficarem prontos.
 
-#### Instalar o Metrics Server
-
-O manifesto do HPA é aplicado junto com os demais recursos, mas ele só consegue calcular o uso de CPU e memória depois que o Metrics Server estiver disponível. Após o `terraform apply`, instale a versão oficial no cluster Kind:
+Para reaplicar os manifestos manualmente em um cluster já provisionado:
 
 ```powershell
-kubectl --context kind-oficina-local apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-kubectl --context kind-oficina-local rollout status deployment/metrics-server -n kube-system --timeout=120s
+kubectl --context kind-oficina-local apply -k .
+kubectl --context kind-oficina-local rollout status deployment/oficina-db --timeout=180s
+kubectl --context kind-oficina-local rollout status deployment/oficina-api --timeout=240s
+kubectl --context kind-oficina-local rollout status deployment/mailhog --timeout=120s
 ```
+
+#### Métricas e HPA
+
+O Terraform instala o Metrics Server no Kind, configura a opção necessária para os certificados do kubelet locais e aguarda as métricas ficarem disponíveis antes de aplicar o HPA. A pipeline de CI também instala o Metrics Server no cluster temporário.
+
+Se você já tiver criado o cluster sem o Terraform ou precisar reaplicar a configuração, execute o script na raiz do repositório:
+
+```powershell
+.\scripts\install-metrics-server.ps1 -Context kind-oficina-local
+```
+
+O script busca o manifesto oficial do Metrics Server na internet; por isso, precisa de acesso à rede durante a instalação.
 
 Confirme que o cluster está fornecendo métricas e que o HPA consegue consultá-las:
 
@@ -143,12 +171,12 @@ Ao destruir o cluster, os recursos e os dados persistidos no volume local do MyS
 - Docker e Docker Compose instalados
 - Java 21 e Maven (opcional, para execução local)
 
-### Instalação com Docker (Recomendado)
+### Execução local com Docker Compose (Recomendado)
 
 Na raiz do projeto, execute:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 Isso iniciará:
@@ -156,7 +184,7 @@ Isso iniciará:
 2. Container MailHog (`oficina-mailhog`) com SMTP na porta `1025` e interface web na porta `8025`
 3. Container da aplicação (`oficina-app`) na porta `8081`
 
-A aplicação aguardará o banco de dados estar pronto antes de iniciar.
+O Compose inicia os containers do banco e do MailHog antes do container da API. O `depends_on` usado no arquivo não verifica se o MySQL já está pronto para aceitar conexões; se a API falhar durante a inicialização, confira os logs com `docker compose logs app db` e tente iniciá-la novamente.
 
 Os e-mails enviados pela aplicação ficam disponíveis para consulta em:
 
@@ -189,6 +217,8 @@ Com a aplicação rodando, acesse a documentação interativa do Swagger:
 
 **[http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)**
 
+A collection completa para importar no Insomnia está em [`oficina-insomnia-collection.json`](oficina-insomnia-collection.json). A especificação OpenAPI também pode ser consultada em [http://localhost:8081/v3/api-docs](http://localhost:8081/v3/api-docs).
+
 ### Principais Endpoints
 
 - `/api/v1/administrativo/autenticacao` - Login de funcionários
@@ -216,6 +246,10 @@ Uma collection do Insomnia está disponível para facilitar os testes:
 ```bash
 mvn test
 ```
+
+### Pipeline GitHub Actions
+
+O workflow executa os testes automatizados e a análise SonarCloud. Em seguida, constrói a imagem Docker e cria um cluster Kind temporário, onde aplica os manifestos do Kustomize e aguarda os Deployments do banco, da API e do MailHog ficarem prontos. Esse cluster existe apenas durante a execução do workflow e é removido ao final; ele valida o deploy, mas não atualiza o cluster local do desenvolvedor nem mantém um ambiente publicado.
 
 ### Relatório de Cobertura (JaCoCo)
 

@@ -18,7 +18,7 @@ spec:
           command: [ "sh", "-c", "until nc -z oficina-db-svc 3306; do echo 'Aguardando MySQL...'; sleep 2; done" ]
       containers:
         - name: oficina-api
-          image: soat-fase1-tech-challenge-app:latest
+          image: soat-fase1-tech-challenge-app:dev
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

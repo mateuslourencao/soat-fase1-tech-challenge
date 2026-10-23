@@ -32,6 +32,27 @@ O projeto segue os princípios da **Arquitetura Hexagonal (Ports and Adapters)**
 
 ## Configurações iniciais
 
+### Kubernetes local com Terraform e Kind
+
+O diretório `infra/kind` sobe um cluster Kubernetes local, constrói a imagem da aplicação, carrega-a no Kind e aplica o `kustomization.yaml` da raiz. São necessários Docker Desktop em execução, Terraform, [Kind](https://kind.sigs.k8s.io/) e `kubectl` instalados e disponíveis no `PATH`.
+
+```powershell
+terraform -chdir=infra/kind init
+terraform -chdir=infra/kind apply
+```
+
+Após a confirmação, a API estará em `http://localhost:8081/swagger-ui.html` e a interface do MailHog em `http://localhost:8025`. Para conferir os workloads:
+
+```powershell
+kubectl --context kind-oficina-local get pods
+```
+
+Para remover o ambiente local completo:
+
+```powershell
+terraform -chdir=infra/kind destroy
+```
+
 ### Pré-requisitos
 
 - Docker e Docker Compose instalados

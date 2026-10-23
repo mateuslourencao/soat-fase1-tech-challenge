@@ -46,7 +46,98 @@ O projeto segue os princípios da **Arquitetura Hexagonal (Ports and Adapters)**
 
 ### Desenho da arquitetura
 
-> TODO: Incluir posteriormente o desenho da arquitetura da aplicação, da infraestrutura provisionada e do fluxo de deploy.
+Os diagramas abaixo representam o estado implementado no repositório. A aplicação é um **monólito modular**: os módulos compartilham o mesmo processo Spring Boot e o mesmo banco MySQL, mas separam responsabilidades por domínio. O cluster Kubernetes descrito é local (Kind) e a pipeline cria outro cluster descartável para validar a implantação; não há publicação contínua em um ambiente de produção configurada neste projeto.
+
+#### Componentes da aplicação
+
+```mermaid
+flowchart LR
+    Clients[Funcionários / clientes / consumidores da API] -->|HTTP REST| API
+    subgraph App[Processo único: Spring Boot — Java 21]
+        API[Controllers REST / DTOs]
+        SEC[Spring Security + filtro JWT]
+        ADMIN[Administrativo<br/>funcionários e autenticação]
+        STOCK[Estoque<br/>peças e serviços]
+        MAINT[Manutenção<br/>clientes, veículos e ordens de serviço]
+        COMMON[Comum<br/>validações e tratamento de erros]
+        PERSIST[Adapters JPA / Spring Data]
+        EMAIL[Adapter de notificação por e-mail]
+        API --> SEC
+        SEC --> ADMIN
+        SEC --> STOCK
+        SEC --> MAINT
+        ADMIN --> COMMON
+        STOCK --> COMMON
+        MAINT --> COMMON
+        ADMIN --> PERSIST
+        STOCK --> PERSIST
+        MAINT --> PERSIST
+        MAINT --> EMAIL
+    end
+    PERSIST -->|JDBC| DB[(MySQL 8)]
+    EMAIL -->|SMTP| SMTP[MailHog no ambiente local]
+```
+
+Controllers expõem a API REST e encaminham os casos de uso dos módulos. A autenticação gera JWT e protege as rotas administrativas; o fluxo público de aprovação/acompanhamento da OS permanece exposto conforme os endpoints da aplicação. Os adapters JPA persistem os dados no MySQL, e o adapter de e-mail usa SMTP (MailHog para desenvolvimento e validação).
+
+#### Infraestrutura provisionada localmente
+
+```mermaid
+flowchart TB
+    DEV[Desenvolvedor] -->|localhost:8081| PORTAPI
+    DEV -->|localhost:8025| PORTMAIL
+    subgraph HOST[Máquina local: Docker Desktop]
+        subgraph KIND[Cluster Kind: oficina-local]
+            subgraph K8S[Kubernetes]
+                SVCAPI[Service NodePort :30081]
+                HPA[HPA da API: 3–10 réplicas<br/>CPU 70% / memória 80%]
+                API[Deployment oficina-api<br/>3 réplicas iniciais]
+                SVCDB[Service interno :3306]
+                MYSQL[Deployment oficina-db<br/>MySQL 8]
+                PVC[PVC MySQL: 2 GiB]
+                MAIL[Deployment mailhog<br/>SMTP :1025 / UI :8025]
+                CM[ConfigMaps<br/>configuração + schema.sql]
+                SECRET["Secret<br/>senha DB e chave JWT<br/>(valores de desenvolvimento)"]
+                SVCAPI --> API
+                HPA -. escala .-> API
+                API -->|JDBC| SVCDB --> MYSQL
+                MYSQL --> PVC
+                API -->|SMTP| MAIL
+                CM -. configura .-> API
+                CM -. inicializa .-> MYSQL
+                SECRET -. injeta .-> API
+                SECRET -. injeta .-> MYSQL
+            end
+        end
+        PORTAPI[Mapeamento host 8081 → NodePort 30081]
+        PORTMAIL[Mapeamento host 8025 → NodePort 30025]
+    end
+    PORTAPI --> SVCAPI
+    PORTMAIL --> MAIL
+    TF[Terraform] -->|cria cluster, constrói/carrega imagem e aplica Kustomize| KIND
+    MS[Metrics Server] -->|métricas para o HPA| HPA
+```
+
+Terraform provisiona o cluster Kind local, constrói a imagem da API e a carrega diretamente no cluster. O Kustomize aplica Deployment e Service da API, HPA, MySQL com PVC, MailHog, ConfigMaps e Secret. O Metrics Server fornece métricas para o HPA. Esse desenho documenta o ambiente de desenvolvimento/validação local; o PVC e os segredos dos manifests não representam uma configuração de produção.
+
+#### Fluxo de CI e deploy de validação
+
+```mermaid
+flowchart LR
+    PUSH[Push na main ou Pull Request] --> TEST[Testes Maven]
+    TEST -->|sucesso| SONAR[Análise SonarCloud]
+    SONAR -->|sucesso| BUILD[Build do JAR e imagem Docker]
+    BUILD --> KIND[Criar cluster Kind temporário]
+    KIND --> METRICS[Instalar Metrics Server]
+    METRICS --> LOAD[Carregar imagem no Kind]
+    LOAD --> APPLY[kubectl apply -k .]
+    APPLY --> READY[Aguardar MySQL, API e MailHog]
+    READY --> HPA[Confirmar HPA aplicado]
+    HPA --> CLEAN[Remover cluster temporário — sempre]
+    READY -. falha .-> CLEAN
+```
+
+O workflow `.github/workflows/main.yml` só avança entre etapas quando a anterior termina com sucesso. O cluster `oficina-ci` é efêmero e removido inclusive quando uma etapa falha. Portanto, o pipeline verifica build e implantação dos manifests, mas **não publica uma imagem em registry nem atualiza um cluster persistente**. Para o ambiente local, o fluxo equivalente é `terraform init` → `terraform plan` → `terraform apply`; o Terraform aguarda os Deployments ficarem prontos.
 
 ## Configurações iniciais
 

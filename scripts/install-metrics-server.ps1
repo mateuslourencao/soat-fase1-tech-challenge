@@ -3,6 +3,10 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+# kubectl usa stderr e um exit code diferente de zero enquanto as métricas
+# ainda não estão disponíveis. Isso deve ser tratado pelo loop abaixo, não
+# como uma exceção automática do PowerShell 7.
+$PSNativeCommandUseErrorActionPreference = $false
 $metricsServerManifest = "https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml"
 $patchFile = Join-Path $env:TEMP "metrics-server-patch-$PID.json"
 

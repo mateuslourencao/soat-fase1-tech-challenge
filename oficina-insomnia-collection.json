@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 4,
-	"__export_date": "2026-08-15T10:46:00.000Z",
+	"__export_date": "2026-10-24T00:00:00.000Z",
 	"__export_source": "insomnia.desktop.app:v2023.5.8",
 	"resources": [
 		{
@@ -80,7 +80,7 @@
 			"parentId": "fld_1",
 			"url": "{{ _.base_url }}/administrativo/funcionarios",
 			"name": "Cadastrar Funcionário",
-			"description": "Endpoint público conforme última alteração de segurança.",
+			"description": "Cadastra funcionário. Requer JWT conforme a configuração de segurança atual.",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
@@ -93,7 +93,10 @@
 					"value": "application/json"
 				}
 			],
-			"authentication": {},
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
 			"metaSortKey": -900,
 			"isPrivate": false,
 			"_type": "request"
@@ -680,6 +683,167 @@
 			],
 			"authentication": {},
 			"metaSortKey": -50,
+			"_type": "request"
+		},
+		{
+			"parentId": "fld_1",
+			"body": {},
+			"parameters": [],
+			"url": "{{ _.base_url }}/administrativo/funcionarios/2",
+			"metaSortKey": -500,
+			"headers": [],
+			"name": "Buscar Funcionário por ID",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"_id": "req_32",
+			"isPrivate": false,
+			"method": "GET",
+			"_type": "request"
+		},
+		{
+			"parentId": "fld_1",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n  \"nome\": \"Funcionário Atualizado\",\n  \"email\": \"atualizado@oficina.com\",\n  \"perfil\": \"MECANICO\"\n}"
+			},
+			"parameters": [],
+			"url": "{{ _.base_url }}/administrativo/funcionarios/2",
+			"metaSortKey": -400,
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"name": "Atualizar Funcionário",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"_id": "req_33",
+			"isPrivate": false,
+			"method": "PUT",
+			"_type": "request"
+		},
+		{
+			"parentId": "fld_2",
+			"body": {},
+			"parameters": [],
+			"url": "{{ _.base_url }}/clientes/55954689040",
+			"metaSortKey": -600,
+			"headers": [],
+			"name": "Remover Cliente",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"_id": "req_34",
+			"isPrivate": false,
+			"method": "DELETE",
+			"_type": "request"
+		},
+		{
+			"parentId": "fld_3",
+			"body": {},
+			"parameters": [],
+			"url": "{{ _.base_url }}/veiculos/ABC1234",
+			"metaSortKey": -700,
+			"headers": [],
+			"name": "Buscar Veículo por Placa",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"_id": "req_35",
+			"isPrivate": false,
+			"method": "GET",
+			"_type": "request"
+		},
+		{
+			"parentId": "fld_3",
+			"body": {},
+			"parameters": [],
+			"url": "{{ _.base_url }}/veiculos/ABC1234",
+			"metaSortKey": -600,
+			"headers": [],
+			"name": "Remover Veículo",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"_id": "req_36",
+			"isPrivate": false,
+			"method": "DELETE",
+			"_type": "request"
+		},
+		{
+			"parentId": "fld_4",
+			"body": {},
+			"parameters": [],
+			"url": "{{ _.base_url }}/pecas/1",
+			"metaSortKey": -600,
+			"headers": [],
+			"name": "Remover Peça",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"_id": "req_37",
+			"isPrivate": false,
+			"method": "DELETE",
+			"_type": "request"
+		},
+		{
+			"parentId": "fld_5",
+			"body": {},
+			"parameters": [],
+			"url": "{{ _.base_url }}/servicos/1",
+			"metaSortKey": -800,
+			"headers": [],
+			"name": "Buscar Serviço por ID",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"_id": "req_38",
+			"isPrivate": false,
+			"method": "GET",
+			"_type": "request"
+		},
+		{
+			"parentId": "fld_5",
+			"body": {},
+			"parameters": [],
+			"url": "{{ _.base_url }}/servicos/1",
+			"metaSortKey": -700,
+			"headers": [],
+			"name": "Remover Serviço",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"_id": "req_39",
+			"isPrivate": false,
+			"method": "DELETE",
+			"_type": "request"
+		},
+		{
+			"parentId": "fld_6",
+			"body": {},
+			"parameters": [],
+			"url": "{{ _.base_url }}/ordensdeservico/abertas",
+			"metaSortKey": -775,
+			"headers": [],
+			"name": "Listar OS Abertas",
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"_id": "req_40",
+			"isPrivate": false,
+			"method": "GET",
 			"_type": "request"
 		}
 	]

@@ -82,7 +82,41 @@ Controllers expõem a API REST e encaminham os casos de uso dos módulos. A aute
 
 #### Infraestrutura local
 
-O Terraform e o diagrama dos recursos Kubernetes estão no [repositório oficina-k8s-infra](https://github.com/mateuslourencao/oficina-k8s-infra). Este repositório mantém a aplicação e os manifests usados no deploy.
+```mermaid
+flowchart TB
+    DEV[Desenvolvedor] -->|localhost:8081| PORTAPI
+    DEV -->|localhost:8025| PORTMAIL
+    subgraph HOST[Máquina local: Docker Desktop]
+        subgraph KIND[Cluster Kind: oficina-local]
+            subgraph K8S[Kubernetes]
+                SVCAPI[Service NodePort :30081]
+                HPA[HPA da API: 3–10 réplicas<br/>CPU 70% / memória 80%]
+                API[Deployment oficina-api<br/>3 réplicas iniciais]
+                SVCDB[Service interno :3306]
+                MYSQL[Deployment oficina-db<br/>MySQL 8]
+                PVC[PVC MySQL: 2 GiB]
+                MAIL[Deployment mailhog<br/>SMTP :1025 / UI :8025]
+                CM[ConfigMaps<br/>configuração + schema.sql]
+                SECRET["Secret<br/>senha DB e chave JWT<br/>(valores de desenvolvimento)"]
+                SVCAPI --> API
+                HPA -. escala .-> API
+                API -->|JDBC| SVCDB --> MYSQL
+                MYSQL --> PVC
+                API -->|SMTP| MAIL
+                CM -. configura .-> API
+                CM -. inicializa .-> MYSQL
+                SECRET -. injeta .-> API
+                SECRET -. injeta .-> MYSQL
+            end
+        end
+        PORTAPI[Mapeamento host 8081 → NodePort 30081]
+        PORTMAIL[Mapeamento host 8025 → NodePort 30025]
+    end
+    PORTAPI --> SVCAPI
+    PORTMAIL --> MAIL
+    TF[Terraform] -->|cria cluster, constrói/carrega imagem e aplica Kustomize| KIND
+    MS[Metrics Server] -->|métricas para o HPA| HPA
+```
 
 #### Fluxo de CI e deploy de validação
 

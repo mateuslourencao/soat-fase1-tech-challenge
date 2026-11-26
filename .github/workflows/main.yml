@@ -1,4 +1,4 @@
-name: Build
+name: Application CI
 on:
   push:
     branches:
@@ -51,7 +51,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
-    name: Build and deploy to temporary Kubernetes cluster
+    name: Build and validate on a temporary Kubernetes cluster
     needs: sonarcloud
     runs-on: ubuntu-latest
     timeout-minutes: 20

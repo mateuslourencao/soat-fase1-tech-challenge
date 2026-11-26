@@ -1,7 +1,8 @@
-name: Build
+name: Application CI
 on:
   push:
     branches:
+      - homolog
       - main
   pull_request:
     types: [opened, synchronize, reopened]
@@ -51,7 +52,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
-    name: Build and deploy to temporary Kubernetes cluster
+    name: Validate pull request on a temporary Kubernetes cluster
+    if: github.event_name == 'pull_request'
     needs: sonarcloud
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -120,3 +122,35 @@ jobs:
       - name: Delete temporary Kind cluster
         if: always()
         run: kind delete cluster --name oficina-ci || true
+
+  deploy_local:
+    name: Request local deployment
+    if: github.event_name == 'push' && contains(fromJSON('["homolog", "main"]'), github.ref_name)
+    needs: sonarcloud
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch deployment to oficina-k8s-infra
+        env:
+          GH_TOKEN: ${{ secrets.INFRA_DEPLOY_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Configure INFRA_DEPLOY_TOKEN with Actions write access to oficina-k8s-infra."
+            exit 1
+          fi
+
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            target_environment="production"
+          else
+            target_environment="homolog"
+          fi
+
+          payload="$(jq -n \
+            --arg ref "$GITHUB_REF_NAME" \
+            --arg environment "$target_environment" \
+            '{ref: $ref, inputs: {environment: $environment, application_ref: $ref}}')"
+
+          gh api --method POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --input - \
+            "repos/mateuslourencao/oficina-k8s-infra/actions/workflows/main.yml/dispatches" <<< "$payload"

@@ -19,7 +19,7 @@ Escolha um dos caminhos abaixo. Eles são alternativas independentes; siga as in
 |---|---|---|---|
 | Docker Compose | Desenvolver localmente sem Kubernetes | API, MySQL e MailHog em containers | [Execução com Docker Compose](#execução-local-com-docker-compose-recomendado) |
 | Maven | Executar a API diretamente no computador | API; requer MySQL já instalado e configurado | [Execução local com Maven](#instalação-local) |
-| Terraform + Kind | Provisionar Kubernetes local e validar o deploy da aplicação | Cluster Kind, API, MySQL, MailHog e recursos Kubernetes | [Provisionamento e deploy com Terraform](#kubernetes-local-provisionado-com-terraform) |
+| Terraform + Kind | Cluster Kind local e implantação de validação | Consulte o [repositório de infraestrutura](https://github.com/mateuslourencao/oficina-k8s-infra) |
 
 ## Tecnologias Utilizadas
 
@@ -46,7 +46,7 @@ O projeto segue os princípios da **Arquitetura Hexagonal (Ports and Adapters)**
 
 ### Desenho da arquitetura
 
-Os diagramas abaixo representam o estado implementado no repositório. A aplicação é um **monólito modular**: os módulos compartilham o mesmo processo Spring Boot e o mesmo banco MySQL, mas separam responsabilidades por domínio. O cluster Kubernetes descrito é local (Kind) e a pipeline cria outro cluster descartável para validar a implantação; não há publicação contínua em um ambiente de produção configurada neste projeto.
+A aplicação é um **monólito modular**: os módulos compartilham o mesmo processo Spring Boot e o mesmo banco MySQL, mas separam responsabilidades por domínio. A infraestrutura Kubernetes local está documentada no [repositório oficina-k8s-infra](https://github.com/mateuslourencao/oficina-k8s-infra); a pipeline descrita abaixo cria um cluster descartável para validar a implantação.
 
 #### Componentes da aplicação
 
@@ -80,7 +80,7 @@ flowchart LR
 
 Controllers expõem a API REST e encaminham os casos de uso dos módulos. A autenticação gera JWT e protege as rotas administrativas; o fluxo público de aprovação/acompanhamento da OS permanece exposto conforme os endpoints da aplicação. Os adapters JPA persistem os dados no MySQL, e o adapter de e-mail usa SMTP (MailHog para desenvolvimento e validação).
 
-#### Infraestrutura provisionada localmente
+#### Infraestrutura local
 
 ```mermaid
 flowchart TB
@@ -118,15 +118,14 @@ flowchart TB
     MS[Metrics Server] -->|métricas para o HPA| HPA
 ```
 
-Terraform provisiona o cluster Kind local, constrói a imagem da API e a carrega diretamente no cluster. O Kustomize aplica Deployment e Service da API, HPA, MySQL com PVC, MailHog, ConfigMaps e Secret. O Metrics Server fornece métricas para o HPA. Esse desenho documenta o ambiente de desenvolvimento/validação local; o PVC e os segredos dos manifests não representam uma configuração de produção.
-
 #### Fluxo de CI e deploy de validação
 
 ```mermaid
 flowchart LR
-    PUSH[Push na main ou Pull Request] --> TEST[Testes Maven]
+    EVENT[Push em homolog/main ou Pull Request] --> TEST[Testes Maven]
     TEST -->|sucesso| SONAR[Análise SonarCloud]
-    SONAR -->|sucesso| BUILD[Build do JAR e imagem Docker]
+    SONAR --> DECISION{Tipo de evento}
+    DECISION -->|Pull Request| BUILD[Build do JAR e imagem Docker]
     BUILD --> KIND[Criar cluster Kind temporário]
     KIND --> METRICS[Instalar Metrics Server]
     METRICS --> LOAD[Carregar imagem no Kind]
@@ -135,127 +134,19 @@ flowchart LR
     READY --> HPA[Confirmar HPA aplicado]
     HPA --> CLEAN[Remover cluster temporário — sempre]
     READY -. falha .-> CLEAN
+    DECISION -->|Push homolog/main| DISPATCH[Disparar workflow da infraestrutura]
+    DISPATCH --> RUNNER[Runner Windows self-hosted local]
+    RUNNER --> TF[Terraform apply]
+    TF --> PERSISTENT[Cluster Kind homolog ou produção local]
 ```
 
-O workflow `.github/workflows/main.yml` só avança entre etapas quando a anterior termina com sucesso. O cluster `oficina-ci` é efêmero e removido inclusive quando uma etapa falha. Portanto, o pipeline verifica build e implantação dos manifests, mas **não publica uma imagem em registry nem atualiza um cluster persistente**. Para o ambiente local, o fluxo equivalente é `terraform init` → `terraform plan` → `terraform apply`; o Terraform aguarda os Deployments ficarem prontos.
+O workflow `.github/workflows/main.yml` executa testes e SonarCloud nos pushes e PRs. Em PRs, também valida os manifests num cluster `oficina-ci` efêmero, removido ao final. Em pushes aprovados para `homolog` ou `main`, solicita ao [repositório oficina-k8s-infra](https://github.com/mateuslourencao/oficina-k8s-infra) o deploy automático local no ambiente correspondente. Esse fluxo requer o secret `INFRA_DEPLOY_TOKEN` no repositório da aplicação e o runner Windows self-hosted configurado na infraestrutura.
 
 ## Configurações iniciais
 
-### Kubernetes local provisionado com Terraform
+### Infraestrutura Kubernetes
 
-O Terraform provisiona um cluster Kubernetes local chamado `oficina-local` usando [Kind](https://kind.sigs.k8s.io/). O Kind executa os nós Kubernetes como contêineres Docker; neste projeto, o Docker Desktop fornece o runtime. Portanto, **o contexto do cluster usado pelo projeto é `kind-oficina-local`**, e não `docker-desktop` (que identifica o cluster Kubernetes gerenciado diretamente pelo Docker Desktop).
-
-Além do cluster, o Terraform constrói a imagem da API, carrega essa imagem no cluster Kind e aplica o `kustomization.yaml` da raiz. Os manifests criam:
-
-- API da oficina, com três réplicas e Service NodePort;
-- HPA da API, escalando de 3 a 10 réplicas quando o uso médio atingir 70% de CPU ou 80% de memória;
-- MySQL, com Service interno e volume persistente de 2 GiB;
-- MailHog, com interface web e SMTP;
-- ConfigMap do banco de dados e das configurações da aplicação, Secret de desenvolvimento e ConfigMap com o `schema.sql`.
-
-#### Pré-requisitos
-
-- Windows com Docker Desktop iniciado e configurado para **Linux containers**;
-- Terraform `>= 1.5.0`;
-- `kubectl`;
-- Kind instalado e disponível no `PATH`. No Windows, pode ser instalado com [WinGet](https://kind.sigs.k8s.io/docs/user/quick-start/):
-
-```powershell
-winget install Kubernetes.kind
-```
-
-Após instalar, abra um novo PowerShell e confirme as ferramentas e o contexto Docker:
-
-```powershell
-docker context show
-kind version
-kubectl version --client
-terraform version
-```
-
-O contexto Docker deve apontar para o Docker Desktop (normalmente `desktop-linux`). Se necessário, selecione-o com `docker context use desktop-linux`.
-
-#### Provisionar e iniciar
-
-Na raiz do repositório, inicialize o Terraform e aplique a configuração. O `apply` apresenta o plano e pede confirmação antes de criar os recursos:
-
-```powershell
-terraform -chdir=infra/kind init
-terraform -chdir=infra/kind plan
-terraform -chdir=infra/kind apply
-```
-
-Durante a aplicação, o Terraform cria o cluster, instala e configura o Metrics Server, constrói a imagem `soat-fase1-tech-challenge-app:dev`, carrega-a no Kind e aplica os manifests Kubernetes. O provisionamento aguarda as métricas do cluster e os deployments do banco, da API e do MailHog ficarem prontos.
-
-Para reaplicar os manifestos manualmente em um cluster já provisionado:
-
-```powershell
-kubectl --context kind-oficina-local apply -k .
-kubectl --context kind-oficina-local rollout status deployment/oficina-db --timeout=180s
-kubectl --context kind-oficina-local rollout status deployment/oficina-api --timeout=240s
-kubectl --context kind-oficina-local rollout status deployment/mailhog --timeout=120s
-```
-
-#### Métricas e HPA
-
-O Terraform instala o Metrics Server no Kind, configura a opção necessária para os certificados do kubelet locais e aguarda as métricas ficarem disponíveis antes de aplicar o HPA. A pipeline de CI também instala o Metrics Server no cluster temporário.
-
-Se você já tiver criado o cluster sem o Terraform ou precisar reaplicar a configuração, execute o script na raiz do repositório:
-
-```powershell
-.\scripts\install-metrics-server.ps1 -Context kind-oficina-local
-```
-
-O script busca o manifesto oficial do Metrics Server na internet; por isso, precisa de acesso à rede durante a instalação.
-
-Confirme que o cluster está fornecendo métricas e que o HPA consegue consultá-las:
-
-```powershell
-kubectl --context kind-oficina-local top nodes
-kubectl --context kind-oficina-local top pods -l app=oficina-api
-kubectl --context kind-oficina-local get hpa oficina-api
-```
-
-Pode levar alguns minutos até as primeiras métricas aparecerem. Se `kubectl top` retornar erro, consulte a [documentação de troubleshooting do Metrics Server](https://github.com/kubernetes-sigs/metrics-server/blob/master/FAQ.md).
-
-#### Testar o escalonamento do HPA
-
-Com as métricas disponíveis, execute na raiz do repositório o script que gera requisições concorrentes para a API e acompanha o HPA. Se o PowerShell bloquear a execução de scripts, habilite-a somente para a janela atual; essa configuração não altera a política permanente do computador. O script cria um Deployment temporário de carga e o remove ao terminar:
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
-.\scripts\test-hpa.ps1
-```
-
-Por padrão, o script roda por 180 segundos com 12 pods de carga e 8 requisições concorrentes por pod. Ajuste a duração e a intensidade conforme necessário:
-
-```powershell
-.\scripts\test-hpa.ps1 -DurationSeconds 240 -WorkerReplicas 16 -ConcurrentRequestsPerPod 10
-```
-
-O teste consulta um endpoint público da API. Observe as métricas de CPU e memória e o número de réplicas exibidos pelo HPA; o escalonamento ocorre quando o uso médio ultrapassa os alvos configurados. Ao remover a carga, o HPA pode levar alguns minutos para reduzir as réplicas.
-
-#### Conferir o ambiente
-
-```powershell
-kubectl --context kind-oficina-local get nodes
-kubectl --context kind-oficina-local get deployments,services,pods
-```
-
-- API e Swagger: [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)
-- Interface do MailHog: [http://localhost:8025](http://localhost:8025)
-
-O MySQL fica acessível dentro do cluster pelo Service `oficina-db-svc:3306`. A senha e o segredo JWT presentes nos manifests são valores de desenvolvimento; não os reutilize em produção.
-
-#### Remover o ambiente
-
-Para destruir os recursos gerenciados pelo Terraform, incluindo o cluster Kind:
-
-```powershell
-terraform -chdir=infra/kind destroy
-```
-
-Ao destruir o cluster, os recursos e os dados persistidos no volume local do MySQL também são removidos.
+A infraestrutura Terraform foi separada no [repositório oficina-k8s-infra](https://github.com/mateuslourencao/oficina-k8s-infra), que contém instruções de provisionamento, validação, atualização e destruição do cluster Kind local. Este repositório mantém a API e os arquivos Kubernetes consumidos por essa infraestrutura.
 
 ### Pré-requisitos
 
@@ -340,7 +231,7 @@ mvn test
 
 ### Pipeline GitHub Actions
 
-O workflow executa os testes automatizados e a análise SonarCloud. Em seguida, constrói a imagem Docker e cria um cluster Kind temporário, onde aplica os manifestos do Kustomize e aguarda os Deployments do banco, da API e do MailHog ficarem prontos. Esse cluster existe apenas durante a execução do workflow e é removido ao final; ele valida o deploy, mas não atualiza o cluster local do desenvolvedor nem mantém um ambiente publicado.
+O workflow executa testes automatizados e análise SonarCloud. Em Pull Requests, também constrói a imagem e valida os manifests num cluster Kind temporário. Em pushes para `homolog` e `main`, após testes e Sonar aprovados, aciona o workflow do `oficina-k8s-infra`, que faz deploy local no cluster persistente da branch. Para isso, configure `INFRA_DEPLOY_TOKEN` com permissão Actions: write no repositório de infraestrutura.
 
 ### Relatório de Cobertura (JaCoCo)
 
@@ -409,3 +300,5 @@ Este projeto foi desenvolvido como parte do SOAT Tech Challenge.
 Mateus Lourenção - [GitHub](https://github.com/mateuslourencao)
 
 Pedro Ruiz - [GitHub](https://github.com/opedro)
+
+

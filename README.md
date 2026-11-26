@@ -122,9 +122,10 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    PUSH[Push na main ou Pull Request] --> TEST[Testes Maven]
+    EVENT[Push em homolog/main ou Pull Request] --> TEST[Testes Maven]
     TEST -->|sucesso| SONAR[Análise SonarCloud]
-    SONAR -->|sucesso| BUILD[Build do JAR e imagem Docker]
+    SONAR --> DECISION{Tipo de evento}
+    DECISION -->|Pull Request| BUILD[Build do JAR e imagem Docker]
     BUILD --> KIND[Criar cluster Kind temporário]
     KIND --> METRICS[Instalar Metrics Server]
     METRICS --> LOAD[Carregar imagem no Kind]
@@ -133,9 +134,13 @@ flowchart LR
     READY --> HPA[Confirmar HPA aplicado]
     HPA --> CLEAN[Remover cluster temporário — sempre]
     READY -. falha .-> CLEAN
+    DECISION -->|Push homolog/main| DISPATCH[Disparar workflow da infraestrutura]
+    DISPATCH --> RUNNER[Runner Windows self-hosted local]
+    RUNNER --> TF[Terraform apply]
+    TF --> PERSISTENT[Cluster Kind homolog ou produção local]
 ```
 
-O workflow `.github/workflows/main.yml` só avança entre etapas quando a anterior termina com sucesso. O cluster `oficina-ci` é efêmero e removido inclusive quando uma etapa falha. Portanto, o pipeline verifica build e implantação dos manifests, mas **não publica uma imagem em registry nem atualiza um cluster persistente**. Para provisionar o ambiente local, siga as instruções do [repositório oficina-k8s-infra](https://github.com/mateuslourencao/oficina-k8s-infra).
+O workflow `.github/workflows/main.yml` executa testes e SonarCloud nos pushes e PRs. Em PRs, também valida os manifests num cluster `oficina-ci` efêmero, removido ao final. Em pushes aprovados para `homolog` ou `main`, solicita ao [repositório oficina-k8s-infra](https://github.com/mateuslourencao/oficina-k8s-infra) o deploy automático local no ambiente correspondente. Esse fluxo requer o secret `INFRA_DEPLOY_TOKEN` no repositório da aplicação e o runner Windows self-hosted configurado na infraestrutura.
 
 ## Configurações iniciais
 
@@ -226,7 +231,7 @@ mvn test
 
 ### Pipeline GitHub Actions
 
-O workflow executa os testes automatizados e a análise SonarCloud. Em seguida, constrói a imagem Docker e cria um cluster Kind temporário, onde aplica os manifestos do Kustomize e aguarda os Deployments do banco, da API e do MailHog ficarem prontos. Esse cluster existe apenas durante a execução do workflow e é removido ao final; ele valida o deploy, mas não atualiza o cluster local do desenvolvedor nem mantém um ambiente publicado.
+O workflow executa testes automatizados e análise SonarCloud. Em Pull Requests, também constrói a imagem e valida os manifests num cluster Kind temporário. Em pushes para `homolog` e `main`, após testes e Sonar aprovados, aciona o workflow do `oficina-k8s-infra`, que faz deploy local no cluster persistente da branch. Para isso, configure `INFRA_DEPLOY_TOKEN` com permissão Actions: write no repositório de infraestrutura.
 
 ### Relatório de Cobertura (JaCoCo)
 

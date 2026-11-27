@@ -1,16 +1,4 @@
 services:
-  db:
-    image: mysql:8.0
-    container_name: oficina-mysql
-    restart: no
-    environment:
-      MYSQL_DATABASE: oficina
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
   mailhog:
     image: mailhog/mailhog
     container_name: oficina-mailhog
@@ -18,6 +6,8 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+    networks:
+      - oficina-db-network
   app:
     build: .
     container_name: oficina-app
@@ -27,19 +17,18 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/oficina?createDatabaseIfNotExist=true&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_PASSWORD=admin
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - MAIL_HOST=mailhog
       - MAIL_PORT=1025
       - MAIL_SMTP_AUTH=false
       - MAIL_SMTP_STARTTLS=false
     depends_on:
-      - db
       - mailhog
+    networks:
+      - oficina-db-network
 
 networks:
-  sonarnet:
-    driver: bridge
-
-volumes:
-  mysql_data:
+  oficina-db-network:
+    external: true
+    name: oficina-db-network

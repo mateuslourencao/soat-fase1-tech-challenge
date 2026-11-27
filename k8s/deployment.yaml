@@ -28,7 +28,9 @@ spec:
             - configMapRef:
                 name: oficina-configmap
             - secretRef:
-                name: oficina-secret
+                name: oficina-db-secret
+            - secretRef:
+                name: oficina-api-secret
           resources:
             requests:
               cpu: "250m"
@@ -36,57 +38,3 @@ spec:
             limits:
               cpu: "1000m"
               memory: "1Gi"
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: oficina-db
-spec:
-  selector:
-    matchLabels:
-      app: oficina-db
-  template:
-    metadata:
-      labels:
-        app: oficina-db
-    spec:
-      containers:
-        - image: mysql:8.0
-          name: mysql
-          env:
-            - name: MYSQL_DATABASE
-              value: oficina
-            - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: oficina-secret
-                  key: DB_PASSWORD
-          ports:
-            - containerPort: 3306
-              name: mysql
-          readinessProbe:
-            exec:
-              command: ["mysqladmin", "ping", "-h", "127.0.0.1"]
-            periodSeconds: 5
-            timeoutSeconds: 2
-            failureThreshold: 3
-          livenessProbe:
-            exec:
-              command: ["mysqladmin", "ping", "-h", "127.0.0.1"]
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
-          volumeMounts:
-            - name: mysql-data
-              mountPath: /var/lib/mysql
-            - name: mysql-schema
-              mountPath: /docker-entrypoint-initdb.d
-              readOnly: true
-      volumes:
-        - name: mysql-data
-          persistentVolumeClaim:
-            claimName: mysql-pvc
-        - name: mysql-schema
-          configMap:
-            name: oficina-db-schema

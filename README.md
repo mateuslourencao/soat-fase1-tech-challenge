@@ -96,17 +96,17 @@ flowchart TB
                 MYSQL[Deployment oficina-db<br/>MySQL 8]
                 PVC[PVC MySQL: 2 GiB]
                 MAIL[Deployment mailhog<br/>SMTP :1025 / UI :8025]
-                CM[ConfigMaps<br/>configuração + schema.sql]
-                SECRET["Secret<br/>senha DB e chave JWT<br/>(valores de desenvolvimento)"]
+                CM[ConfigMap<br/>configuração da API]
+                DBSECRET[Secret<br/>credencial do banco]
+                APISECRET[Secret<br/>chave JWT]
                 SVCAPI --> API
                 HPA -. escala .-> API
                 API -->|JDBC| SVCDB --> MYSQL
                 MYSQL --> PVC
                 API -->|SMTP| MAIL
                 CM -. configura .-> API
-                CM -. inicializa .-> MYSQL
-                SECRET -. injeta .-> API
-                SECRET -. injeta .-> MYSQL
+                DBSECRET -. injeta .-> API
+                APISECRET -. injeta .-> API
             end
         end
         PORTAPI[Mapeamento host 8081 → NodePort 30081]
@@ -129,8 +129,10 @@ flowchart LR
     BUILD --> KIND[Criar cluster Kind temporário]
     KIND --> METRICS[Instalar Metrics Server]
     METRICS --> LOAD[Carregar imagem no Kind]
-    LOAD --> APPLY[kubectl apply -k .]
-    APPLY --> READY[Aguardar MySQL, API e MailHog]
+    LOAD --> DBAPPLY[kubectl apply -k oficina-db]
+    DBAPPLY --> DBREADY[Aguardar MySQL]
+    DBREADY --> APPLY[kubectl apply -k .]
+    APPLY --> READY[Aguardar API e MailHog]
     READY --> HPA[Confirmar HPA aplicado]
     HPA --> CLEAN[Remover cluster temporário — sempre]
     READY -. falha .-> CLEAN
@@ -140,13 +142,13 @@ flowchart LR
     TF --> PERSISTENT[Cluster Kind homolog ou produção local]
 ```
 
-O workflow `.github/workflows/main.yml` executa testes e SonarCloud nos pushes e PRs. Em PRs, também valida os manifests num cluster `oficina-ci` efêmero, removido ao final. Em pushes aprovados para `homolog` ou `main`, solicita ao [repositório oficina-k8s-infra](https://github.com/mateuslourencao/oficina-k8s-infra) o deploy automático local no ambiente correspondente. Esse fluxo requer o secret `INFRA_DEPLOY_TOKEN` no repositório da aplicação e o runner Windows self-hosted configurado na infraestrutura.
+O workflow `.github/workflows/main.yml` executa testes e SonarCloud nos pushes e PRs. Em PRs, ele valida a implantação num Kind temporário aplicando primeiro os manifests do [oficina-db](https://github.com/mateuslourencao/oficina-db), aguardando o MySQL, e depois aplicando os manifests da aplicação. Em pushes aprovados para `homolog` ou `main`, solicita ao [repositório oficina-k8s-infra](https://github.com/mateuslourencao/oficina-k8s-infra) o deploy automático local, que segue a mesma ordem.
 
 ## Configurações iniciais
 
 ### Infraestrutura Kubernetes
 
-A infraestrutura Terraform foi separada no [repositório oficina-k8s-infra](https://github.com/mateuslourencao/oficina-k8s-infra), que contém instruções de provisionamento, validação, atualização e destruição do cluster Kind local. Este repositório mantém a API e os arquivos Kubernetes consumidos por essa infraestrutura.
+A infraestrutura Terraform do cluster está no [repositório oficina-k8s-infra](https://github.com/mateuslourencao/oficina-k8s-infra). Os recursos MySQL e o schema pertencem ao [repositório oficina-db](https://github.com/mateuslourencao/oficina-db). O Terraform aplica o Kustomize do banco e aguarda o MySQL ficar pronto antes de aplicar os manifests da aplicação; a pipeline de PR também valida nessa ordem.
 
 ### Pré-requisitos
 
@@ -155,18 +157,19 @@ A infraestrutura Terraform foi separada no [repositório oficina-k8s-infra](http
 
 ### Execução local com Docker Compose (Recomendado)
 
-Na raiz do projeto, execute:
+O banco é iniciado pelo repositório `oficina-db`. Primeiro crie o banco e a rede compartilhada; depois, na raiz deste repositório, inicie a aplicação:
 
 ```bash
+docker compose -f ../oficina-db/docker-compose.yml up -d
 docker compose up --build
 ```
 
 Isso iniciará:
-1. Container MySQL (`oficina-mysql`) na porta `3306` (inicializado com `schema.sql`)
+1. Container MySQL (`oficina-mysql`) na porta `3306`, inicializado pelo schema do repositório `oficina-db`
 2. Container MailHog (`oficina-mailhog`) com SMTP na porta `1025` e interface web na porta `8025`
 3. Container da aplicação (`oficina-app`) na porta `8081`
 
-O Compose inicia os containers do banco e do MailHog antes do container da API. O `depends_on` usado no arquivo não verifica se o MySQL já está pronto para aceitar conexões; se a API falhar durante a inicialização, confira os logs com `docker compose logs app db` e tente iniciá-la novamente.
+O banco precisa estar em execução antes de iniciar a aplicação. Se a API falhar durante a inicialização, confira `docker compose logs app` e os logs do banco com `docker compose -f ../oficina-db/docker-compose.yml logs db`.
 
 Os e-mails enviados pela aplicação ficam disponíveis para consulta em:
 
@@ -188,10 +191,10 @@ mvn clean spring-boot:run
 
 ### Banco de Dados
 
-O Hibernate está configurado para criar tabelas automaticamente (`ddl-auto: update`). Um script SQL completo está disponível para referência:
+O Hibernate está configurado para criar tabelas automaticamente (`ddl-auto: update`) no Docker Compose. O schema inicial foi movido para o repositório [oficina-db](https://github.com/mateuslourencao/oficina-db):
 
-- **Arquivo**: `schema.sql` (na raiz do projeto)
-- **Conteúdo**: Definição de tabelas, índices e restrições
+- **Arquivo**: [`schema.sql`](https://github.com/mateuslourencao/oficina-db/blob/main/schema.sql)
+- **Conteúdo**: definição inicial das tabelas e carga de desenvolvimento
 
 ## Documentação da API
 
@@ -231,7 +234,7 @@ mvn test
 
 ### Pipeline GitHub Actions
 
-O workflow executa testes automatizados e análise SonarCloud. Em Pull Requests, também constrói a imagem e valida os manifests num cluster Kind temporário. Em pushes para `homolog` e `main`, após testes e Sonar aprovados, aciona o workflow do `oficina-k8s-infra`, que faz deploy local no cluster persistente da branch. Para isso, configure `INFRA_DEPLOY_TOKEN` com permissão Actions: write no repositório de infraestrutura.
+O workflow executa testes automatizados e análise SonarCloud. Em Pull Requests, também cria um cluster Kind temporário, aplica os manifests do banco e aguarda o MySQL antes de aplicar e validar a API. Em pushes para `homolog` e `main`, dispara o deploy local pelo repositório de infraestrutura.
 
 ### Relatório de Cobertura (JaCoCo)
 

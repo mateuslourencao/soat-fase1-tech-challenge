@@ -59,6 +59,14 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - name: Checkout database manifests
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          repository: mateuslourencao/oficina-db
+          ref: main
+          path: oficina-db
+          token: ${{ secrets.DB_REPOSITORY_READ_TOKEN || github.token }}
+          persist-credentials: false
       - name: Set up JDK 21
         uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4.8.0
         with:
@@ -109,10 +117,12 @@ jobs:
           done
       - name: Load application image into Kind
         run: kind load docker-image soat-fase1-tech-challenge-app:dev --name oficina-ci
-      - name: Apply Kubernetes manifests
-        run: kubectl --context kind-oficina-ci apply -k .
+      - name: Apply database manifests first
+        run: kubectl --context kind-oficina-ci apply -k oficina-db
       - name: Wait for database deployment
         run: kubectl --context kind-oficina-ci rollout status deployment/oficina-db --timeout=180s
+      - name: Apply Kubernetes manifests
+        run: kubectl --context kind-oficina-ci apply -k .
       - name: Wait for application deployment
         run: kubectl --context kind-oficina-ci rollout status deployment/oficina-api --timeout=240s
       - name: Wait for MailHog deployment
